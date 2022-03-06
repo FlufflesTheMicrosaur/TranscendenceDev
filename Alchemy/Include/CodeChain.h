@@ -215,8 +215,8 @@ class ICCItem : public CObject
 
 		//	Pool access
 
-		ICCItem *GetNextFree() { return (ICCItem *)m_dwRefCount; }
-		void SetNextFree (ICCItem *pNext) { m_dwRefCount = (DWORD)pNext; }
+		ICCItem *GetNextFree() { return m_pNextFree; }
+		void SetNextFree (ICCItem *pNext) { m_pNextFree = pNext; }
 
 		static int Compare (ICCItem *pFirst, ICCItem *pSecond);
 
@@ -228,6 +228,7 @@ class ICCItem : public CObject
 		ICCItem *NotASymbolTable (void);
 
 		mutable DWORD m_dwRefCount;				//	Number of references to this item
+		mutable ICCItem* m_pNextFree;
 
 		DWORD m_bQuoted:1;						//	TRUE if quoted
 		DWORD m_bError:1;						//	TRUE if it represents a runtime error
