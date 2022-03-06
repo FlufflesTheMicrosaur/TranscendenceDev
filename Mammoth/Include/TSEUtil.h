@@ -849,14 +849,14 @@ class CTile
 	public:
 		CTile (void) : m_dwData(0) { }
 
-		DWORD GetTile (void) { return m_dwData; }
-		DWORD *GetTilePointer (void) { return &m_dwData; }
+		DWORD_PTR GetTile (void) { return m_dwData; }
+		DWORD_PTR *GetTilePointer (void) { return &m_dwData; }
 		CTileMapSection *GetTileMapSection (void) { return (CTileMapSection *)m_dwData; }
-		void SetTile (DWORD dwTile) { m_dwData = dwTile; }
-		void SetTileMapSection (CTileMapSection *pMap) { m_dwData = (DWORD)pMap; }
+		void SetTile (DWORD_PTR dwTile) { m_dwData = dwTile; }
+		void SetTileMapSection (CTileMapSection *pMap) { m_dwData = (DWORD_PTR)pMap; }
 
 	private:
-		DWORD m_dwData;
+		DWORD_PTR m_dwData;
 	};
 
 class CTileMapSection
@@ -865,11 +865,11 @@ class CTileMapSection
 		CTileMapSection (int iCount) { m_pMap = new CTile [iCount]; }
 		~CTileMapSection (void) { delete [] m_pMap; }
 
-		DWORD GetTile (int iIndex) { return m_pMap[iIndex].GetTile(); }
-		DWORD *GetTilePointer (int iIndex) { return m_pMap[iIndex].GetTilePointer(); }
+		DWORD_PTR GetTile (int iIndex) { return m_pMap[iIndex].GetTile(); }
+		DWORD_PTR *GetTilePointer (int iIndex) { return m_pMap[iIndex].GetTilePointer(); }
 		CTileMapSection *GetTileMapSection (int iIndex) { return m_pMap[iIndex].GetTileMapSection(); }
 		ALERROR ReadFromStream (int iCount, IReadStream *pStream) { return pStream->Read((char *)m_pMap, iCount * sizeof(CTile)); }
-		void SetTile (int iIndex, DWORD dwTile) { m_pMap[iIndex].SetTile(dwTile); }
+		void SetTile (int iIndex, DWORD_PTR dwTile) { m_pMap[iIndex].SetTile(dwTile); }
 		void SetTileMapSection (int iIndex, CTileMapSection *pMap) { m_pMap[iIndex].SetTileMapSection(pMap); }
 		void WriteToStream (int iCount, IWriteStream *pStream) const { pStream->Write((char *)m_pMap, iCount * sizeof(CTile)); }
 
