@@ -253,6 +253,12 @@
     <ClCompile Include="CPolygon.cpp">
       <Filter>Source Files\Euclid</Filter>
     </ClCompile>
+    <ClCompile Include="CPtrArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPtrDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Crypto.h">

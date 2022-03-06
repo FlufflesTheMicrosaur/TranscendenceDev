@@ -6,7 +6,7 @@
 #include "PreComp.h"
 
 static DATADESCSTRUCT g_DataDesc[] =
-	{	{ DATADESC_OPCODE_EMBED_OBJ,	1,	0 },		//	CDictionary
+	{	{ DATADESC_OPCODE_EMBED_OBJ,	1,	0 },		//	CPtrDictionary
 
 		{ DATADESC_OPCODE_INT,			2,	0 },		//	m_bOwned, m_bNoReference
 		{ DATADESC_OPCODE_STOP,	0,	0 } };
@@ -14,7 +14,7 @@ static CObjectClass<CSymbolTable>g_ClassData(OBJID_CSYMBOLTABLE, g_DataDesc);
 
 #define VERSION2HACK				0xffffffff
 
-CSymbolTable::CSymbolTable (void) : CDictionary(&g_ClassData),
+CSymbolTable::CSymbolTable (void) : CPtrDictionary(&g_ClassData),
 		m_bOwned(FALSE),
 		m_bNoReference(TRUE)
 
@@ -25,7 +25,7 @@ CSymbolTable::CSymbolTable (void) : CDictionary(&g_ClassData),
 	{
 	}
 
-CSymbolTable::CSymbolTable (BOOL bOwned, BOOL bNoReference) : CDictionary(&g_ClassData),
+CSymbolTable::CSymbolTable (BOOL bOwned, BOOL bNoReference) : CPtrDictionary(&g_ClassData),
 		m_bOwned(bOwned),
 		m_bNoReference(bNoReference)
 
@@ -41,18 +41,19 @@ CSymbolTable::~CSymbolTable (void)
 	{
 	int i;
 
-	for (i = 0; i < CDictionary::GetCount(); i++)
+	for (i = 0; i < CPtrDictionary::GetCount(); i++)
 		{
-		int iKey, iValue;
+		int iKey;
+		void* vpValue;
 		CString *pKey;
 
-		CDictionary::GetEntry(i, &iKey, &iValue);
+		CPtrDictionary::GetEntry(i, &iKey, &vpValue);
 		pKey = (CString *)iKey;
 
 		delete pKey;
 		if (m_bOwned)
 			{
-			CObject *pValue = (CObject *)iValue;
+			CObject *pValue = (CObject *)vpValue;
 			delete pValue;
 			}
 		}
@@ -89,7 +90,7 @@ ALERROR CSymbolTable::AddEntry (const CString &sKey, CObject *pValue)
 
 	//	Add key and value
 
-	if (error = CDictionary::AddEntry((int)psKey, (int)pValue))
+	if (error = CPtrDictionary::AddEntry((int)psKey, (void*)pValue))
 		{
 		delete psKey;
 		return error;
@@ -125,13 +126,14 @@ void CSymbolTable::CopyHandler (CObject *pOriginal)
 		{
 		//	Get the key and value
 
-		int iKey, iValue;
-		GetEntry(i, &iKey, &iValue);
+		int iKey;
+		void* vpValue;
+		GetEntry(i, &iKey, &vpValue);
 
 		//	Convert to the appropriate thing
 
 		CString *pKey = (CString *)iKey;
-		CObject *pValue = (CObject *)iValue;
+		CObject *pValue = (CObject *)vpValue;
 
 		//	Bump the ref-count on the string
 
@@ -148,7 +150,7 @@ void CSymbolTable::CopyHandler (CObject *pOriginal)
 		//	Stuff the new values (we don't need to free the previous
 		//	values since they are kept by the original).
 
-		SetEntry(i, (int)pNewKey, (int)pNewValue);
+		SetEntry(i, (int)pNewKey, pNewValue);
 		}
 	}
 
@@ -159,10 +161,11 @@ CString CSymbolTable::GetKey (int iEntry) const
 //	Returns the key of the nth entry
 
 	{
-	int iKey, iValue;
+	int iKey;
+	void* vpValue;
 	CString *pKey;
 
-	GetEntry(iEntry, &iKey, &iValue);
+	GetEntry(iEntry, &iKey, &vpValue);
 	pKey = (CString *)iKey;
 
 	return *pKey;
@@ -175,10 +178,11 @@ CObject *CSymbolTable::GetValue (int iEntry) const
 //	Returns the value of the nth entry
 
 	{
-	int iKey, iValue;
+	int iKey;
+	void* vpValue;
 
-	GetEntry(iEntry, &iKey, &iValue);
-	return (CObject *)iValue;
+	GetEntry(iEntry, &iKey, &vpValue);
+	return (CObject *)vpValue;
 	}
 
 ALERROR CSymbolTable::LoadHandler (CUnarchiver *pUnarchiver)
@@ -218,7 +222,7 @@ ALERROR CSymbolTable::LoadHandler (CUnarchiver *pUnarchiver)
 
 		//	Make sure that there's room for all the objects
 
-		if (error = CDictionary::ExpandArray(0, dwCount))
+		if (error = CPtrDictionary::ExpandArray(0, dwCount))
 			return error;
 
 		//	Read in the objects themselves
@@ -260,7 +264,7 @@ ALERROR CSymbolTable::LoadHandler (CUnarchiver *pUnarchiver)
 				}
 #endif
 
-			CDictionary::SetEntry(i, (int)pKey, (int)pValue);
+			CPtrDictionary::SetEntry(i, (int)pKey, pValue);
 			}
 		}
 
@@ -319,7 +323,7 @@ ALERROR CSymbolTable::LoadHandler (CUnarchiver *pUnarchiver)
 			//	although this is less efficient, it is required because the
 			//	sort order changed from version 1 to 2.
 
-			if (error = CDictionary::AddEntry((int)pKey, (int)pValue))
+			if (error = CPtrDictionary::AddEntry((int)pKey, pValue))
 				{
 				delete pKey;
 				delete pValue;
@@ -339,14 +343,14 @@ ALERROR CSymbolTable::Lookup (const CString &sKey, CObject **retpValue) const
 
 	{
 	ALERROR error;
-	int iValue;
+	void* vpValue;
 	CString sKeyToFind(sKey);
 
-	if (error = CDictionary::Find((int)&sKeyToFind, &iValue))
+	if (error = CPtrDictionary::Find((int)&sKeyToFind, &vpValue))
 		return error;
 
 	if (retpValue)
-		*retpValue = (CObject *)iValue;
+		*retpValue = (CObject *)vpValue;
 
 	return NOERROR;
 	}
@@ -361,7 +365,7 @@ ALERROR CSymbolTable::LookupEx (const CString &sKey, int *retiEntry) const
 	ALERROR error;
 	CString sKeyToFind(sKey);
 
-	if (error = CDictionary::FindEx((int)&sKeyToFind, retiEntry))
+	if (error = CPtrDictionary::FindEx((int)&sKeyToFind, retiEntry))
 		return error;
 
 	return NOERROR;
@@ -376,23 +380,24 @@ ALERROR CSymbolTable::RemoveAll (void)
 	{
 	int i;
 
-	for (i = 0; i < CDictionary::GetCount(); i++)
+	for (i = 0; i < CPtrDictionary::GetCount(); i++)
 		{
-		int iKey, iValue;
+		int iKey;
+		void* vpValue;
 		CString *pKey;
 
-		CDictionary::GetEntry(i, &iKey, &iValue);
+		CPtrDictionary::GetEntry(i, &iKey, &vpValue);
 		pKey = (CString *)iKey;
 
 		delete pKey;
 		if (m_bOwned)
 			{
-			CObject *pValue = (CObject *)iValue;
+			CObject *pValue = (CObject *)vpValue;
 			delete pValue;
 			}
 		}
 
-	return CDictionary::RemoveAll();
+	return CPtrDictionary::RemoveAll();
 	}
 
 ALERROR CSymbolTable::RemoveEntry (int iEntry, CObject **retpOldValue)
@@ -403,14 +408,14 @@ ALERROR CSymbolTable::RemoveEntry (int iEntry, CObject **retpOldValue)
 
 	{
 	ALERROR error;
-	int iOldValue;
+	void* vpOldValue;
 
 	//	Let the dictionary do the removing
 
-	if (error = CDictionary::RemoveEntryByOrdinal(iEntry, &iOldValue))
+	if (error = CPtrDictionary::RemoveEntryByOrdinal(iEntry, &vpOldValue))
 		return error;
 
-	CObject *pOldObj = (CObject *)iOldValue;
+	CObject *pOldObj = (CObject *)vpOldValue;
 
 	//	If the caller wants us to return the old value, do it; otherwise,
 	//	we delete it, if necessary
@@ -431,14 +436,14 @@ ALERROR CSymbolTable::RemoveEntry (const CString &sKey, CObject **retpOldValue)
 
 	{
 	ALERROR error;
-	int iOldValue;
+	void* vpOldValue;
 
 	//	Let the dictionary do the removing
 
-	if (error = CDictionary::RemoveEntry((int)&sKey, &iOldValue))
+	if (error = CPtrDictionary::RemoveEntry((int)&sKey, &vpOldValue))
 		return error;
 
-	CObject *pOldObj = (CObject *)iOldValue;
+	CObject *pOldObj = (CObject *)vpOldValue;
 
 	//	If the caller wants us to return the old value, do it; otherwise,
 	//	we delete it, if necessary
@@ -460,7 +465,7 @@ ALERROR CSymbolTable::ReplaceEntry (const CString &sKey, CObject *pValue, bool b
 
 	{
 	ALERROR error;
-	int iOldValue;
+	void* vpOldValue;
 	CObject *pOldObj;
 	CString *pKey;
 	bool bAdded;
@@ -478,7 +483,7 @@ ALERROR CSymbolTable::ReplaceEntry (const CString &sKey, CObject *pValue, bool b
 
 	//	Let the dictionary code do the actual adding
 
-	if (error = CDictionary::ReplaceEntry((int)pKey, (int)pValue, bAdd, &bAdded, &iOldValue))
+	if (error = CPtrDictionary::ReplaceEntry((int)pKey, pValue, bAdd, &bAdded, &vpOldValue))
 		return error;
 
 	//	If we didn't actually add a key, then we free the string
@@ -492,7 +497,7 @@ ALERROR CSymbolTable::ReplaceEntry (const CString &sKey, CObject *pValue, bool b
 	if (bAdded)
 		pOldObj = NULL;
 	else
-		pOldObj = (CObject *)iOldValue;
+		pOldObj = (CObject *)vpOldValue;
 
 	//	If the caller wants us to return the old value, do it; otherwise,
 	//	we delete it, if necessary
@@ -534,18 +539,19 @@ ALERROR CSymbolTable::SaveHandler (CArchiver *pArchiver)
 
 	//	Write out the number of entries that we've got
 
-	dwCount = (DWORD)CDictionary::GetCount();
+	dwCount = (DWORD)CPtrDictionary::GetCount();
 	if (error = pArchiver->WriteData((char *)&dwCount, sizeof(DWORD)))
 		return error;
 
 	//	Write out each object
 
-	for (i = 0; i < CDictionary::GetCount(); i++)
+	for (i = 0; i < CPtrDictionary::GetCount(); i++)
 		{
-		int iKey, iValue;
+		int iKey;
+		void* vpValue;
 		CString *pKey;
 
-		CDictionary::GetEntry(i, &iKey, &iValue);
+		CPtrDictionary::GetEntry(i, &iKey, &vpValue);
 		pKey = (CString *)iKey;
 
 		//	Write out the key
@@ -558,20 +564,20 @@ ALERROR CSymbolTable::SaveHandler (CArchiver *pArchiver)
 
 		if (m_bOwned)
 			{
-			CObject *pValue = (CObject *)iValue;
+			CObject *pValue = (CObject *)vpValue;
 
 			if (error = pArchiver->SaveObject(pValue))
 				return error;
 			}
 		else if (m_bNoReference)
 			{
-			if (error = pArchiver->WriteData((char *)&iValue, sizeof(int)))
+			if (error = pArchiver->WriteData((char *)&vpValue, sizeof(int)))
 				return error;
 			}
 		else
 			{
 			int iID;
-			CObject *pValue = (CObject *)iValue;
+			CObject *pValue = (CObject *)vpValue;
 
 			if (error = pArchiver->Reference2ID(pValue, &iID))
 				return error;
@@ -591,12 +597,13 @@ void CSymbolTable::SetValue (int iEntry, CObject *pValue, CObject **retpOldValue
 //	Sets the value
 
 	{
-	int iKey, iValue;
+	int iKey;
+	void* vpValue;
 
-	GetEntry(iEntry, &iKey, &iValue);
+	GetEntry(iEntry, &iKey, &vpValue);
 
 	if (retpOldValue)
-		*retpOldValue = (CObject *)iValue;
+		*retpOldValue = (CObject *)vpValue;
 
-	CDictionary::SetEntry(iEntry, iKey, (int)pValue);
+	CPtrDictionary::SetEntry(iEntry, iKey, (void*)pValue);
 	}

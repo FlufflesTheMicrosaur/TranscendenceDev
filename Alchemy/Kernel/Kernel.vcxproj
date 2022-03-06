@@ -475,6 +475,8 @@
     <ClCompile Include="CPeriodicWaiter.cpp" />
     <ClCompile Include="CPolygon.cpp" />
     <ClCompile Include="CProjection3D.cpp" />
+    <ClCompile Include="CPtrArray.cpp" />
+    <ClCompile Include="CPtrDictionary.cpp" />
     <ClCompile Include="CRegKey.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='SteamDebug|Win32'">Disabled</Optimization>

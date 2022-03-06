@@ -559,6 +559,38 @@ class CIntArray : public CObject
 		int m_iLength;						//	Number of integers used
 	};
 
+//	CPtrArray. Implementation of a dynamic array of void pointers
+
+class CPtrArray : public CObject
+{
+public:
+	CPtrArray(void);
+	virtual ~CPtrArray(void);
+
+	CPtrArray& operator= (const CPtrArray& Obj);
+
+	ALERROR AppendElement(void* pElement, int* retiIndex = NULL);
+	ALERROR CollapseArray(int iPos, int iCount) { return RemoveRange(iPos, iPos + iCount - 1); }
+	ALERROR ExpandArray(int iPos, int iCount);
+	int FindElement(void* pElement) const;
+	int GetCount(void) const;
+	void* GetElement(int iIndex) const;
+	ALERROR InsertElement(void* pElement, int iPos, int* retiIndex);
+	ALERROR InsertRange(CPtrArray* pList, int iStart, int iEnd, int iPos);
+	ALERROR MoveRange(int iStart, int iEnd, int iPos);
+	ALERROR Set(int iCount, void** pData);
+	ALERROR RemoveAll(void);
+	ALERROR RemoveElement(int iPos) { return RemoveRange(iPos, iPos); }
+	ALERROR RemoveRange(int iStart, int iEnd);
+	void ReplaceElement(int iPos, void* pElement);
+	void Shuffle(void);
+
+private:
+	int m_iAllocSize;					//	Number of pointers allocated
+	void** m_pData;						//	Pointer to pointer array
+	int m_iLength;						//	Number of pointers used
+};
+
 //	CString. Implementation of a standard string class
 
 static constexpr char CHAR_LEFT_DOUBLE_QUOTE =		'\x93';
@@ -595,6 +627,34 @@ static constexpr SConstString CSTR_WINGDING_RIGHT_ARROW =	CONSTDEFS("\xE8");
 
 //	CDictionary. Implementation of a dynamic array of entries
 
+class CPtrDictionary : public CObject
+{
+public:
+	CPtrDictionary(void);
+	CPtrDictionary(IObjectClass* pClass);
+	virtual ~CPtrDictionary(void);
+
+	ALERROR AddEntry(int iKey, void* pValue);
+	ALERROR Find(int iKey, void** retpValue) const;
+	ALERROR FindEx(int iKey, int* retiEntry) const;
+	ALERROR FindOrAdd(int iKey, void* pValue, bool* retbFound, void** retpValue);
+	int GetCount(void) const { return m_Array.GetCount() / 2; }
+	void GetEntry(int iEntry, int* retiKey, void** retpValue) const;
+	ALERROR ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue);
+	ALERROR RemoveAll(void) { return m_Array.RemoveAll(); }
+	ALERROR RemoveEntryByOrdinal(int iEntry, void** retpOldValue = NULL);
+	ALERROR RemoveEntry(int iKey, void** retiOldValue);
+
+protected:
+	virtual int Compare(int iKey1, int iKey2) const;
+	ALERROR ExpandArray(int iPos, int iCount) { return m_Array.ExpandArray(2 * iPos, 2 * iCount); }
+	void SetEntry(int iEntry, int iKey, void* pValue);
+
+	bool FindSlot(int iKey, int* retiPos) const;
+
+	CPtrArray m_Array;
+};
+
 class CDictionary : public CObject
 	{
 	public:
@@ -625,14 +685,14 @@ class CDictionary : public CObject
 
 //	CIDTable. Implementation of a table that matches IDs with objects
 
-class CIDTable : public CDictionary
+class CIDTable : public CPtrDictionary
 	{
 	public:
 		CIDTable (void);
 		CIDTable (BOOL bOwned, BOOL bNoReference);
 		virtual ~CIDTable (void);
 
-		ALERROR AddEntry (int iKey, CObject *pValue) { return CDictionary::AddEntry(iKey, (int)pValue); }
+		ALERROR AddEntry (int iKey, CObject *pValue) { return CPtrDictionary::AddEntry(iKey, pValue); }
 		int GetKey (int iEntry) const;
 		CObject *GetValue (int iEntry) const;
 		ALERROR Lookup (int iKey, CObject **retpValue) const;
@@ -655,7 +715,7 @@ class CIDTable : public CDictionary
 
 //	CSymbolTable. Implementation of a symbol table
 
-class CSymbolTable : public CDictionary
+class CSymbolTable : public CPtrDictionary
 	{
 	public:
 		CSymbolTable (void);
