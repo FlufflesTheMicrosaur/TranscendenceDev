@@ -84,7 +84,7 @@ bool CIconBarDisplay::OnLButtonUp (int x, int y, DWORD dwFlags)
 	{
 	int iIndex = HitTest(x, y);
 	if (m_bDown && iIndex != -1 && iIndex == m_iSelected)
-		m_iLastCommand = (CGameKeys::Keys)m_Data.GetItemData(m_iSelected);
+		m_iLastCommand = (CGameKeys::Keys)(DWORD)m_Data.GetItemData(m_iSelected);
 
 	m_bDown = false;
 	m_iSelected = -1;

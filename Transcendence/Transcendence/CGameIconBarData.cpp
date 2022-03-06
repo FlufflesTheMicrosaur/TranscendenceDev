@@ -69,7 +69,7 @@ CMenuData CGameIconBarData::CreateIconBar (const CDesignCollection &Design, cons
 				NULL_STR,
 				NULL_STR,
 				0,
-				(DWORD)Entry.iCmd);
+				(void*)Entry.iCmd);
 		}
 
 	//	Done

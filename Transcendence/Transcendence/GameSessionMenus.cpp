@@ -214,7 +214,7 @@ bool CGameSession::ShowEnableDisableMenu ()
 					sExtra,
 					sHelp,
 					(pDevice->IsEnabled() ? 0 : CMenuData::FLAG_GRAYED),
-					i);
+					(void*)i);
 
 			//	Next key
 
@@ -363,7 +363,7 @@ bool CGameSession::ShowInvokeMenu ()
 						NULL_STR,
 						sHelp,
 						dwFlags,
-						(DWORD)pPower);
+						pPower);
 				
 				if (dwCooldownStart != dwCooldownEnd)
 					g_pTrans->m_MenuData.SetItemCooldown(iEntry, dwCooldownStart, dwCooldownEnd);

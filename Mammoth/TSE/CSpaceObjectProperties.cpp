@@ -220,7 +220,7 @@ TPropertyHandler<CSpaceObject> CSpaceObject::m_BasePropertyTable = std::array<TP
 				ICCItemPtr pResult(ICCItem::List);
 				for (int i = 0; i < List.GetCount(); i++)
 					{
-					int iIndex = List.GetItemData(i);
+					int iIndex = (int)List.GetItemData(i);
 
 					ICCItemPtr pItem(CreateListFromItem(ItemList.GetItem(iIndex)));
 					pResult->Append(pItem);

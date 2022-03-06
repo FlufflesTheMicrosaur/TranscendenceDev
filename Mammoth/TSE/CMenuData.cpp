@@ -13,8 +13,8 @@ int CMenuData::AddMenuItem (const CString &sID,
 							 const CString &sExtra,
 							 const CString &sHelp,
 							 DWORD dwFlags,
-							 DWORD dwData,
-							 DWORD dwData2)
+							 void* pData,
+							 void* pData2)
 
 //	AddMenuItem
 //
@@ -58,8 +58,8 @@ int CMenuData::AddMenuItem (const CString &sID,
 	m_List[iPos].sLabel = sCleanLabel;
 	m_List[iPos].sAccelerator = sAccelerator;
 	m_List[iPos].iAcceleratorPos = iAcceleratorPos;
-	m_List[iPos].dwData = dwData;
-	m_List[iPos].dwData2 = dwData2;
+	m_List[iPos].pData = pData;
+	m_List[iPos].pData2 = pData2;
 	m_List[iPos].iCount = iCount;
 	m_List[iPos].sExtra = sExtra;
 	m_List[iPos].sHelp = sHelp;
@@ -84,7 +84,7 @@ int CMenuData::FindItemByKey (const CString &sKey)
 	return -1;
 	}
 
-bool CMenuData::FindItemData (const CString &sKey, DWORD *retdwData, DWORD *retdwData2)
+bool CMenuData::FindItemData (const CString &sKey, void** retdwData, void** retdwData2)
 
 //	FindItemData
 //
@@ -96,10 +96,10 @@ bool CMenuData::FindItemData (const CString &sKey, DWORD *retdwData, DWORD *retd
 	if (iIndex != -1)
 		{
 		if (retdwData)
-			*retdwData = m_List[iIndex].dwData;
+			*retdwData = m_List[iIndex].pData;
 
 		if (retdwData2)
-			*retdwData2 = m_List[iIndex].dwData2;
+			*retdwData2 = m_List[iIndex].pData2;
 
 		return true;
 		}

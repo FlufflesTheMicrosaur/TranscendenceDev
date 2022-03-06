@@ -58,8 +58,8 @@ class CMenuData
 						  const CString &sKey,
 						  const CString &sLabel,
 						  DWORD dwFlags = 0,
-						  DWORD dwData = 0,
-						  DWORD dwData2 = 0) { return AddMenuItem(sID, sKey, sLabel, NULL, 0, NULL_STR, NULL_STR, dwFlags, dwData, dwData2); }
+						  void* pData = 0,
+						  void* pData2 = 0) { return AddMenuItem(sID, sKey, sLabel, NULL, 0, NULL_STR, NULL_STR, dwFlags, pData, pData2); }
 		int AddMenuItem (const CString &sID,
 						  const CString &sKey,
 						  const CString &sLabel,
@@ -68,17 +68,17 @@ class CMenuData
 						  const CString &sExtra,
 						  const CString &sHelp,
 						  DWORD dwFlags,
-						  DWORD dwData,
-						  DWORD dwData2 = 0);
+						  void* pData,
+						  void* pData2 = 0);
 		void SetTitle (const CString &sTitle) { m_sTitle = sTitle; }
 
 		void DeleteAll (void) { m_List.DeleteAll(); }
 		int FindItemByKey (const CString &sKey);
-		bool FindItemData (const CString &sKey, DWORD *retdwData = NULL, DWORD *retdwData2 = NULL);
+		bool FindItemData (const CString &sKey, void** retdwData = NULL, void** retdwData2 = NULL);
 		int GetCount (void) const { return m_List.GetCount(); }
 		int GetItemAcceleratorPos (int iIndex) const { return m_List[iIndex].iAcceleratorPos; }
-		DWORD GetItemData (int iIndex) const { return m_List[iIndex].dwData; }
-		DWORD GetItemData2 (int iIndex) const { return m_List[iIndex].dwData2; }
+		void* GetItemData (int iIndex) const { return m_List[iIndex].pData; }
+		void* GetItemData2 (int iIndex) const { return m_List[iIndex].pData2; }
 		int GetItemCooldown (int iIndex, DWORD dwNow) const;
 		int GetItemCount (int iIndex) const { return m_List[iIndex].iCount; }
 		const CString &GetItemExtra (int iIndex) const { return m_List[iIndex].sExtra; }
@@ -109,8 +109,8 @@ class CMenuData
 			CString sHelp;
 			DWORD dwFlags = 0;
 
-			DWORD dwData = 0;
-			DWORD dwData2 = 0;
+			void* pData = 0;
+			void* pData2 = 0;
 			};
 
 		CString m_sTitle;

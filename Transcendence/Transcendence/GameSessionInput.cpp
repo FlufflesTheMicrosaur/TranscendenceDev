@@ -100,14 +100,14 @@ void CGameSession::OnChar (char chChar, DWORD dwKeyData)
 				int iIndex;
 				if ((iIndex = g_pTrans->m_MenuData.FindItemByKey(sKey)) != -1)
 					{
-					DWORD dwData = g_pTrans->m_MenuData.GetItemData(iIndex);
-					DWORD dwData2 = g_pTrans->m_MenuData.GetItemData2(iIndex);
+					void* pData = g_pTrans->m_MenuData.GetItemData(iIndex);
+					void* pData2 = g_pTrans->m_MenuData.GetItemData2(iIndex);
 
 					switch (m_CurrentMenu)
 						{
 						case menuComms:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							g_pTrans->DoCommsMenu(dwData);
+							g_pTrans->DoCommsMenu((int)pData);
 							DismissMenu();
 							m_pCurrentComms = NULL;
 							break;
@@ -116,7 +116,7 @@ void CGameSession::OnChar (char chChar, DWORD dwKeyData)
 							{
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_SELECT));
 
-							m_pCurrentComms = (CSpaceObject *)dwData;
+							m_pCurrentComms = (CSpaceObject *)pData;
 							HideMenu();
 							if (m_pCurrentComms)
 								ShowMenu(menuComms);
@@ -127,7 +127,7 @@ void CGameSession::OnChar (char chChar, DWORD dwKeyData)
 
 						case menuCommsSquadron:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							g_pTrans->DoCommsSquadronMenu(g_pTrans->m_MenuData.GetItemLabel(iIndex), (MessageTypes)dwData, dwData2);
+							g_pTrans->DoCommsSquadronMenu(g_pTrans->m_MenuData.GetItemLabel(iIndex), (MessageTypes)(DWORD)pData, (DWORD)pData2);
 							DismissMenu();
 							m_pCurrentComms = NULL;
 							break;
@@ -155,26 +155,26 @@ void CGameSession::OnChar (char chChar, DWORD dwKeyData)
 				else if (iEntry != -1
 						&& g_pTrans->m_MenuData.IsItemEnabled(iEntry, g_pUniverse->GetTicks()))
 					{
-					DWORD dwData = g_pTrans->m_MenuData.GetItemData(iEntry);
+					void* pData = g_pTrans->m_MenuData.GetItemData(iEntry);
 
 					switch (m_CurrentMenu)
 						{
 						case menuUseItem:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							DoUseMenu(dwData);
+							DoUseMenu((DWORD)pData);
 							DismissMenu();
 							break;
 
 						case menuEnableDevice:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
 							pPlayer->SetUIMessageFollowed(uimsgEnableDeviceHint);
-							DoEnableDisableMenu(dwData);
+							DoEnableDisableMenu((DWORD)pData);
 							DismissMenu();
 							break;
 
 						case menuInvoke:
 							GetUniverse().PlaySound(NULL, GetUniverse().FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							DoInvokeMenu(dwData);
+							DoInvokeMenu((DWORD)pData);
 							DismissMenu();
 							break;
 						}
@@ -322,14 +322,14 @@ void CGameSession::OnKeyDown (int iVirtKey, DWORD dwKeyData)
 						{
 						case menuUseItem:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							DoUseMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+							DoUseMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 							DismissMenu();
 							break;
 
 						case menuEnableDevice:
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
 							pPlayer->SetUIMessageFollowed(uimsgEnableDeviceHint);
-							DoEnableDisableMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+							DoEnableDisableMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 							DismissMenu();
 							break;
 
@@ -337,7 +337,7 @@ void CGameSession::OnKeyDown (int iVirtKey, DWORD dwKeyData)
 							if (m_PickerDisplay.IsSelectionEnabled())
 								{
 								GetUniverse().PlaySound(NULL, GetUniverse().FindSound(UNID_DEFAULT_BUTTON_CLICK));
-								DoInvokeMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+								DoInvokeMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 								DismissMenu();
 								}
 							break;
@@ -607,7 +607,7 @@ void CGameSession::OnLButtonDblClick (int x, int y, DWORD dwFlags)
 							{
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
 							pPlayer->SetUIMessageFollowed(uimsgEnableDeviceHint);
-							DoEnableDisableMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+							DoEnableDisableMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 							DismissMenu();
 
 							m_bIgnoreButtonUp = true;
@@ -619,7 +619,7 @@ void CGameSession::OnLButtonDblClick (int x, int y, DWORD dwFlags)
 						if (m_PickerDisplay.LButtonDown(x, y))
 							{
 							g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-							DoUseMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+							DoUseMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 							DismissMenu();
 
 							m_bIgnoreButtonUp = true;
@@ -633,7 +633,7 @@ void CGameSession::OnLButtonDblClick (int x, int y, DWORD dwFlags)
 							if (m_PickerDisplay.IsSelectionEnabled())
 								{
 								g_pUniverse->PlaySound(NULL, g_pUniverse->FindSound(UNID_DEFAULT_BUTTON_CLICK));
-								DoInvokeMenu(g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
+								DoInvokeMenu((DWORD)g_pTrans->m_MenuData.GetItemData(m_PickerDisplay.GetSelection()));
 								DismissMenu();
 								}
 

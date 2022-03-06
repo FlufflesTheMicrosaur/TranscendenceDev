@@ -237,7 +237,7 @@ CMenuData CSpaceObject::GetUsableItems (const SUsableItemOptions &Options) const
 				sExtra,
 				NULL_STR,
 				0,
-				SortedList.GetValue(i));
+				(void*)SortedList.GetValue(i));
 		}
 
 	//	Done!

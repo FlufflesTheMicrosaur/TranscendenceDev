@@ -314,7 +314,7 @@ void CTranscendenceWnd::ShowCommsMenu (CSpaceObject *pObj)
 						sKey,
 						sName,
 						CMenuData::FLAG_SORT_BY_KEY,
-						i);
+						(void*)i);
 			}
 
 		m_MenuDisplay.Invalidate();
@@ -338,25 +338,25 @@ bool CTranscendenceWnd::ShowCommsSquadronMenu (void)
 	DWORD dwStatus = GetCommsStatus();
 
 	if (dwStatus & resCanAttack)
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("A"), SO_ATTACK_TARGET, 0, msgAttack);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("A"), SO_ATTACK_TARGET, 0, (void*)msgAttack);
 
 	if (dwStatus & resCanBreakAndAttack)
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("B"), SO_BREAK_AND_ATTACK, 0, msgBreakAndAttack);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("B"), SO_BREAK_AND_ATTACK, 0, (void*)msgBreakAndAttack);
 
 	if ((dwStatus & resCanFormUp) || (dwStatus & resCanAbortAttack))
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("F"), SO_FORM_UP, 0, msgFormUp, 0xffffffff);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("F"), SO_FORM_UP, 0, (void*)msgFormUp, (void*)0xffffffff);
 
 	if (dwStatus & resCanAttackInFormation)
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("I"), SO_ATTACK_IN_FORMATION, 0, msgAttackInFormation);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("I"), SO_ATTACK_IN_FORMATION, 0, (void*)msgAttackInFormation);
 
 	if (dwStatus & resCanWait)
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("W"), SO_WAIT, 0, msgWait);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("W"), SO_WAIT, 0, (void*)msgWait);
 
 	if (dwStatus & resCanBeInFormation)
 		{
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("1"), SO_ALPHA_FORMATION, 0, msgFormUp, 0);
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("2"), SO_BETA_FORMATION, 0, msgFormUp, 1);
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("3"), SO_GAMMA_FORMATION, 0, msgFormUp, 2);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("1"), SO_ALPHA_FORMATION, 0, (void*)msgFormUp, 0);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("2"), SO_BETA_FORMATION, 0, (void*)msgFormUp, (void*)1);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("3"), SO_GAMMA_FORMATION, 0, (void*)msgFormUp, (void*)2);
 		}
 
 	//	Show Menu
@@ -421,7 +421,7 @@ bool CTranscendenceWnd::ShowCommsTargetMenu (void)
 							sKey,
 							pObj->GetNounPhrase(),
 							CMenuData::FLAG_SORT_BY_KEY,
-							(DWORD)pObj);
+							pObj);
 
 					pObj->SetHighlightChar(*sKey.GetASCIIZPointer());
 					KeyMap.SetAt(sKey, true);
@@ -453,7 +453,7 @@ bool CTranscendenceWnd::ShowCommsTargetMenu (void)
 							sKey,
 							pObj->GetNounPhrase(),
 							CMenuData::FLAG_SORT_BY_KEY,
-							(DWORD)pObj);
+							pObj);
 
 					pObj->SetHighlightChar(*sKey.GetASCIIZPointer());
 					KeyMap.SetAt(sKey, true);
