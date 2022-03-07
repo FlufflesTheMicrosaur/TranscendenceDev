@@ -21,8 +21,8 @@ class CGRunList
 				m_yLine(0)
 			{ }
 
-		int GetCount (void) const { return m_Runs.GetCount(); }
-		int GetMinX (void) const { return (m_Runs.GetCount() > 0 ? m_Runs[0].xStart : 0); }
+		int GetCount (void) const { return (int)m_Runs.GetCount(); }
+		int GetMinX (void) const { return (int)(m_Runs.GetCount() > 0 ? m_Runs[0].xStart : 0); }
 		void GetRun (int iIndex, int *retxStart, int *retcxLength, int *retiSamples) const;
 		void InsertSampled (int xStartSampled, int cxLengthSampled, int iSamples);
 		void SetY (int y) { m_yLine = y; }

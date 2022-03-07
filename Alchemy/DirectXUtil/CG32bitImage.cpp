@@ -112,7 +112,7 @@ void CG32bitImage::BltToSurface (LPDIRECTDRAWSURFACE7 pSurface, SurfaceTypes iTy
 
 	int iLinesToBlt = min(m_cyHeight, (int)desc.dwHeight);
 	int iPixelSize = ((iType == r8g8b8) ? sizeof(DWORD) : sizeof(WORD));
-	int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / sizeof(DWORD), sizeof(DWORD));
+	int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / (int)sizeof(DWORD), (int)sizeof(DWORD));
 	int iSourcePitch = m_iPitch / sizeof(DWORD);
 	int iDestPitch = desc.lPitch / sizeof(DWORD);
 
@@ -323,7 +323,7 @@ void CG32bitImage::CopyTransformed (const RECT &rcDest, const CG32bitImage &Src,
 	CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 	CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-	int iRowHeight = Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0);
+	int iRowHeight = (int)(Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0));
 
 	//	Loop over every pixel in the destination
 

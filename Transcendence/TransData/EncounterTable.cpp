@@ -140,7 +140,7 @@ void GenerateEncounterTable (CUniverse &Universe, CXMLElement *pCmdLine)
 
 	//	If we've got any entries in the table, output now
 
-	if (Table.GetCount())
+	if (Table.GetCountInt())
 		{
 		//	Output the header
 
@@ -157,7 +157,7 @@ void GenerateEncounterTable (CUniverse &Universe, CXMLElement *pCmdLine)
 		//	Output each row
 
     	CCodeChainCtx CCCtx(*g_pUniverse);
-		for (i = 0; i < Table.GetCount(); i++)
+		for (i = 0; i < Table.GetCountInt(); i++)
 			{
 			CStationType *pType = (CStationType *)Table.GetValue(i);
 

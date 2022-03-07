@@ -74,7 +74,7 @@ void GenerateShieldStats (CUniverse &Universe, CXMLElement *pCmdLine)
 
 	//	Loop over sorted list and output data
 
-	for (i = 0; i < List.GetCount(); i++)
+	for (i = 0; i < List.GetCountInt(); i++)
 		{
 		CItemType *pWeapon = (CItemType *)List.GetValue(i);
 

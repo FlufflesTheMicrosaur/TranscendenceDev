@@ -74,7 +74,7 @@ void CThreadPool::CleanUp (void)
 		for (i = 0; i < m_Threads.GetCount(); i++)
 			pThreads[i] = m_Threads[i].hThread;
 
-		::WaitForMultipleObjects(m_Threads.GetCount(), pThreads, TRUE, 5000);
+		::WaitForMultipleObjects((DWORD)m_Threads.GetCount(), pThreads, TRUE, 5000);
 
 		delete [] pThreads;
 

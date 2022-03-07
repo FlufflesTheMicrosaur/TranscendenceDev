@@ -99,7 +99,7 @@ bool CMCIMixer::CreateParentWindow (void)
 		ZeroMemory(&wc, sizeof(wc));
 		wc.cbSize = sizeof(wc);
 		wc.style = CS_DBLCLKS;
-		wc.lpfnWndProc = ParentWndProc;
+		wc.lpfnWndProc = (WNDPROC)ParentWndProc;
 		wc.lpszClassName = "TSUI_MCIParent";
 		if (!::RegisterClassEx(&wc))
 			return false;
@@ -357,7 +357,7 @@ bool CMCIMixer::InitChannels (void)
 		m_Channels[i].iCurPos = 0;
 		m_Channels[i].iCurLength = 0;
 
-		LogDebug(strPatternSubst(CONSTLIT("Created MCI window %x."), (DWORD)m_Channels[i].hMCI));
+		LogDebug(strPatternSubst(CONSTLIT("Created MCI window %x."), (size_t)m_Channels[i].hMCI));
 		}
 
 	m_iCurChannel = 0;
@@ -475,12 +475,12 @@ LONG CMCIMixer::OnNotifyPos (HWND hWnd, int iPos)
 		return 0;
 
 	if (g_pHI)
-		g_pHI->HIPostCommand(CMD_SOUNDTRACK_UPDATE_PLAY_POS, (void *)iPos);
+		g_pHI->HIPostCommand(CMD_SOUNDTRACK_UPDATE_PLAY_POS, (void *)(size_t)iPos);
 
 	return 0;
 	}
 
-LONG APIENTRY CMCIMixer::ParentWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam)
+LONG_PTR APIENTRY CMCIMixer::ParentWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam)
 
 //	ParentWndProc
 //
@@ -491,22 +491,22 @@ LONG APIENTRY CMCIMixer::ParentWndProc (HWND hWnd, UINT message, UINT wParam, LO
 		{
 		case WM_CREATE:
 			{
-			LPCREATESTRUCT pCreate = (LPCREATESTRUCT)lParam;
+			LPCREATESTRUCT pCreate = (LPCREATESTRUCT)(size_t)lParam;
 			CMCIMixer *pThis = (CMCIMixer *)pCreate->lpCreateParams;
-			::SetWindowLong(hWnd, GWL_USERDATA, (LONG)pThis);
+			::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);//64bit port WARNING - I have no idea whats up here
 			return 0;
 			}
 
 		case MCIWNDM_NOTIFYMODE:
 			{
-			CMCIMixer *pThis = (CMCIMixer *)::GetWindowLong(hWnd, GWL_USERDATA);
-			return pThis->OnNotifyMode((HWND)wParam, (int)lParam);
+			CMCIMixer *pThis = (CMCIMixer *)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
+			return pThis->OnNotifyMode((HWND)(size_t)wParam, (int)lParam);
 			}
 
 		case MCIWNDM_NOTIFYPOS:
 			{
-			CMCIMixer *pThis = (CMCIMixer *)::GetWindowLong(hWnd, GWL_USERDATA);
-			return pThis->OnNotifyPos((HWND)wParam, (int)lParam);
+			CMCIMixer *pThis = (CMCIMixer *)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
+			return pThis->OnNotifyPos((HWND)(size_t)wParam, (int)lParam);
 			}
 
 		default:
@@ -564,7 +564,7 @@ void CMCIMixer::ProcessFadeIn (const SRequest &Request)
 		return;
 		}
 
-	LogDebug(strPatternSubst(CONSTLIT("MCIWndOpen %x %s."), (DWORD)hMCI, sFilespec));
+	LogDebug(strPatternSubst(CONSTLIT("MCIWndOpen %x %s."), (size_t)hMCI, sFilespec));
 
 	//	Set state (we need to do this before we play because the callback inside
 	//	MCIWndPlay needs m_pNowPlaying to be valid).
@@ -584,7 +584,7 @@ void CMCIMixer::ProcessFadeIn (const SRequest &Request)
 		return;
 		}
 
-	LogDebug(strPatternSubst(CONSTLIT("MCIWndPlay %x."), (DWORD)hMCI));
+	LogDebug(strPatternSubst(CONSTLIT("MCIWndPlay %x."), (size_t)hMCI));
 
 	//	Fade in util we reach this position
 
@@ -703,7 +703,7 @@ void CMCIMixer::ProcessPlay (const SRequest &Request)
 		return;
 		}
 
-	LogDebug(strPatternSubst(CONSTLIT("MCIWndOpen %x %s."), (DWORD)hMCI, sFilespec));
+	LogDebug(strPatternSubst(CONSTLIT("MCIWndOpen %x %s."), (size_t)hMCI, sFilespec));
 
 	//	Set state (we need to do this before we play because the callback inside
 	//	MCIWndPlay needs m_pNowPlaying to be valid).
@@ -724,7 +724,7 @@ void CMCIMixer::ProcessPlay (const SRequest &Request)
 		return;
 		}
 
-	LogDebug(strPatternSubst(CONSTLIT("MCIWndPlay %x."), (DWORD)hMCI));
+	LogDebug(strPatternSubst(CONSTLIT("MCIWndPlay %x."), (size_t)hMCI));
 
 #ifdef DEBUG_SOUNDTRACK
 	kernelDebugLogPattern("[%x] ProcessPlay done", GetCurrentThreadId());
@@ -906,7 +906,7 @@ void CMCIMixer::ProcessSetVolume (const SRequest &Request)
 
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 	MCIWndSetVolume(hMCI, m_iDefaultVolume);
-	LogDebug(strPatternSubst(CONSTLIT("MCIWndSetVolume %x."), (DWORD)hMCI));
+	LogDebug(strPatternSubst(CONSTLIT("MCIWndSetVolume %x."), (size_t)hMCI));
 	}
 
 void CMCIMixer::ProcessStop (const SRequest &Request, bool bNoNotify)
@@ -932,12 +932,12 @@ void CMCIMixer::ProcessStop (const SRequest &Request, bool bNoNotify)
 			if (m_Channels[i].iState != stateStopped)
 				{
 				MCIWndStop(m_Channels[i].hMCI);
-				LogDebug(strPatternSubst(CONSTLIT("MCIWndStop %x."), (DWORD)m_Channels[i].hMCI));
+				LogDebug(strPatternSubst(CONSTLIT("MCIWndStop %x."), (size_t)m_Channels[i].hMCI));
 				}
 
 			MCIWndClose(m_Channels[i].hMCI);
 			UpdatePlayPos(i, 0);
-			LogDebug(strPatternSubst(CONSTLIT("MCIWndClose %x."), (DWORD)m_Channels[i].hMCI));
+			LogDebug(strPatternSubst(CONSTLIT("MCIWndClose %x."), (size_t)m_Channels[i].hMCI));
 
 			m_Channels[i].iState = stateNone;
 			}

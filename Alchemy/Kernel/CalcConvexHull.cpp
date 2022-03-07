@@ -28,13 +28,13 @@ void CGeometry3D::CalcConvexHull (const TArray<CVector3D> &Points, TArray<SIndex
 
 	//	Allocate space
 
-	Edges.GrowToFit(indices.size() / 4);
+	Edges.GrowToFit((int)indices.size() / 4);
 
 	//	The resulting index array is a set of triangle points, so we need to 
 	//	remove duplicate lines (because each line will be part of two triangles).
 
 	TSortMap<DWORDLONG, bool> Seen;
-	Seen.GrowToFit(indices.size() / 2);
+	Seen.GrowToFit((int)indices.size() / 2);
 
 	for (i = 1; i < indices.size(); i++)
 		{

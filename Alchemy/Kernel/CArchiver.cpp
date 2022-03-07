@@ -62,7 +62,7 @@ ALERROR CArchiver::AddExternalReference (CString sTag, void *pReference)
 
 	{
 	ALERROR error;
-	int iID;
+	size_t iID;
 
 	//	Convert to ID
 
@@ -71,7 +71,7 @@ ALERROR CArchiver::AddExternalReference (CString sTag, void *pReference)
 
 	//	Store
 
-	if (error = m_ExternalReferences.AddEntry(sTag, (CObject *)iID))
+	if (error = m_ExternalReferences.AddEntry(sTag, iID))
 		return error;
 
 	return NOERROR;
@@ -88,7 +88,7 @@ ALERROR CArchiver::AddObject (CObject *pObject)
 
 	{
 	ALERROR error;
-	int iID;
+	size_t iID;
 
 	//	Assign a reference ID to this pointer
 
@@ -132,8 +132,8 @@ ALERROR CArchiver::EndArchive (void)
 	utlMemSet(&archiveheader, sizeof(archiveheader), 0);
 	archiveheader.dwSignature = ARCHIVE_SIGNATURE;
 	archiveheader.dwVersion = ARCHIVE_VERSION;
-	archiveheader.dwCount = m_List.GetCount();
-	archiveheader.dwReferences = m_ReferenceList.GetCount();
+	archiveheader.dwCount = (DWORD)m_List.GetCount();
+	archiveheader.dwReferences = (DWORD)m_ReferenceList.GetCountInt();
 	archiveheader.dwUserVersion = m_dwVersion;
 
 	//	IDs must be allocated sequentially
@@ -177,7 +177,7 @@ ALERROR CArchiver::EndArchive (void)
 	return NOERROR;
 	}
 
-ALERROR CArchiver::Reference2ID (void *pReference, int *retiID)
+ALERROR CArchiver::Reference2ID (void *pReference, size_t *retiID)
 
 //	Reference2ID
 //
@@ -186,7 +186,7 @@ ALERROR CArchiver::Reference2ID (void *pReference, int *retiID)
 	{
 	ALERROR error;
 	bool bFound;
-	int iID;
+	void* pID;
 
 	//	We always map NULL to -1
 
@@ -198,14 +198,14 @@ ALERROR CArchiver::Reference2ID (void *pReference, int *retiID)
 
 	//	Look for the pointer in our table
 
-	if (error = m_ReferenceList.FindOrAdd((int)pReference, m_iNextID, &bFound, &iID))
+	if (error = m_ReferenceList.FindOrAdd(pReference, (void*)m_iNextID, &bFound, &pID))
 		return error;
 
 	//	If we found it, then return the value. Otherwise, m_iNextID
 	//	got added as the new ID
 
 	if (bFound)
-		*retiID = iID;
+		*retiID = (size_t)pID;
 	else
 		{
 		*retiID = m_iNextID;
@@ -223,7 +223,7 @@ ALERROR CArchiver::SaveObject (CObject *pObject)
 
 	{
 	ALERROR error;
-	int iID;
+	size_t iID;
 
 	//	Write out the object ID
 
@@ -249,7 +249,7 @@ ALERROR CArchiver::SaveObject (CString *pObject)
 
 	{
 	ALERROR error;
-	int iID;
+	size_t iID;
 
 	//	Write out the object ID
 
@@ -371,8 +371,8 @@ ALERROR CUnarchiver::BeginUnarchive (void)
 	if (error = m_ReferenceList.ExpandArray(0, (int)archiveheader.dwReferences))
 		goto Fail;
 
-	for (i = 0; i < m_ReferenceList.GetCount(); i++)
-		m_ReferenceList.ReplaceElement(i, -1);
+	for (i = 0; i < m_ReferenceList.GetCountInt(); i++)
+		m_ReferenceList.ReplaceElement(i, (void*)(size_t) -1);
 
 	//	Load the external reference table
 
@@ -429,19 +429,19 @@ ALERROR CUnarchiver::EndUnarchive (void)
 
 	{
 	ALERROR error;
-	int i;
+	size_t i;
 
-	for (i = 0; i < m_FixupTable.GetCount(); i += 2)
+	for (i = 0; i < m_FixupTable.GetCountInt(); i += 2)
 		{
 		void **pReferenceDest;
-		int iID, iRef;
+		size_t iID, iRef;
 
 		pReferenceDest = (void **)m_FixupTable.GetElement(i);
-		iID = m_FixupTable.GetElement(i + 1);
+		iID = (size_t)m_FixupTable.GetElement(i + 1);
 
 		//	Look for this ID
 
-		iRef = m_ReferenceList.GetElement(iID);
+		iRef = (size_t)m_ReferenceList.GetElement(iID);
 		if (iRef == -1)
 			return ERR_FAIL;
 
@@ -518,10 +518,10 @@ ALERROR CUnarchiver::LoadObject (CObject **retpObject)
 	//	Now that we've got the object, associate the ID with the
 	//	pointer. Note that we may need to grow the reference table
 
-	if (dwReferenceID >= (DWORD)m_ReferenceList.GetCount())
+	if (dwReferenceID >= (DWORD)m_ReferenceList.GetCountInt())
 		{
-		int iGrow = 1 + ((int)dwReferenceID - m_ReferenceList.GetCount());
-		int iPos = m_ReferenceList.GetCount();
+		int iGrow = 1 + ((int)dwReferenceID - (int)m_ReferenceList.GetCountInt());
+		int iPos = (int)m_ReferenceList.GetCountInt();
 		int i;
 
 		if (error = m_ReferenceList.ExpandArray(iPos, iGrow))
@@ -533,10 +533,10 @@ ALERROR CUnarchiver::LoadObject (CObject **retpObject)
 		//	Fill new part of table with -1
 
 		for (i = iPos; i < iPos + iGrow; i++)
-			m_ReferenceList.ReplaceElement(i, -1);
+			m_ReferenceList.ReplaceElement(i, (void*)(size_t)-1);
 		}
 
-	m_ReferenceList.ReplaceElement((int)dwReferenceID, (int)pObject);
+	m_ReferenceList.ReplaceElement(dwReferenceID, pObject);
 
 	//	Done
 
@@ -573,10 +573,10 @@ ALERROR CUnarchiver::LoadObject (CString **retpString)
 	//	Now that we've got the object, associate the ID with the
 	//	pointer. Note that we may need to grow the reference table
 
-	if (dwReferenceID >= (DWORD)m_ReferenceList.GetCount())
+	if (dwReferenceID >= (DWORD)m_ReferenceList.GetCountInt())
 		{
-		int iGrow = 1 + ((int)dwReferenceID - m_ReferenceList.GetCount());
-		int iPos = m_ReferenceList.GetCount();
+		int iGrow = 1 + ((int)dwReferenceID - (int)m_ReferenceList.GetCountInt());
+		int iPos = (int)m_ReferenceList.GetCountInt();
 		int i;
 
 		if (error = m_ReferenceList.ExpandArray(iPos, iGrow))
@@ -588,10 +588,10 @@ ALERROR CUnarchiver::LoadObject (CString **retpString)
 		//	Fill new part of table with -1
 
 		for (i = iPos; i < iPos + iGrow; i++)
-			m_ReferenceList.ReplaceElement(i, -1);
+			m_ReferenceList.ReplaceElement(i, (void*)(size_t)-1);
 		}
 
-	m_ReferenceList.ReplaceElement((int)dwReferenceID, (int)pString);
+	m_ReferenceList.ReplaceElement(dwReferenceID, pString);
 
 	//	Done
 
@@ -611,7 +611,7 @@ ALERROR CUnarchiver::ReadData (char *pData, int iLength)
 	return m_pStream->Read(pData, iLength, NULL);
 	}
 
-ALERROR CUnarchiver::ResolveReference (int iID, void **pReferenceDest)
+ALERROR CUnarchiver::ResolveReference (size_t iID, void **pReferenceDest)
 
 //	ResolveReference
 //
@@ -620,7 +620,7 @@ ALERROR CUnarchiver::ResolveReference (int iID, void **pReferenceDest)
 
 	{
 	ALERROR error;
-	int iRef;
+	size_t iRef;
 
 	//	An ID of -1 is always a NULL
 
@@ -637,9 +637,9 @@ ALERROR CUnarchiver::ResolveReference (int iID, void **pReferenceDest)
 
 	//	Look up the ID. If we found it, then we're done
 
-	if (iID < m_ReferenceList.GetCount())
+	if (iID < m_ReferenceList.GetCountInt())
 		{
-		iRef = m_ReferenceList.GetElement(iID);
+		iRef = (size_t)m_ReferenceList.GetElement(iID);
 		if (iRef != -1)
 			{
 			*pReferenceDest = (void *)iRef;
@@ -649,10 +649,10 @@ ALERROR CUnarchiver::ResolveReference (int iID, void **pReferenceDest)
 
 	//	If we could not find it, add it to our fixup table
 
-	if (error = m_FixupTable.AppendElement((int)pReferenceDest, NULL))
+	if (error = m_FixupTable.AppendElement(pReferenceDest, NULL))
 		return error;
 
-	if (error = m_FixupTable.AppendElement(iID, NULL))
+	if (error = m_FixupTable.AppendElement((void*)iID, NULL))
 		return error;
 
 	return NOERROR;
@@ -667,7 +667,7 @@ ALERROR CUnarchiver::ResolveExternalReference (CString sTag, void *pReference)
 	{
 	ALERROR error;
 	CObject *pValue;
-	int iID;
+	size_t iID;
 
 	//	Look for the reference in our symbol table
 
@@ -676,11 +676,11 @@ ALERROR CUnarchiver::ResolveExternalReference (CString sTag, void *pReference)
 
 	//	Add the reference
 
-	iID = (int)pValue;
-	if (iID < 0 || iID >= m_ReferenceList.GetCount())
+	iID = (size_t)pValue;
+	if (iID < 0 || iID >= m_ReferenceList.GetCountInt())
 		return ERR_FAIL;
 
-	m_ReferenceList.ReplaceElement(iID, (int)pReference);
+	m_ReferenceList.ReplaceElement(iID, pReference);
 
 	return NOERROR;
 	}

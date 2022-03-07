@@ -116,15 +116,21 @@ inline ALERROR ErrorSetDisplayed (ALERROR error) { return error | ERR_FLAG_DISPL
 inline ALERROR ErrorCode (ALERROR error) { return error & ~ERR_FLAG_DISPLAYED; }
 
 //	Miscellaneous macros
-
+#ifdef _M_AMD64
 inline int Absolute (int iValue) { return (iValue < 0 ? -iValue : iValue); }
+inline int64_t Absolute64(int64_t iValue) { return (int)(iValue < 0 ? -iValue : iValue); }
 inline double Absolute (double rValue) { return (rValue < 0.0 ? -rValue : rValue); }
 inline int AlignDown (int iValue, int iGranularity) { return (iValue / iGranularity) * iGranularity; }
+inline size_t AlignDown64(size_t iValue, size_t iGranularity) { return (iValue / iGranularity) * iGranularity; }
 inline int AlignDownSigned (int iValue, int iGranularity) { return ((iValue + (iValue < 0 ? (1 - iGranularity) : 0)) / iGranularity) * iGranularity; }
+inline int64_t AlignDownSigned64(int64_t iValue, int64_t iGranularity) { return ((iValue + (iValue < 0 ? (1 - iGranularity) : 0)) / iGranularity) * iGranularity; }
 inline int AlignUp (int iValue, int iGranularity) { return ((iValue + (iGranularity - 1)) / iGranularity) * iGranularity; }
+inline size_t AlignUp64(size_t iValue, size_t iGranularity) { return ((iValue + (iGranularity - 1)) / iGranularity) * iGranularity; }
 inline int AlignUpSigned (int iValue, int iGranularity) { return ((iValue + (iValue < 0 ? 0 : (iGranularity - 1))) / iGranularity) * iGranularity; }
+inline int64_t AlignUpSigned64(int64_t iValue, int64_t iGranularity) { return ((iValue + (iValue < 0 ? 0 : (iGranularity - 1))) / iGranularity) * iGranularity; }
 inline int ClockMod (int iValue, int iDivisor) { int iResult = (iValue % iDivisor); return (iResult < 0 ? iResult + iDivisor : iResult); }
-inline int ClockDiff (int iValue, int iOrigin, int iDivisor)
+inline size_t ClockMod64(size_t iValue, size_t iDivisor) { size_t iResult = (iValue % iDivisor); return (iResult < 0 ? iResult + iDivisor : iResult); }
+inline int ClockDiff(int iValue, int iOrigin, int iDivisor)
 	{
 	int iDiff = ClockMod(iValue - iOrigin, iDivisor);
 	int iHalfDiv = iDivisor / 2;
@@ -133,9 +139,18 @@ inline int ClockDiff (int iValue, int iOrigin, int iDivisor)
 	else
 		return iDiff - iDivisor;
 	}
+inline int64_t ClockDiff64(int64_t iValue, int64_t iOrigin, int64_t iDivisor)
+{
+	int64_t iDiff = ClockMod64(iValue - iOrigin, iDivisor);
+	int64_t iHalfDiv = iDivisor / 2;
+	if (iDiff <= iHalfDiv)
+		return iDiff;
+	else
+		return iDiff - iDivisor;
+}
 inline BOOL IsShiftDown (void) { return (GetAsyncKeyState(VK_SHIFT) & 0x8000) ? TRUE : FALSE; }
 inline BOOL IsControlDown (void) { return (GetAsyncKeyState(VK_CONTROL) & 0x8000) ? TRUE : FALSE; }
-inline int Sign (int iValue) { return (iValue == 0 ? 0 : (iValue > 0 ? 1 : -1)); }
+inline int Sign (int64_t iValue) { return (iValue == 0 ? 0 : (iValue > 0 ? 1 : -1)); }
 template <class VALUE> VALUE Clamp (VALUE x, VALUE a, VALUE b)
 	{
 	return (x < a ? a : (x > b ? b : x));
@@ -167,12 +182,71 @@ template <class VALUE> VALUE min (VALUE a, VALUE b)
 
 inline int max (int a, LONG b) { return (a > b ? a : b); }
 inline int max (LONG a, int b) { return (a > b ? a : b); }
-inline int max (int a, size_t b) { return (a > (int)b ? a : b); }
-inline int max (size_t a, int b) { return ((int)a > b ? a : b); }
+//inline size_t max (size_t a, size_t b) { return (a > b ? a : b); }
+inline int max (int64_t a, int64_t b) { return (a > b ? (int)a : (int)b); }
 inline int min (int a, LONG b) { return (a < b ? a : b); }
 inline int min (LONG a, int b) { return (a < b ? a : b); }
-inline int min (int a, size_t b) { return (a < (int)b ? a : b); }
-inline int min (size_t a, int b) { return ((int)a < b ? a : b); }
+//inline size_t min (size_t a, size_t b) { return (a < b ? a : b); }
+inline int min (int64_t a, int64_t b) { return (a < b ? (int)a : (int)b); }
+#endif
+#else //legacy 32bit mode
+inline int Absolute (int iValue) { return (iValue < 0 ? -iValue : iValue); }
+inline double Absolute(double rValue) { return (rValue < 0.0 ? -rValue : rValue); }
+inline int AlignDown (int iValue, int iGranularity) { return (iValue / iGranularity) * iGranularity; }
+inline int AlignDownSigned (int iValue, int iGranularity) { return ((iValue + (iValue < 0 ? (1 - iGranularity) : 0)) / iGranularity) * iGranularity; }
+inline int AlignUp (int iValue, int iGranularity) { return ((iValue + (iGranularity - 1)) / iGranularity) * iGranularity; }
+inline int AlignUpSigned (int iValue, int iGranularity) { return ((iValue + (iValue < 0 ? 0 : (iGranularity - 1))) / iGranularity) * iGranularity; }
+inline int ClockMod (int iValue, int iDivisor) { int iResult = (iValue % iDivisor); return (iResult < 0 ? iResult + iDivisor : iResult); }
+inline int ClockDiff(int iValue, int iOrigin, int iDivisor)
+	{
+	int iDiff = ClockMod(iValue - iOrigin, iDivisor);
+	int iHalfDiv = iDivisor / 2;
+	if (iDiff <= iHalfDiv)
+		return iDiff;
+	else
+		return iDiff - iDivisor;
+	}
+inline BOOL IsShiftDown(void) { return (GetAsyncKeyState(VK_SHIFT) & 0x8000) ? TRUE : FALSE; }
+inline BOOL IsControlDown(void) { return (GetAsyncKeyState(VK_CONTROL) & 0x8000) ? TRUE : FALSE; }
+inline int Sign(int64_t iValue) { return (iValue == 0 ? 0 : (iValue > 0 ? 1 : -1)); }
+template <class VALUE> VALUE Clamp(VALUE x, VALUE a, VALUE b)
+{
+	return (x < a ? a : (x > b ? b : x));
+}
+template <class VALUE> VALUE Max(VALUE a, VALUE b)
+{
+	return (a > b ? a : b);
+}
+template <class VALUE> VALUE Min(VALUE a, VALUE b)
+{
+	return (a < b ? a : b);
+}
+template <class VALUE> void Swap(VALUE& a, VALUE& b)
+{
+	VALUE temp = a;
+	a = b;
+	b = temp;
+}
+
+#ifdef NOMINMAX
+template <class VALUE> VALUE max(VALUE a, VALUE b)
+{
+	return (a > b ? a : b);
+}
+template <class VALUE> VALUE min(VALUE a, VALUE b)
+{
+	return (a < b ? a : b);
+}
+
+inline int max(int a, LONG b) { return (a > b ? a : b); }
+inline int max(LONG a, int b) { return (a > b ? a : b); }
+inline int max(int a, DWORD b) { return (a > b ? a : (int)b); }
+inline int max(DWORD a, int b) { return (a > b ? (int)a : b); }
+inline int min(int a, LONG b) { return (a < b ? a : b); }
+inline int min(LONG a, int b) { return (a < b ? a : b); }
+inline int min(int a, DWORD b) { return (a < b ? a : (int)b); }
+inline int max(DWORD a, int b) { return (a > b ? (int)a : b); }
+#endif
 #endif
 
 inline int RectHeight(RECT *pRect) { return pRect->bottom - pRect->top; }
@@ -409,7 +483,7 @@ class CObject
 		virtual ALERROR LoadCustom (CUnarchiver *pUnarchiver, BYTE *pDest) { return NOERROR; }
 		virtual ALERROR LoadDoneHandler (void) { return NOERROR; }
 		virtual ALERROR LoadHandler (CUnarchiver *pUnarchiver);
-		virtual LPVOID MemAlloc (int iSize) { return (BYTE *)HeapAlloc(GetProcessHeap(), 0, iSize); }
+		virtual LPVOID MemAlloc (size_t iSize) { return (BYTE *)HeapAlloc(GetProcessHeap(), 0, iSize); }
 		virtual void MemFree (LPVOID pMem) { HeapFree(GetProcessHeap(), 0, pMem); }
 		virtual ALERROR SaveCustom (CArchiver *pArchiver, BYTE *pSource) { return NOERROR; }
 		virtual ALERROR SaveHandler (CArchiver *pArchiver);
@@ -569,26 +643,27 @@ public:
 
 	CPtrArray& operator= (const CPtrArray& Obj);
 
-	ALERROR AppendElement(void* pElement, int* retiIndex = NULL);
-	ALERROR CollapseArray(int iPos, int iCount) { return RemoveRange(iPos, iPos + iCount - 1); }
-	ALERROR ExpandArray(int iPos, int iCount);
-	int FindElement(void* pElement) const;
-	int GetCount(void) const;
-	void* GetElement(int iIndex) const;
-	ALERROR InsertElement(void* pElement, int iPos, int* retiIndex);
-	ALERROR InsertRange(CPtrArray* pList, int iStart, int iEnd, int iPos);
-	ALERROR MoveRange(int iStart, int iEnd, int iPos);
-	ALERROR Set(int iCount, void** pData);
+	ALERROR AppendElement(void* pElement, size_t* retiIndex = NULL);
+	ALERROR CollapseArray(size_t iPos, size_t iCount) { return RemoveRange(iPos, iPos + iCount - 1); }
+	ALERROR ExpandArray(size_t iPos, size_t iCount);
+	size_t FindElement(void* pElement) const;
+	size_t GetCount(void) const;
+	int GetCountInt(void) const { return (int)GetCount(); }
+	void* GetElement(size_t iIndex) const;
+	ALERROR InsertElement(void* pElement, size_t iPos, size_t* retiIndex);
+	ALERROR InsertRange(CPtrArray* pList, size_t iStart, size_t iEnd, size_t iPos);
+	ALERROR MoveRange(size_t iStart, size_t iEnd, size_t iPos);
+	ALERROR Set(size_t iCount, void** pData);
 	ALERROR RemoveAll(void);
-	ALERROR RemoveElement(int iPos) { return RemoveRange(iPos, iPos); }
-	ALERROR RemoveRange(int iStart, int iEnd);
-	void ReplaceElement(int iPos, void* pElement);
+	ALERROR RemoveElement(size_t iPos) { return RemoveRange(iPos, iPos); }
+	ALERROR RemoveRange(size_t iStart, size_t iEnd);
+	void ReplaceElement(size_t iPos, void* pElement);
 	void Shuffle(void);
 
 private:
-	int m_iAllocSize;					//	Number of pointers allocated
+	size_t m_iAllocSize;					//	Number of pointers allocated
 	void** m_pData;						//	Pointer to pointer array
-	int m_iLength;						//	Number of pointers used
+	size_t m_iLength;						//	Number of pointers used
 };
 
 //	CString. Implementation of a standard string class
@@ -634,25 +709,37 @@ public:
 	CPtrDictionary(IObjectClass* pClass);
 	virtual ~CPtrDictionary(void);
 
-	ALERROR AddEntry(int iKey, void* pValue);
-	ALERROR Find(int iKey, void** retpValue) const;
-	ALERROR FindEx(int iKey, int* retiEntry) const;
-	ALERROR FindOrAdd(int iKey, void* pValue, bool* retbFound, void** retpValue);
-	int GetCount(void) const { return m_Array.GetCount() / 2; }
-	void GetEntry(int iEntry, int* retiKey, void** retpValue) const;
-	ALERROR ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue);
-	ALERROR RemoveAll(void) { return m_Array.RemoveAll(); }
-	ALERROR RemoveEntryByOrdinal(int iEntry, void** retpOldValue = NULL);
-	ALERROR RemoveEntry(int iKey, void** retiOldValue);
+	ALERROR AddEntry(void* pKey, void* pValue);
+	ALERROR AddEntry(int iKey, void* pValue) { return AddEntry((void*)(size_t)iKey, pValue); }
+	ALERROR AddEntry(void* pKey, int iValue) { return AddEntry(pKey, (void*)(size_t)iValue); }
+	ALERROR AddEntry(int iKey, int iValue) { return AddEntry((void*)(size_t)iKey, (void*)(size_t)iValue); }
+	ALERROR Find(void* pKey, void** retpValue) const;
+	ALERROR Find(int iKey, void** retpValue) { return Find((void*)(size_t)iKey, retpValue); }
+	ALERROR FindEx(void* pKey, size_t* retiEntry) const;
+	ALERROR FindEx(int iKey, size_t* retiEntry) const { return FindEx((void*)(size_t)iKey, retiEntry); }
+	ALERROR FindOrAdd(void* pKey, void* pValue, bool* retbFound, void** retpValue);
+	ALERROR FindOrAdd(int iKey, void* pValue, bool* retbFound, void** retpValue) { return FindOrAdd((void*)(size_t)iKey, pValue, retbFound, retpValue); }
+	int GetCountInt(void) const { return m_Array.GetCountInt(); }
+	size_t GetCount(void) const { return m_Array.GetCount(); }
+	void GetEntry(size_t iEntry, void** retpKey, void** retpValue) const;
+	void GetEntry(int iEntry, void** retpKey, void** retpValue) const { return GetEntry((size_t)iEntry, retpKey, retpValue); }
+	ALERROR ReplaceEntry(void* pKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue);
+	ALERROR ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue) { return ReplaceEntry((void*)(size_t)iKey, pValue, bAdd, retbAdded, retpOldValue); }
+	ALERROR RemoveAll(void) { return (m_Array.RemoveAll() | m_Keys.RemoveAll()); }
+	ALERROR RemoveEntryByOrdinal(size_t iEntry, void** retpOldValue = NULL);
+	ALERROR RemoveEntryByOrdinal(int iEntry, void** retpOldValue = NULL) { return RemoveEntryByOrdinal((size_t)iEntry, retpOldValue); }
+	ALERROR RemoveEntry(void* pKey, void** retiOldValue);
+	ALERROR RemoveEntry(int iKey, void** retiOldValue) { return RemoveEntry((void*)(size_t)iKey, retiOldValue); }
 
 protected:
-	virtual int Compare(int iKey1, int iKey2) const;
-	ALERROR ExpandArray(int iPos, int iCount) { return m_Array.ExpandArray(2 * iPos, 2 * iCount); }
-	void SetEntry(int iEntry, int iKey, void* pValue);
+	virtual int Compare(void* pKey1, void* pKey2) const;
+	ALERROR ExpandArray(size_t iPos, size_t iCount) { return (m_Array.ExpandArray(iPos, iCount) | m_Keys.ExpandArray(iPos, iCount)); }
+	void SetEntry(size_t iEntry, void* pKey, void* pValue);
 
-	bool FindSlot(int iKey, int* retiPos) const;
+	bool FindSlot(void* iKey, size_t* retiPos) const;
 
 	CPtrArray m_Array;
+	CPtrArray m_Keys;
 };
 
 class CDictionary : public CObject
@@ -692,18 +779,19 @@ class CIDTable : public CPtrDictionary
 		CIDTable (BOOL bOwned, BOOL bNoReference);
 		virtual ~CIDTable (void);
 
-		ALERROR AddEntry (int iKey, CObject *pValue) { return CPtrDictionary::AddEntry(iKey, pValue); }
-		int GetKey (int iEntry) const;
-		CObject *GetValue (int iEntry) const;
-		ALERROR Lookup (int iKey, CObject **retpValue) const;
-		ALERROR LookupEx (int iKey, int *retiEntry) const;
+		ALERROR AddEntry (size_t iKey, CObject* pValue) { return CPtrDictionary::AddEntry((void*)iKey, pValue); }
+		ALERROR AddEntry (size_t iKey, size_t iValue) { return AddEntry(iKey, (CObject*)(size_t)iValue); }
+		size_t GetKey (size_t iEntry) const;
+		CObject *GetValue (size_t iEntry) const;
+		ALERROR Lookup (size_t iKey, CObject **retpValue) const;
+		ALERROR LookupEx (size_t iKey, size_t *retiEntry) const;
 		ALERROR RemoveAll (void);
-		ALERROR RemoveEntry (int iKey, CObject **retpOldValue);
-		ALERROR ReplaceEntry (int iKey, CObject *pValue, bool bAdd, CObject **retpOldValue);
-		void SetValue (int iEntry, CObject *pValue, CObject **retpOldValue);
+		ALERROR RemoveEntry (size_t iKey, CObject **retpOldValue);
+		ALERROR ReplaceEntry (size_t iKey, CObject *pValue, bool bAdd, CObject **retpOldValue);
+		void SetValue (size_t iEntry, CObject *pValue, CObject **retpOldValue);
 
 	protected:
-		virtual int Compare (int iKey1, int iKey2) const;
+		virtual int Compare (size_t iKey1, size_t iKey2) const;
 		virtual void CopyHandler (CObject *pOriginal);
 		virtual ALERROR LoadHandler (CUnarchiver *pUnarchiver);
 		virtual ALERROR SaveHandler (CArchiver *pArchiver);
@@ -724,18 +812,19 @@ class CSymbolTable : public CPtrDictionary
 		CSymbolTable &operator= (const CSymbolTable &Obj);
 
 		ALERROR AddEntry (const CString &sKey, CObject *pValue);
-		CString GetKey (int iEntry) const;
-		CObject *GetValue (int iEntry) const;
+		ALERROR AddEntry (const CString &sKey, size_t iValue) { return AddEntry(sKey, (CObject*)iValue); }
+		CString GetKey (size_t iEntry) const;
+		CObject *GetValue (size_t iEntry) const;
 		ALERROR Lookup (const CString &sKey, CObject **retpValue = NULL) const;
-		ALERROR LookupEx (const CString &sKey, int *retiEntry) const;
+		ALERROR LookupEx (const CString &sKey, size_t*retiEntry) const;
 		ALERROR RemoveAll (void);
-		ALERROR RemoveEntry (int iEntry, CObject **retpOldValue = NULL);
+		ALERROR RemoveEntry (size_t iEntry, CObject **retpOldValue = NULL);
 		ALERROR RemoveEntry (const CString &sKey, CObject **retpOldValue);
 		ALERROR ReplaceEntry (const CString &sKey, CObject *pValue, bool bAdd, CObject **retpOldValue);
-		void SetValue (int iEntry, CObject *pValue, CObject **retpOldValue);
+		void SetValue (size_t iEntry, CObject *pValue, CObject **retpOldValue);
 
 	protected:
-		virtual int Compare (int iKey1, int iKey2) const;
+		virtual int Compare (size_t iKey1, size_t iKey2) const;
 		virtual void CopyHandler (CObject *pOriginal);
 		virtual ALERROR LoadHandler (CUnarchiver *pUnarchiver);
 		virtual ALERROR SaveHandler (CArchiver *pArchiver);
@@ -801,7 +890,7 @@ class CAtomizer
 		DWORD Atomize (const CString &sIdentifier);
 		int GetCount (void) const { return m_StringToAtom.GetCount(); }
 		const CString &GetIdentifier (DWORD dwAtom) const;
-		int GetMemoryUsage (void) const;
+		size_t GetMemoryUsage (void) const;
 
 	private:
 		DWORD m_dwNextID;
@@ -1075,7 +1164,7 @@ class CArchiver : public CObject
 		//	These methods should only be called by objects
 		//	that are being saved
 
-		ALERROR Reference2ID (void *pReference, int *retiID);
+		ALERROR Reference2ID (void *pReference, size_t *retiID);
 		ALERROR SaveObject (CObject *pObject);
 		ALERROR SaveObject (CString *pObject);
 		ALERROR WriteData (char *pData, int iLength);
@@ -1083,9 +1172,9 @@ class CArchiver : public CObject
 	private:
 		IWriteStream *m_pStream;					//	Stream to save to
 		TArray<CObject *> m_List;					//	List of objects to save
-		CDictionary m_ReferenceList;				//	Pointer references
+		CPtrDictionary m_ReferenceList;				//	Pointer references
 		CSymbolTable m_ExternalReferences;			//	List of external references
-		int m_iNextID;								//	Next ID to use for references
+		size_t m_iNextID;								//	Next ID to use for references
 		DWORD m_dwVersion;							//	User-defined version
 	};
 
@@ -1113,14 +1202,14 @@ class CUnarchiver : public CObject
 		ALERROR LoadObject (CObject **retpObject);
 		ALERROR LoadObject (CString **retpString);
 		ALERROR ReadData (char *pData, int iLength);
-		ALERROR ResolveReference (int iID, void **pReference);
+		ALERROR ResolveReference (size_t iID, void **pReference);
 
 	private:
 		IReadStream *m_pStream;
 		TArray<CObject *> m_List;
 		CSymbolTable *m_pExternalReferences;
-		CIntArray m_ReferenceList;
-		CIntArray m_FixupTable;
+		CPtrArray m_ReferenceList;
+		CPtrArray m_FixupTable;
 		DWORD m_dwVersion;
 		DWORD m_dwMinVersion;
 	};
@@ -1316,7 +1405,7 @@ class CThreadPool
 		void AddTask (IThreadPoolTask *pTask);
 		bool Boot (int iThreadCount);
 		void CleanUp (void);
-		int GetThreadCount (void) const { return m_Threads.GetCount() + 1; }
+		size_t GetThreadCount (void) const { return m_Threads.GetCount() + 1; }
 		void Run (void);
 
 	private:
@@ -1454,8 +1543,10 @@ DWORD mathMakeSeed (DWORD dwValue);
 int mathNearestPowerOf2 (int x);
 int mathPower (int x, int n);
 DWORD mathRandom (void);
+size_t mathRandomPtr(void);
 inline double mathRandomDouble (void) { return (mathRandom() / 2147483648.0); }
 int mathRandom (int iFrom, int iTo);
+size_t mathRandomPtr(size_t iFrom, size_t iTo);
 double mathRandomGaussian (void);
 double mathRandomMinusOneToOne (void);
 int mathRound (double x);
@@ -1483,10 +1574,10 @@ bool sysOpenURL (const CString &sURL);
 //	Utility functions (Utilities.cpp)
 
 DWORD utlHashFunctionCase (BYTE *pKey, int iKeyLen);
-void utlMemSet (LPVOID pDest, DWORD Count, BYTE Value);
-void utlMemCopy (const char *pSource, char *pDest, DWORD dwCount);
-BOOL utlMemCompare (char *pSource, char *pDest, DWORD dwCount);
-inline LPVOID MemAlloc (int iSize) { return (BYTE *)HeapAlloc(GetProcessHeap(), 0, iSize); }
+void utlMemSet (LPVOID pDest, size_t Count, BYTE Value);
+void utlMemCopy (const char *pSource, char *pDest, size_t dwCount);
+BOOL utlMemCompare (char *pSource, char *pDest, size_t dwCount);
+inline LPVOID MemAlloc (size_t iSize) { return (BYTE *)HeapAlloc(GetProcessHeap(), 0, iSize); }
 inline void MemFree (LPVOID pMem) { HeapFree(GetProcessHeap(), 0, pMem); }
 
 //	UI functions

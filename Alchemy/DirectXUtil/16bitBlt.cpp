@@ -410,7 +410,7 @@ void CopyBltTransformed (CG16bitImage &Dest,
 	CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 	CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-	int iRowHeight = Src.GetRowStart(1) - Src.GetRowStart(0);
+	int iRowHeight = (int)(Src.GetRowStart(1) - Src.GetRowStart(0));
 
 	//	Different code paths depending on whether we have alpha values or not
 
@@ -643,12 +643,12 @@ void DrawBltShimmer (CG16bitImage &Dest,
 					}
 				else if (*pAlphaPos == 255 || *pDestPos == 0)
 					{
-					if (PERM((DWORD)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity)
+					if (PERM((DWORD)(size_t)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity)
 						*pDestPos = *pSrcPos;
 					}
 				else
 					{
-					if (PERM((DWORD)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity)
+					if (PERM((DWORD)(size_t)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity)
 						{
 						DWORD pxSource = *pSrcPos;
 						DWORD pxDest = *pDestPos;
@@ -738,7 +738,7 @@ void DrawBltShimmer (CG16bitImage &Dest,
 			while (pSrcPos < pSrcPosEnd)
 				{
 				if ((*pSrcPos != wSrcBackColor)
-						&& (PERM((DWORD)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity))
+						&& (PERM((DWORD)(size_t)pDestPos * LARGE_PRIME2 + dwRnd) < byIntensity))
 					*pDestPos = *pSrcPos;
 
 				pDestPos++;
@@ -813,7 +813,7 @@ void DrawBltTransformed (CG16bitImage &Dest,
 	CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 	CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-	int iRowHeight = Src.GetRowStart(1) - Src.GetRowStart(0);
+	int iRowHeight = int(Src.GetRowStart(1) - Src.GetRowStart(0));
 
 	//	Different code paths depending on whether we have alpha values or not
 
@@ -964,7 +964,7 @@ void DrawBltTransformedGray (CG16bitImage &Dest,
 	CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 	CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-	int iRowHeight = Src.GetRowStart(1) - Src.GetRowStart(0);
+	int iRowHeight = (int)(Src.GetRowStart(1) - Src.GetRowStart(0));
 
 	//	Different code paths depending on whether we have alpha values or not
 

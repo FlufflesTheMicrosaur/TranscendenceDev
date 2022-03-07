@@ -1198,11 +1198,11 @@ ALERROR CResourceDb::OpenDb (void)
 
 			//	Convert to new format
 
-			for (i = 0; i < pTable->GetCount(); i++)
+			for (i = 0; i < pTable->GetCountInt(); i++)
 				{
 				SResourceEntry *pEntry = m_ResourceMap.Insert(pTable->GetKey(i));
 				pEntry->sFilename = pTable->GetKey(i);
-				pEntry->iEntryID = (int)pTable->GetValue(i);
+				pEntry->iEntryID = (int)(size_t)pTable->GetValue(i);
 				pEntry->dwFlags = 0;
 				}
 

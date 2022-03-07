@@ -14,7 +14,7 @@ DWORD g_dwArraysResized = 0;
 
 ::placement_new_class placement_new;
 
-CArrayBase::CArrayBase (HANDLE hHeap, int iGranularity) : m_pBlock(NULL)
+CArrayBase::CArrayBase (HANDLE hHeap, size_t iGranularity) : m_pBlock(NULL)
 
 //	CArrayBase constructor
 
@@ -39,7 +39,7 @@ CArrayBase::~CArrayBase (void)
 	CleanUpBlock();
 	}
 
-void CArrayBase::AllocBlock (HANDLE hHeap, int iGranularity)
+void CArrayBase::AllocBlock (HANDLE hHeap, size_t iGranularity)
 
 //	AllocBlock
 //
@@ -142,7 +142,7 @@ CString CArrayBase::DebugGetStats (void)
 #endif
 	}
 
-void CArrayBase::DeleteBytes (int iOffset, int iLength)
+void CArrayBase::DeleteBytes (size_t iOffset, size_t iLength)
 
 //	Delete
 //
@@ -167,14 +167,14 @@ void CArrayBase::DeleteBytes (int iOffset, int iLength)
 	m_pBlock->m_iSize -= iLength;
 	}
 
-void CArrayBase::InsertBytes (int iOffset, void *pData, int iLength, int iAllocQuantum)
+void CArrayBase::InsertBytes (size_t iOffset, void *pData, size_t iLength, size_t iAllocQuantum)
 
 //	Insert
 //
 //	Insert the given data at the offset
 
 	{
-	int i;
+	size_t i;
 
 	if (iLength <= 0)
 		return;
@@ -210,7 +210,7 @@ void CArrayBase::InsertBytes (int iOffset, void *pData, int iLength, int iAllocQ
 	m_pBlock->m_iSize += iLength;
 	}
 
-ALERROR CArrayBase::Resize (int iNewSize, bool bPreserve, int iAllocQuantum)
+ALERROR CArrayBase::Resize (size_t iNewSize, bool bPreserve, size_t iAllocQuantum)
 
 //	Resize
 //
@@ -225,7 +225,7 @@ ALERROR CArrayBase::Resize (int iNewSize, bool bPreserve, int iAllocQuantum)
 		{
 		//	Allocate a new block
 
-		int iNewAllocSize = sizeof(SHeader) + Max(GetSize() * 2, AlignUp(iNewSize, iAllocQuantum));
+		size_t iNewAllocSize = sizeof(SHeader) + Max(GetSize() * 2, AlignUp64(iNewSize, iAllocQuantum));
 		SHeader *pNewBlock = (SHeader *)::HeapAlloc(GetHeap(), 0, iNewAllocSize);
 		if (pNewBlock == NULL)
 			{
@@ -247,7 +247,7 @@ ALERROR CArrayBase::Resize (int iNewSize, bool bPreserve, int iAllocQuantum)
 		else
 			{
 			g_dwArraysResized++;
-			g_dwTotalBytesAllocated += -(m_pBlock->m_iAllocSize - (int)sizeof(SHeader)) + (pNewBlock->m_iAllocSize - (int)sizeof(SHeader));
+			g_dwTotalBytesAllocated += -(m_pBlock->m_iAllocSize - (size_t)sizeof(SHeader)) + (pNewBlock->m_iAllocSize - (size_t)sizeof(SHeader));
 			g_dwTotalBytesMoved += (bPreserve ? GetSize() : 0);
 			}
 #endif
@@ -256,7 +256,7 @@ ALERROR CArrayBase::Resize (int iNewSize, bool bPreserve, int iAllocQuantum)
 
 		if (m_pBlock && bPreserve)
 			{
-			int i;
+			size_t i;
 			char *pSource = GetBytes();
 			char *pDest = (char *)(&pNewBlock[1]);
 

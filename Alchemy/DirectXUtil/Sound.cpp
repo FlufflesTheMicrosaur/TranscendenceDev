@@ -345,7 +345,7 @@ ALERROR CSoundMgr::LoadWaveFile (HMMIO hFile, int *retiChannel)
 	//	Allocate a block large enough to hold the format size
 
 	DWORD dwFmtSize = child.cksize;
-	DWORD dwAllocSize = max(dwFmtSize, sizeof(WAVEFORMATEX));
+	DWORD dwAllocSize = max(dwFmtSize, (DWORD)sizeof(WAVEFORMATEX));
 	WAVEFORMATEX *pFormat = (WAVEFORMATEX *)new char [dwAllocSize];
 	::ZeroMemory(pFormat, dwAllocSize);
 

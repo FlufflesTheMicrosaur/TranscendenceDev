@@ -29,6 +29,10 @@ ICCItemPtr::ICCItemPtr (ICCItem::ValueTypes iType)
 			m_pPtr = CCodeChain::CreateInteger(0);
 			break;
 
+		case ICCItem::Pointer:
+			m_pPtr = CCodeChain::CreatePointer(nullptr);
+			break;
+
 		case ICCItem::String:
 			m_pPtr = CCodeChain::CreateString(NULL_STR);
 			break;
@@ -60,6 +64,16 @@ ICCItemPtr::ICCItemPtr (const CString &sValue)
 ICCItemPtr::ICCItemPtr (int iValue)
 	{
 	m_pPtr = CCodeChain::CreateInteger(iValue);
+	}
+
+ICCItemPtr::ICCItemPtr(void* pValue)
+	{
+	m_pPtr = CCodeChain::CreatePointer(pValue);
+	}
+
+ICCItemPtr::ICCItemPtr(size_t pValue)
+	{
+	m_pPtr = CCodeChain::CreatePointer((void*)pValue);
 	}
 
 ICCItemPtr::ICCItemPtr (DWORD dwValue)

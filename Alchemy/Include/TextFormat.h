@@ -77,7 +77,7 @@ class CTextBlock
 		void Format (const SBlockFormatDesc &BlockFormat);
 		void GetBounds (RECT *retrcRect);
 		const SFormattedTextSpan &GetFormattedSpan (int iIndex) const { return m_Formatted[iIndex]; }
-		int GetFormattedSpanCount (void) const { return m_Formatted.GetCount(); }
+		int GetFormattedSpanCount (void) const { return (int)m_Formatted.GetCount(); }
 		bool InitFromRTF (const CString &RTF, const IFontTable &FontTable, const SBlockFormatDesc &BlockFormat, CString *retsError = NULL);
 		bool IsEmpty (void) const { return (m_Formatted.GetCount() == 0); }
 		void Paint (CG32bitImage &Dest, int x, int y) const;

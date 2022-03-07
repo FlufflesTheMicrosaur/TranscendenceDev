@@ -63,7 +63,7 @@ CPtrArray& CPtrArray::operator= (const CPtrArray& Obj)
 	return *this;
 }
 
-ALERROR CPtrArray::AppendElement(void* iElement, int* retiIndex)
+ALERROR CPtrArray::AppendElement(void* iElement, size_t* retiIndex)
 
 //	AppendElement
 //
@@ -73,7 +73,7 @@ ALERROR CPtrArray::AppendElement(void* iElement, int* retiIndex)
 	return InsertElement(iElement, m_iLength, retiIndex);
 }
 
-ALERROR CPtrArray::ExpandArray(int iPos, int iCount)
+ALERROR CPtrArray::ExpandArray(size_t iPos, size_t iCount)
 
 //	ExpandArray
 //
@@ -82,7 +82,7 @@ ALERROR CPtrArray::ExpandArray(int iPos, int iCount)
 //	expanded at the end.
 
 {
-	int i;
+	size_t i;
 
 	if (iPos < 0 || iPos > m_iLength)
 		iPos = m_iLength;
@@ -92,9 +92,9 @@ ALERROR CPtrArray::ExpandArray(int iPos, int iCount)
 	if (m_iLength + iCount > m_iAllocSize)
 	{
 		void** pNewData;
-		int iInc;
+		size_t iInc;
 
-		iInc = AlignUp(iCount, ALLOC_INCREMENT);
+		iInc = AlignUp64(iCount, ALLOC_INCREMENT);
 
 		//	Allocate a bigger buffer
 
@@ -125,7 +125,7 @@ ALERROR CPtrArray::ExpandArray(int iPos, int iCount)
 	return NOERROR;
 }
 
-int CPtrArray::FindElement(void* iElement) const
+size_t CPtrArray::FindElement(void* iElement) const
 
 //	FindElement
 //
@@ -133,7 +133,7 @@ int CPtrArray::FindElement(void* iElement) const
 //	the position of the element; otherwise it returns -1.
 
 {
-	int i;
+	size_t i;
 
 	for (i = 0; i < m_iLength; i++)
 		if (m_pData[i] == iElement)
@@ -142,7 +142,7 @@ int CPtrArray::FindElement(void* iElement) const
 	return -1;
 }
 
-int CPtrArray::GetCount(void) const
+size_t CPtrArray::GetCount(void) const
 
 //	GetCount
 //
@@ -152,7 +152,7 @@ int CPtrArray::GetCount(void) const
 	return m_iLength;
 }
 
-void* CPtrArray::GetElement(int iIndex) const
+void* CPtrArray::GetElement(size_t iIndex) const
 
 //	GetElement
 //
@@ -163,7 +163,7 @@ void* CPtrArray::GetElement(int iIndex) const
 	return m_pData[iIndex];
 }
 
-ALERROR CPtrArray::InsertElement(void* iElement, int iPos, int* retiIndex)
+ALERROR CPtrArray::InsertElement(void* iElement, size_t iPos, size_t* retiIndex)
 
 //	InsertElement
 //
@@ -186,7 +186,7 @@ ALERROR CPtrArray::InsertElement(void* iElement, int iPos, int* retiIndex)
 	return NOERROR;
 }
 
-ALERROR CPtrArray::InsertRange(CPtrArray* pList, int iStart, int iEnd, int iPos)
+ALERROR CPtrArray::InsertRange(CPtrArray* pList, size_t iStart, size_t iEnd, size_t iPos)
 
 //	InsertRange
 //
@@ -194,7 +194,7 @@ ALERROR CPtrArray::InsertRange(CPtrArray* pList, int iStart, int iEnd, int iPos)
 
 {
 	ALERROR error;
-	int i, iCount;
+	size_t i, iCount;
 
 	if (iPos < 0 || iPos > m_iLength)
 		iPos = m_iLength;
@@ -212,16 +212,16 @@ ALERROR CPtrArray::InsertRange(CPtrArray* pList, int iStart, int iEnd, int iPos)
 	return NOERROR;
 }
 
-ALERROR CPtrArray::MoveRange(int iStart, int iEnd, int iPos)
+ALERROR CPtrArray::MoveRange(size_t iStart, size_t iEnd, size_t iPos)
 
 //	MoveRange
 //
 //	Move the set of elements to the given position
 
 {
-	int iDestSize;
-	int iDest;
-	int i;
+	size_t iDestSize;
+	size_t iDest;
+	size_t i;
 
 	ASSERT(iStart >= 0 && iStart < m_iLength);
 	ASSERT(iEnd >= 0 && iStart < m_iLength);
@@ -274,7 +274,7 @@ ALERROR CPtrArray::MoveRange(int iStart, int iEnd, int iPos)
 	return NOERROR;
 }
 
-ALERROR CPtrArray::Set(int iCount, void** pData)
+ALERROR CPtrArray::Set(size_t iCount, void** pData)
 
 //	Set
 //
@@ -295,7 +295,7 @@ ALERROR CPtrArray::Set(int iCount, void** pData)
 
 	if (pData)
 	{
-		int i;
+		size_t i;
 
 		m_iLength = iCount;
 		for (i = 0; i < iCount; i++)
@@ -318,14 +318,14 @@ ALERROR CPtrArray::RemoveAll(void)
 	return NOERROR;
 }
 
-ALERROR CPtrArray::RemoveRange(int iStart, int iEnd)
+ALERROR CPtrArray::RemoveRange(size_t iStart, size_t iEnd)
 
 //	RemoveRange
 //
 //	Removes elements from iStart to iEnd
 
 {
-	int i, iCount;
+	size_t i, iCount;
 
 	ASSERT(iStart >= 0 && iStart < m_iLength);
 	ASSERT(iEnd >= 0 && iEnd < m_iLength);
@@ -341,7 +341,7 @@ ALERROR CPtrArray::RemoveRange(int iStart, int iEnd)
 	return NOERROR;
 }
 
-void CPtrArray::ReplaceElement(int iPos, void* pElement)
+void CPtrArray::ReplaceElement(size_t iPos, void* pElement)
 
 //	ReplaceElement
 //
@@ -363,10 +363,10 @@ void CPtrArray::Shuffle(void)
 	if (m_iLength < 2)
 		return;
 
-	int i = m_iLength - 1;
+	size_t i = m_iLength - 1;
 	while (i > 0)
 	{
-		int x = mathRandom(0, i);
+		size_t x = mathRandomPtr(0, i);
 
 		void* pValue = m_pData[x];
 		m_pData[x] = m_pData[i];

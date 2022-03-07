@@ -185,7 +185,7 @@ template <class PAINTER, class BLENDER> class TImagePainter : public IImagePaint
 			CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 			CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-			int iRowHeight = Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0);
+			int iRowHeight = (int)(Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0));
 
 			//	Loop over every pixel in the destination
 
@@ -306,7 +306,7 @@ template <class PAINTER, class BLENDER> class TImagePainter : public IImagePaint
 			CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 			CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-			int iRowHeight = Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0);
+			int iRowHeight = (int)(Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0));
 
 			//	Loop over every pixel in the destination
 
@@ -429,7 +429,7 @@ template <class PAINTER, class BLENDER> class TImagePainter : public IImagePaint
 			CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 			CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-			int iRowHeight = Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0);
+			int iRowHeight = (int)(Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0));
 
 			//	Loop over every pixel in the destination
 
@@ -636,7 +636,7 @@ template <class PAINTER> class TBlt
 			CVector vIncX = DestToSrc.Transform(CVector(1.0, 0.0)) - vOrigin;
 			CVector vIncY = DestToSrc.Transform(CVector(0.0, 1.0)) - vOrigin;
 
-			int iRowHeight = Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0);
+			int iRowHeight = (int)(Src.GetPixelPos(0, 1) - Src.GetPixelPos(0, 0));
 
 			//	Loop over every pixel in the destination
 

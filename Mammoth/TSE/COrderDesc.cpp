@@ -28,7 +28,7 @@ COrderDesc::COrderDesc (IShipController::OrderTypes iOrder, CSpaceObject *pTarge
 		m_dwOrderType((DWORD)iOrder),
 		m_pTarget(pTarget),
 		m_dwDataType((DWORD)EDataType::Int32),
-		m_pData((void *)iData)
+		m_pData((void *)(size_t)iData)
 
 //	COrderDesc constructor
 
@@ -39,7 +39,7 @@ COrderDesc::COrderDesc (IShipController::OrderTypes iOrder, CSpaceObject *pTarge
 		m_dwOrderType((DWORD)iOrder),
 		m_pTarget(pTarget),
 		m_dwDataType((DWORD)EDataType::Int16Pair),
-		m_pData((void *)MAKELONG(iData1, iData2))
+		m_pData((void *)(size_t)MAKELONG(iData1, iData2))
 
 //	COrderDesc constructor
 
@@ -415,10 +415,10 @@ DWORD COrderDesc::GetDataInteger () const
 	switch (GetDataType())
 		{
 		case EDataType::Int32:
-			return (DWORD)m_pData;
+			return (DWORD)(size_t)m_pData;//not a pointer, is stored dword
 
 		case EDataType::Int16Pair:
-			return LOWORD((DWORD)m_pData);
+			return LOWORD((DWORD)(size_t)m_pData);//not a pointer, is stored dword
 
 		default:
 			return 0;
@@ -469,7 +469,7 @@ DWORD COrderDesc::GetDataInteger2 () const
 	switch (GetDataType())
 		{
 		case EDataType::Int16Pair:
-			return HIWORD((DWORD)m_pData);
+			return HIWORD((DWORD)(size_t)m_pData);//not a pointer, is stored dword
 
 		default:
 			return 0;
@@ -860,7 +860,7 @@ void COrderDesc::ReadFromStream (SLoadCtx &Ctx)
 			case EDataType::Int32:
 			case EDataType::Int16Pair:
 				Ctx.pStream->Read(dwLoad);
-				m_pData = (void *)dwLoad;
+				m_pData = (void *)(size_t)dwLoad;
 				break;
 
 			case EDataType::String:
@@ -912,13 +912,13 @@ void COrderDesc::ReadFromStream (SLoadCtx &Ctx)
 			case COMPATIBLE_DATA_TYPE_INTEGER:
 				Ctx.pStream->Read(dwLoad);
 				m_dwDataType = (DWORD)EDataType::Int32;
-				m_pData = (void *)dwLoad;
+				m_pData = (void *)(size_t)dwLoad;
 				break;
 
 			case COMPATIBLE_DATA_TYPE_PAIR:
 				Ctx.pStream->Read(dwLoad);
 				m_dwDataType = (DWORD)EDataType::Int16Pair;
-				m_pData = (void *)dwLoad;
+				m_pData = (void *)(size_t)dwLoad;
 				break;
 
 			case COMPATIBLE_DATA_TYPE_ITEM:
@@ -996,7 +996,7 @@ void COrderDesc::ReadFromStream (SLoadCtx &Ctx)
 
 		Ctx.pStream->Read(dwLoad);
 		m_dwDataType = (DWORD)EDataType::Int32;
-		m_pData = (void *)dwLoad;
+		m_pData = (void *)(size_t)dwLoad;
 		}
 	}
 
@@ -1009,7 +1009,7 @@ void COrderDesc::SetDataInteger (DWORD dwData)
 	{
 	CleanUp();
 	m_dwDataType = (DWORD)EDataType::Int32;
-	m_pData = (void *)dwData;
+	m_pData = (void *)(size_t)dwData;
 	}
 
 void COrderDesc::SetDataInteger (DWORD dwData1, DWORD dwData2)
@@ -1021,7 +1021,7 @@ void COrderDesc::SetDataInteger (DWORD dwData1, DWORD dwData2)
 	{
 	CleanUp();
 	m_dwDataType = (DWORD)EDataType::Int16Pair;
-	m_pData = (void *)MAKELONG(dwData1, dwData2);
+	m_pData = (void *)(size_t)MAKELONG(dwData1, dwData2);
 	}
 
 void COrderDesc::WriteToStream (IWriteStream &Stream, const CShip &Ship) const
@@ -1044,7 +1044,7 @@ void COrderDesc::WriteToStream (IWriteStream &Stream, const CShip &Ship) const
 		{
 		case EDataType::Int32:
 		case EDataType::Int16Pair:
-			Stream.Write((DWORD)m_pData);
+			Stream.Write((DWORD)(size_t)m_pData);//not a pointer, is stored dword
 			break;
 
 		case EDataType::Item:

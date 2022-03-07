@@ -105,7 +105,7 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 
 					if (iLength > (pNewPos - pPos))
 						{
-						iLength -= (pNewPos - pPos);
+						iLength -= (int)(pNewPos - pPos);
 						pPos = pNewPos;
 						}
 					}
@@ -121,7 +121,7 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 
 					sOutput.Append(*pParam, CString::FLAG_ALLOC_EXTRA);
 
-					pArgs += AlignUp(sizeof(CString), sizeof(LPVOID)) / sizeof(LPVOID);
+					pArgs += AlignUp((int64_t)sizeof(CString), (int64_t)sizeof(LPVOID)) / (int64_t)sizeof(LPVOID);
 					pPos++;
 					iLength--;
 					}

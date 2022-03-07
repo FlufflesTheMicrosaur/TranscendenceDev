@@ -117,7 +117,7 @@ void CTileMap::GetNext (STileMapEnumerator &i, int *retx, int *rety, DWORD *retd
 	{
 	ASSERT(!i.bDone && i.pCurPos);
 
-	*retdwTile = i.pCurPos->pMap->GetTile(i.pCurPos->iIndex);
+	*retdwTile = (DWORD)(size_t)i.pCurPos->pMap->GetTile(i.pCurPos->iIndex);//get dword stored in Tile ptr
 
 	STileMapSectionPos *pPos = i.pCurPos;
 	int iMult = 1;
@@ -165,7 +165,7 @@ DWORD CTileMap::GetTile (int x, int y) const
 		iDenom /= m_iSize;
 		}
 
-	return pMap->GetTile(x * m_iSize + y);
+	return (DWORD)(size_t)pMap->GetTile(x * m_iSize + y);//get dword stored in tile ptr
 	}
 
 DWORD *CTileMap::GetTilePointer (int x, int y)
@@ -202,7 +202,7 @@ DWORD *CTileMap::GetTilePointer (int x, int y)
 		iDenom /= m_iSize;
 		}
 
-	return pMap->GetTilePointer(x * m_iSize + y);
+	return (DWORD*)pMap->GetTilePointer(x * m_iSize + y);//64bit Port WARNING - this might be wrong!
 	}
 
 int CTileMap::GetTotalSize (void) const

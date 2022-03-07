@@ -48,15 +48,15 @@ const CString &CAtomizer::GetIdentifier (DWORD dwAtom) const
 	return m_AtomToString[dwAtom];
 	}
 
-int CAtomizer::GetMemoryUsage (void) const
+size_t CAtomizer::GetMemoryUsage (void) const
 
 //	GetMemoryUsage
 //
 //	Returns the amount of memory used.
 
 	{
-	int i;
-	int iTotal = m_AtomToString.GetCount() * sizeof(DWORD);
+	size_t i;
+	size_t iTotal = m_AtomToString.GetCount() * sizeof(size_t);
 
 	for (i = 0; i < m_AtomToString.GetCount(); i++)
 		iTotal += m_AtomToString[i].GetMemoryUsage();

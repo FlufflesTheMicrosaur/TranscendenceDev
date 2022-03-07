@@ -116,7 +116,7 @@ ICCItem *CCSymbolTable::Clone (CCodeChain *pCC)
 
 	//	Add all the items to the table
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CString sKey = m_Symbols.GetKey(i);
 		CObject *pValue = m_Symbols.GetValue(i);
@@ -172,7 +172,7 @@ ICCItem *CCSymbolTable::CloneContainer (void) const
 
 	//	Add all the items to the table
 
-	for (int i = 0; i < m_Symbols.GetCount(); i++)
+	for (int i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CString sKey = m_Symbols.GetKey(i);
 		CObject *pValue = m_Symbols.GetValue(i);
@@ -210,7 +210,7 @@ ICCItem *CCSymbolTable::CloneDeep (CCodeChain *pCC)
 
 	//	Add all the items to the table
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CString sKey = m_Symbols.GetKey(i);
 		CObject *pValue = m_Symbols.GetValue(i);
@@ -257,7 +257,7 @@ void CCSymbolTable::DeleteAll (CCodeChain *pCC, bool bLambdaOnly)
 	{
 	int i;
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CObject *pEntry = m_Symbols.GetValue(i);
 		ICCItem *pItem = (ICCItem *)pEntry;
@@ -311,7 +311,7 @@ void CCSymbolTable::DestroyItem (void)
 
 	//	Release all the entries
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CObject *pValue = m_Symbols.GetValue(i);
 		ICCItem *pItem = (ICCItem *)pValue;
@@ -337,12 +337,12 @@ int CCSymbolTable::FindOffset (CCodeChain *pCC, ICCItem *pKey)
 //	change if any new entries are added to the table.
 
 	{
-	int iOffset;
+	size_t iOffset;
 
 	if (m_Symbols.LookupEx(pKey->GetStringValue(), &iOffset) != NOERROR)
 		iOffset = -1;
 
-	return iOffset;
+	return ((int)iOffset == (int)(size_t)-1 ? -1 : (int)iOffset);
 	}
 
 int CCSymbolTable::FindValue (ICCItem *pValue)
@@ -354,7 +354,7 @@ int CCSymbolTable::FindValue (ICCItem *pValue)
 	{
 	int i;
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		if ((CObject *)pValue == m_Symbols.GetValue(i))
 			return i;
@@ -372,7 +372,7 @@ ICCItem *CCSymbolTable::GetElement (int iIndex) const
 //	NOTE: No need to discard the result, but be careful of use.
 
 	{
-	if (iIndex < 0 || iIndex >= m_Symbols.GetCount())
+	if (iIndex < 0 || iIndex >= m_Symbols.GetCountInt())
 		return NULL;
 
 	return dynamic_cast<ICCItem *>(m_Symbols.GetValue(iIndex));
@@ -416,7 +416,7 @@ ICCItem *CCSymbolTable::GetElement (CCodeChain *pCC, int iIndex) const
 //	Returns a key/value pair
 
 	{
-	if (iIndex < 0 || iIndex >= m_Symbols.GetCount())
+	if (iIndex < 0 || iIndex >= m_Symbols.GetCountInt())
 		return pCC->CreateNil();
 
 	CCLinkedList *pList = (CCLinkedList *)pCC->CreateLinkedList();
@@ -478,7 +478,7 @@ ICCItem *CCSymbolTable::ListSymbols (CCodeChain *pCC)
 	{
 	//	If there are no symbols, return Nil
 
-	if (m_Symbols.GetCount() == 0)
+	if (m_Symbols.GetCountInt() == 0)
 		return pCC->CreateNil();
 
 	//	Otherwise, make a list
@@ -495,7 +495,7 @@ ICCItem *CCSymbolTable::ListSymbols (CCodeChain *pCC)
 
 		pList = (CCLinkedList *)pResult;
 
-		for (i = 0; i < m_Symbols.GetCount(); i++)
+		for (i = 0; i < m_Symbols.GetCountInt(); i++)
 			{
 			ICCItem *pItem;
 			CString sKey = m_Symbols.GetKey(i);
@@ -602,7 +602,7 @@ CString CCSymbolTable::Print (DWORD dwFlags) const
 
 	//	Write items
 
-	for (i = 0; i < m_Symbols.GetCount(); i++)
+	for (i = 0; i < m_Symbols.GetCountInt(); i++)
 		{
 		CString sKey = CCString::Print(m_Symbols.GetKey(i));
 		Stream.Write(sKey.GetASCIIZPointer(), sKey.GetLength());
@@ -646,7 +646,7 @@ ICCItem *CCSymbolTable::SimpleLookup (CCodeChain *pCC, ICCItem *pKey, bool *retb
 	CObject *pNew;
 	ICCItem *pBinding;
 
-	int iOffset;
+	size_t iOffset;
 	if (error = m_Symbols.LookupEx(pKey->GetStringValue(), &iOffset))
 		{
 		if (error == ERR_NOTFOUND)
@@ -668,7 +668,7 @@ ICCItem *CCSymbolTable::SimpleLookup (CCodeChain *pCC, ICCItem *pKey, bool *retb
 		*retbFound = true;
 
 	if (retiOffset)
-		*retiOffset = iOffset;
+		*retiOffset = (int)iOffset;
 
 	return pBinding->Reference();
 	}

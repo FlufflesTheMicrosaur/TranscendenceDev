@@ -84,7 +84,7 @@ void Kernel::CompressRunLengthByte (IWriteStream *pOutput, IReadBlock *pInput)
 					|| (pPos - pMixedEnd) == MIN_LONG_RUN 
 					|| (pMixedEnd - pStart) == MAX_RUN_LENGTH_BYTE)
 				{
-				int iRunLen = (pMixedEnd - pStart);
+				int iRunLen = (int)(pMixedEnd - pStart);
 
 				byValue = RUN_CODE_MIXED;
 				pOutput->Write((char *)&byValue, 1);
@@ -107,7 +107,7 @@ void Kernel::CompressRunLengthByte (IWriteStream *pOutput, IReadBlock *pInput)
 					|| (*pPos != *pStart)
 					|| (pPos - pStart) == MAX_RUN_LENGTH_BYTE)
 				{
-				int iRunLen = (pPos - pStart);
+				int iRunLen = (int)(pPos - pStart);
 
 				byValue = (BYTE)iRunLen;
 				pOutput->Write((char *)&byValue, 1);

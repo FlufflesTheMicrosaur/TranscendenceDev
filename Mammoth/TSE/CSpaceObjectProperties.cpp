@@ -220,7 +220,7 @@ TPropertyHandler<CSpaceObject> CSpaceObject::m_BasePropertyTable = std::array<TP
 				ICCItemPtr pResult(ICCItem::List);
 				for (int i = 0; i < List.GetCount(); i++)
 					{
-					int iIndex = (int)List.GetItemData(i);
+					int iIndex = (int)(size_t)List.GetItemData(i);
 
 					ICCItemPtr pItem(CreateListFromItem(ItemList.GetItem(iIndex)));
 					pResult->Append(pItem);
@@ -510,7 +510,7 @@ ICCItem *CSpaceObject::GetPropertyCompatible (CCodeChainCtx &Ctx, const CString 
 			{
 			CSpaceObject *pObj = m_SubscribedObjs.GetObj(i);
 			if (!pObj->IsDestroyed())
-				pResult->AppendInteger((int)pObj);
+				pResult->AppendPointer(pObj);
 			}
 
 		if (pResult->GetCount() == 0)

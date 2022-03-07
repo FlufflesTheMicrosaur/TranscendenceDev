@@ -470,13 +470,13 @@ int CJSONValue::GetCount (void) const
 		case typeArray:
 			{
 			ArrayType *pArray = (ArrayType *)m_pValue;
-			return pArray->GetCount();
+			return (int)pArray->GetCount();
 			}
 
 		case typeObject:
 			{
 			ObjectType *pObj = (ObjectType *)m_pValue;
-			return pObj->GetCount();
+			return (int)pObj->GetCount();
 			}
 
 		default:

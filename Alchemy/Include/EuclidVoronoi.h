@@ -9,9 +9,9 @@ class CVoronoiTessellation
 	{
 	public:
 		int GetNeighbor (int iSiteIndex, int iIndex) const { return m_Sites[iSiteIndex].Neighbors[iIndex]; }
-		int GetNeighborCount (int iSiteIndex) const { return m_Sites[iSiteIndex].Neighbors.GetCount(); }
+		int GetNeighborCount (int iSiteIndex) const { return (int)m_Sites[iSiteIndex].Neighbors.GetCount(); }
 		const CLine &GetNeighborEdge (int iSiteIndex, int iIndex) const { return m_Edges[m_Sites[iSiteIndex].Edges[iIndex]].Edge; }
-		int GetSiteCount (void) const { return m_Sites.GetCount(); }
+		int GetSiteCount (void) const { return (int)m_Sites.GetCount(); }
 		DWORD GetSiteData (int iIndex) const { return m_Sites[iIndex].dwData; }
 		void GetSiteNeighbors (int iIndex, TArray<int> *retNeighbors) const { *retNeighbors = m_Sites[iIndex].Neighbors; }
 		const CVector &GetSiteOrigin (int iIndex) const { return m_Sites[iIndex].Origin; }

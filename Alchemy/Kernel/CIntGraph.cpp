@@ -96,7 +96,7 @@ int CIntGraph::AllocConnection (void)
 		{
 		//	If we have no more free connections, allocate a new one
 
-		iConnection = m_Connections.GetCount();
+		iConnection = (int)m_Connections.GetCount();
 		pConnection = m_Connections.Insert();
 		}
 	else
@@ -128,7 +128,7 @@ int CIntGraph::AllocNode (void)
 		{
 		//	If we have no more free nodes, allocate a new one and return it
 
-		iNodeIndex = m_Nodes.GetCount();
+		iNodeIndex = (int)m_Nodes.GetCount();
 		pNode = m_Nodes.Insert();
 		}
 
@@ -448,7 +448,7 @@ int CIntGraph::GetNodeConnections (DWORD dwID, TArray<DWORD> *retConnections) co
 		pConnection = GetNextConnection(pConnection);
 		}
 
-	return retConnections->GetCount();
+	return (int)retConnections->GetCount();
 	}
 
 int CIntGraph::GetNodeCount (void)
@@ -459,11 +459,11 @@ int CIntGraph::GetNodeCount (void)
 
 	{
 	if (m_iFirstFreeNode == -1)
-		return m_Nodes.GetCount();
+		return (int)m_Nodes.GetCount();
 	else
 		{
 		CreateNodeIndex();
-		return m_NodeIndex.GetCount();
+		return (int)m_NodeIndex.GetCount();
 		}
 	}
 
@@ -484,7 +484,7 @@ int CIntGraph::GetNodeForwardConnections (DWORD dwID, TArray<DWORD> *retConnecti
 		pConnection = GetNextConnection(pConnection);
 		}
 
-	return retConnections->GetCount();
+	return (int)retConnections->GetCount();
 	}
 
 DWORD CIntGraph::GetNodeID (int iIndex)

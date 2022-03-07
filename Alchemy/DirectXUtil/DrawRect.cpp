@@ -104,8 +104,8 @@ void CGDraw::RectGradient (CG32bitImage &Dest, int xDest, int yDest, int cxDest,
 		CG32bitPixel *pPos = Dest.GetPixelPos(x, y);
 		CG32bitPixel *pPosEnd = pPos + cxWidth;
 		CG32bitPixel *pColEnd = Dest.GetPixelPos(x, y + cyHeight);
-		int iRowSize = (Dest.GetPixelPos(0, 1) - Dest.GetPixelPos(0, 0));
-		int iColSize = pColEnd - pPos;
+		int iRowSize = (int)(Dest.GetPixelPos(0, 1) - Dest.GetPixelPos(0, 0));
+		int iColSize = (int)(pColEnd - pPos);
 
 		while (pPos < pPosEnd)
 			{

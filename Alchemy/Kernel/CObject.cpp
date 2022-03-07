@@ -106,7 +106,7 @@ BOOL CObject::CopyData (PDATADESCSTRUCT pPos, BYTE **iopSource, BYTE **iopDest)
 			case DATADESC_OPCODE_ALLOC_MEMORY:
 				{
 				int i;
-				BYTE *pSourceMem = (BYTE *)*((DWORD *)pSource);
+				BYTE *pSourceMem = (BYTE *)*((size_t *)pSource);
 				BYTE *pDestMem;
 
 				//	Allocate a block of memory
@@ -117,14 +117,13 @@ BOOL CObject::CopyData (PDATADESCSTRUCT pPos, BYTE **iopSource, BYTE **iopDest)
 					pDestMem = (BYTE *)MemAlloc(iAllocSize);
 					if (pDestMem == NULL)
 						goto Fail;
-
-					*((DWORD *)pDest) = (DWORD)pDestMem;
+					*((size_t*)pDest) = (size_t)pDestMem;
 
 					for (i = 0; i < iAllocSize; i++)
 						*pDestMem++ = *pSourceMem++;
 					}
 				else
-					*((DWORD *)pDest) = 0;
+					*((size_t*)pDest) = 0;
 
 				pSource += sizeof(LPVOID);
 				pDest += sizeof(LPVOID);
@@ -151,7 +150,7 @@ BOOL CObject::CopyData (PDATADESCSTRUCT pPos, BYTE **iopSource, BYTE **iopDest)
 					if (pCopy == NULL)
 						return NULL;
 
-					*((DWORD *)pDest) = (DWORD)pCopy;
+					*((size_t*)pDest) = (size_t)pCopy;
 					}
 				else
 					*((DWORD *)pDest) = 0;
@@ -444,7 +443,7 @@ ALERROR CObject::LoadHandler (CUnarchiver *pUnarchiver)
 					goto Fail;
 					}
 
-				*((DWORD *)pDest) = (DWORD)pBlock;
+				*((size_t*)pDest) = (size_t)pBlock;
 
 				//	Read the block
 
@@ -606,7 +605,7 @@ ALERROR CObject::SaveHandler (CArchiver *pArchiver)
 
 				for (i = 0; i < pPos->iCount; i++)
 					{
-					int iID;
+					size_t iID;
 
 					if (error = pArchiver->Reference2ID(*(void **)pSource, &iID))
 						goto Fail;
@@ -640,7 +639,7 @@ ALERROR CObject::SaveHandler (CArchiver *pArchiver)
 
 			case DATADESC_OPCODE_ALLOC_MEMORY:
 				{
-				BYTE *pSourceMem = (BYTE *)*((DWORD *)pSource);
+				BYTE *pSourceMem = (BYTE *)*((size_t*)pSource);
 
 				//	Write out the block
 

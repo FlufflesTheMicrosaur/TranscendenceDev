@@ -78,7 +78,7 @@ void GenerateWordList (const CString &sDataFile, CXMLElement *pCmdLine)
 
 	//	Print out the word list
 
-	for (i = 0; i < WordList.GetCount(); i++)
+	for (i = 0; i < WordList.GetCountInt(); i++)
 		printf("%s\n", WordList.GetKey(i).GetASCIIZPointer());
 	}
 

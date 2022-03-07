@@ -128,9 +128,9 @@ void CMissionList::DeleteMission (CMission *pMission)
 //	Delete the given mission
 
 	{
-	int iIndex;
+	size_t iIndex;
 	if (m_List.Find(pMission, &iIndex))
-		DeleteMission(iIndex);
+		DeleteMission((int)iIndex);
 	}
 
 void CMissionList::DeleteAll (void)

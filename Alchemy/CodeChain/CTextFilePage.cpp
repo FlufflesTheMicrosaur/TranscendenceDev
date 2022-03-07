@@ -69,7 +69,7 @@ ICCItem *CTextFilePage::EnumGetNext (CCodeChain &CC, SPageEnumCtx &Ctx)
 
 	//	Set context
 
-	Ctx.dwPos1 = pPos - m_pFile->GetPointer(0);
+	Ctx.dwPos1 = (int)(pPos - m_pFile->GetPointer(0));
 
 	//	Done
 

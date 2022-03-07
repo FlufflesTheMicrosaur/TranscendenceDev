@@ -378,8 +378,8 @@ class CCompositeImageSelector
 		struct SEntry
 			{
 			DWORD dwID;
-			int iVariant;					//	If -1 and dwExtra != 0, then this is an ItemType
-			DWORD dwExtra;					//	Either 0 or a pointer to CItemType or CShipClass.
+			int iVariant;					//	If -1 and pExtra != 0, then this is an ItemType
+			void* pExtra;					//	Either 0 or a pointer to CItemType or CShipClass.
 			};
 
 		const SEntry *FindEntry (DWORD dwID) const;

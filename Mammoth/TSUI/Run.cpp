@@ -87,7 +87,7 @@ bool CHumanInterface::CreateMainWindow (HINSTANCE hInst, int nCmdShow, LPSTR lpC
 	ZeroMemory(&wc, sizeof(wc));
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_DBLCLKS;
-	wc.lpfnWndProc = MainWndProc;
+	wc.lpfnWndProc = (WNDPROC)MainWndProc;
 	wc.hInstance = hInst;
 	wc.hIcon = m_Options.hIcon;
 	wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -214,7 +214,7 @@ void CHumanInterface::MainLoop (void)
 	timeEndPeriod(TIMER_RESOLUTION);
 	}
 
-LONG APIENTRY CHumanInterface::MainWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam)
+LONG_PTR APIENTRY CHumanInterface::MainWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 //	MainWndProc
 //
@@ -284,35 +284,35 @@ LONG APIENTRY CHumanInterface::MainWndProc (HWND hWnd, UINT message, UINT wParam
 			return 0;
 
 		case WM_HI_TASK_COMPLETE:
-			g_pHI->OnTaskComplete(wParam, lParam);
+			g_pHI->OnTaskComplete((int)wParam, (DWORD)lParam);
 			return 0;
 
 		case WM_KEYDOWN:
-			return g_pHI->WMKeyDown((int)wParam, lParam);
+			return g_pHI->WMKeyDown((int)wParam, (DWORD)lParam);
 
 		case WM_KEYUP:
-			return g_pHI->WMKeyUp((int)wParam, lParam);
+			return g_pHI->WMKeyUp((int)wParam, (DWORD)lParam);
 
 		case WM_LBUTTONDBLCLK:
-			return g_pHI->WMLButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMLButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_LBUTTONDOWN:
-			return g_pHI->WMLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_LBUTTONUP:
-			return g_pHI->WMLButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMLButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_MBUTTONDBLCLK:
-			return g_pHI->WMMButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMMButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_MBUTTONDOWN:
-			return g_pHI->WMMButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMMButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_MBUTTONUP:
-			return g_pHI->WMMButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMMButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_MOUSEMOVE:
-			return g_pHI->WMMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_MOUSEWHEEL:
 			return g_pHI->WMMouseWheel((int)(short)HIWORD(wParam), (int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (DWORD)LOWORD(wParam));
@@ -330,13 +330,13 @@ LONG APIENTRY CHumanInterface::MainWndProc (HWND hWnd, UINT message, UINT wParam
 			}
 
 		case WM_RBUTTONDBLCLK:
-			return g_pHI->WMRButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMRButtonDblClick((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_RBUTTONDOWN:
-			return g_pHI->WMRButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMRButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_RBUTTONUP:
-			return g_pHI->WMRButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
+			return g_pHI->WMRButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), (int)wParam);
 
 		case WM_SIZE:
 			return g_pHI->WMSize((int)LOWORD(lParam), (int)HIWORD(lParam), (int)wParam);

@@ -70,7 +70,7 @@ CString::CString (const char *pString) :
 		Transcribe(pString, -1);
 	}
 
-CString::CString (const char *pString, int iLength) :
+CString::CString (const char *pString, size_t iLength) :
 		m_pStore(NULL)
 
 //	CString constructor
@@ -90,7 +90,7 @@ CString::CString (CharacterSets iCharSet, const char *pString) :
 		{
 		case csUTF8:
 			{
-			int iUTF8Len = strlen(pString);
+			int iUTF8Len = (int)strlen(pString);
 
 			//	Optimistically assume that we can fit each character into a Unicode
 			//	character.
@@ -173,7 +173,7 @@ CString::CString (CharacterSets iCharSet, const char *pString) :
 		}
 	}
 
-CString::CString (const char *pString, int iLength, BOOL bExternal) :
+CString::CString (const char *pString, size_t iLength, BOOL bExternal) :
 		m_pStore(NULL)
 
 //	CString constructor
@@ -196,8 +196,8 @@ CString::CString (const char *pString, int iLength, BOOL bExternal) :
 					//	A negative value means that this is an external
 					//	read-only storage
 
-					m_pStore->iAllocSize = -iLength;
-					m_pStore->iLength = iLength;
+					m_pStore->iAllocSize = -(int)iLength;
+					m_pStore->iLength = (int)iLength;
 					m_pStore->pString = const_cast<char *>(pString);
 					}
 				}
@@ -221,8 +221,8 @@ CString::CString (const SConstString &String) :
 			//	A negative value means that this is an external
 			//	read-only storage
 
-			m_pStore->iAllocSize = -String.iLen;
-			m_pStore->iLength = String.iLen;
+			m_pStore->iAllocSize = -(int)String.iLen;
+			m_pStore->iLength = (int)String.iLen;
 			m_pStore->pString = const_cast<char *>(String.pszString);
 			}
 		}
@@ -449,7 +449,7 @@ void CString::Append (LPCSTR pString, int iLength, DWORD dwFlags)
 
 	{
 	if (iLength == -1)
-		iLength = strlen(pString);
+		iLength = (int)strlen(pString);
 
 	//	Resize allocation
 
@@ -497,7 +497,7 @@ void CString::Capitalize (CapitalizeOptions iOption)
 			{
 			//	Capitalize first letter
 
-			*pPos = (char)(DWORD)::CharUpper((LPTSTR)(int)*pPos);
+			*pPos = (char)(size_t)::CharUpper((LPTSTR)(size_t)*pPos);
 			break;
 			}
 
@@ -606,7 +606,7 @@ char *CString::GetPointer (void) const
 		return const_cast<char *>("");
 	}
 
-char *CString::GetWritePointer (int iLength)
+char *CString::GetWritePointer (size_t iLength)
 
 //	GetWritePointer
 //
@@ -614,15 +614,15 @@ char *CString::GetWritePointer (int iLength)
 //	On return, the buffer is guaranteed to be at least iLength.
 
 	{
-	Size(iLength + 1, FLAG_PRESERVE_CONTENTS);
+	Size((int)iLength + 1, FLAG_PRESERVE_CONTENTS);
 
-	m_pStore->iLength = iLength;
+	m_pStore->iLength = (int)iLength;
 	m_pStore->pString[iLength] = '\0';
 
 	return m_pStore->pString;
 	}
 
-void CString::GrowToFit (int iLength)
+void CString::GrowToFit (size_t iLength)
 
 //	GrowToFit
 //
@@ -630,7 +630,7 @@ void CString::GrowToFit (int iLength)
 
 	{
 	bool bInit = (m_pStore == NULL);
-	Size(iLength + 1, FLAG_PRESERVE_CONTENTS);
+	Size((int)iLength + 1, FLAG_PRESERVE_CONTENTS);
 	if (bInit)
 		{
 		m_pStore->iLength = 0;
@@ -878,7 +878,7 @@ void CString::Size (int iLength, DWORD dwFlags)
 	ASSERT(m_pStore->iAllocSize >= iLength);
 	}
 
-void CString::Transcribe (const char *pString, int iLen)
+void CString::Transcribe (const char *pString, size_t iLen)
 
 //	Transcribe
 //
@@ -913,19 +913,19 @@ void CString::Transcribe (const char *pString, int iLen)
 
 	//	Allocate size
 
-	Size(iLen+1);
+	Size((int)iLen+1);
 
 	for (i = 0; i < iLen; i++)
 		m_pStore->pString[i] = pString[i];
 
-	m_pStore->iLength = iLen;
+	m_pStore->iLength = (int)iLen;
 
 	//	NULL terminate
 
 	m_pStore->pString[iLen] = '\0';
 	}
 
-void CString::Truncate (int iLength)
+void CString::Truncate (size_t iLength)
 
 //	Truncate
 //
@@ -944,11 +944,11 @@ void CString::Truncate (int iLength)
 
 	//	Call this just to make sure that we have our own copy
 
-	Size(iLength+1, FLAG_PRESERVE_CONTENTS);
+	Size((int)iLength+1, FLAG_PRESERVE_CONTENTS);
 
 	//	Set the new length
 
-	m_pStore->iLength = iLength;
+	m_pStore->iLength = (int)iLength;
 	m_pStore->pString[iLength] = '\0';
 	}
 
@@ -1718,7 +1718,7 @@ CString Kernel::strFromDouble (double rValue, int iDecimals)
 	//	Figure out how much we wrote
 
 	char *pPos = sResult.GetASCIIZPointer();
-	int iLen = strlen(pPos);
+	int iLen = (int)strlen(pPos);
 
 	//	If we end in a '.' then add a terminating 0
 
@@ -1749,6 +1749,20 @@ CString Kernel::strFromInt (int iInteger, bool bSigned)
 		iLen = wsprintf(szString, "%d", iInteger);
 	else
 		iLen = wsprintf(szString, "%u", iInteger);
+
+	CString sString(szString, iLen);
+	return sString;
+	}
+
+CString Kernel::strFromPtr (void* pPtr)
+
+//	CStringFromInt
+//
+//	Converts an integer to a string
+
+	{
+	char szString[256];
+	int iLen = wsprintf(szString, "%p", pPtr);
 
 	CString sString(szString, iLen);
 	return sString;
@@ -1927,7 +1941,7 @@ CString Kernel::strConvertToToken (const CString &sString, bool bLowercase)
 		if (strIsAlphaNumeric(pSrc))
 			{
 			if (bLowercase)
-				*pDest++ = (char)(DWORD)CharLower((LPTSTR)(BYTE)(*pSrc++));
+				*pDest++ = (char)(size_t)CharLower((LPTSTR)(BYTE)(*pSrc++));
 			else
 				*pDest++ = *pSrc++;
 			}
@@ -2099,7 +2113,7 @@ bool Kernel::strIsUpper (const char *pPos)
 //	Returns TRUE if this is an uppercase character.
 
 	{
-	char chLower = (char)(DWORD)::CharLowerA((LPSTR)(BYTE)*pPos);
+	char chLower = (char)(size_t)::CharLowerA((LPSTR)(BYTE)*pPos);
 	return (chLower != *pPos);
 	}
 
@@ -2754,12 +2768,12 @@ CString Kernel::strTitleCapitalize (const CString &sString, const char **pExcept
 
 	//	The first word is capitalized
 
-	*Words[0] = (char)(DWORD)::CharUpper((LPSTR)*Words[0]);
+	*Words[0] = (char)(size_t)::CharUpper((LPSTR)*Words[0]);
 
 	//	The last word is capitalized
 
 	if (Words.GetCount() > 1)
-		*Words[Words.GetCount() - 1] = (char)(DWORD)::CharUpper((LPSTR)*Words[Words.GetCount() - 1]);
+		*Words[Words.GetCount() - 1] = (char)(size_t)::CharUpper((LPSTR)*Words[Words.GetCount() - 1]);
 
 	//	All the words in between are capitalized if they are not on the
 	//	exception list.
@@ -2777,7 +2791,7 @@ CString Kernel::strTitleCapitalize (const CString &sString, const char **pExcept
 				}
 
 		if (!bException)
-			*Words[i] = (char)(DWORD)::CharUpper((LPSTR)*Words[i]);
+			*Words[i] = (char)(size_t)::CharUpper((LPSTR)*Words[i]);
 		}
 
 	//	Don

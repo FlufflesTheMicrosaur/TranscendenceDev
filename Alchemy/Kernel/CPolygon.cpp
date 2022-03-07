@@ -17,7 +17,7 @@ bool CPolygon::PointIntersects (const CVector &vA, bool bIncludeHoles) const
 	{
 	bool bInside = false;
 
-	for (int i = 0, j = m_vPoints.GetCount() - 1; i < m_vPoints.GetCount(); j = i++)
+	for (int i = 0, j = (int)m_vPoints.GetCount() - 1; i < (int)m_vPoints.GetCount(); j = i++)
 		{
 		if ((m_vPoints[i].Y() >= vA.Y()) != (m_vPoints[j].Y() >= vA.Y())
 				&& (vA.X() <= (m_vPoints[j].X() - m_vPoints[i].X()) * (vA.Y() - m_vPoints[i].Y()) / (m_vPoints[j].Y() - m_vPoints[i].Y()) + m_vPoints[i].X()))

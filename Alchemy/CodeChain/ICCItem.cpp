@@ -56,6 +56,18 @@ void ICCItem::AppendInteger (int iValue)
 	pItem->Discard();
 	}
 
+void ICCItem::AppendPointer(void* pValue)
+
+//	AppendInteger
+//
+//	Inserts an element in a list
+
+	{
+	ICCItem* pItem = CCodeChain::CreatePointer(pValue);
+	Append(pItem);
+	pItem->Discard();
+	}
+
 void ICCItem::AppendString (const CString &sValue)
 
 //	AppendString
@@ -193,6 +205,20 @@ int ICCItem::GetIntegerAt (const CString &sKey, int iDefault) const
 		return iDefault;
 
 	return pItem->GetIntegerValue();
+	}
+
+void* ICCItem::GetPointerAt(const CString& sKey, void* pDefault) const
+
+//	GetIntegerAt
+//
+//	Returns an integer (0 if not found)
+
+	{
+	ICCItem* pItem = GetElement(sKey);
+	if (pItem == NULL || pItem->IsNil())
+		return pDefault;
+
+	return pItem->GetPointerValue();
 	}
 
 CString ICCItem::GetStringAt (const CString &sKey, const CString &sDefault) const
@@ -344,6 +370,20 @@ void ICCItem::SetIntegerAt (const CString &sKey, int iValue)
 	{
 	ICCItem *pKey = CCodeChain::CreateString(sKey);
 	ICCItem *pValue = CCodeChain::CreateInteger(iValue);
+	AddEntry(pKey, pValue);
+	pKey->Discard();
+	pValue->Discard();
+	}
+
+void ICCItem::SetPointerAt(const CString& sKey, void* vpValue)
+
+//	SetIntegerAt
+//
+//	Set key-value pair.
+
+	{
+	ICCItem* pKey = CCodeChain::CreateString(sKey);
+	ICCItem* pValue = CCodeChain::CreatePointer(vpValue);
 	AddEntry(pKey, pValue);
 	pKey->Discard();
 	pValue->Discard();

@@ -30,7 +30,7 @@ CG16bitLinePainter::ESlopeTypes CG16bitLinePainter::CalcIntermediates (const CG1
 
 	//	Calculate row increment
 
-	m_iPosRowInc = Image.GetRowStart(1) - Image.GetRowStart(0);
+	m_iPosRowInc = (int)(Image.GetRowStart(1) - Image.GetRowStart(0));
 
 	//	If a zero-length line, then we're done.
 

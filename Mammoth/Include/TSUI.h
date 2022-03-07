@@ -247,7 +247,7 @@ class CKeyboardTracker
 	public:
 		int GetKeyDownCount (void) { return m_KeysDown.GetCount(); }
 		void OnKeyDown (int iVirtKey) { m_KeysDown.Insert(iVirtKey); }
-		void OnKeyUp (int iVirtKey) { int iIndex; if (m_KeysDown.Find(iVirtKey, &iIndex)) m_KeysDown.Delete(iIndex); }
+		void OnKeyUp (int iVirtKey) { size_t iIndex; if (m_KeysDown.Find(iVirtKey, &iIndex)) m_KeysDown.Delete(iIndex); }
 
 	private:
 		TArray<int> m_KeysDown;
@@ -831,7 +831,7 @@ class CHumanInterface
 		LONG WMSize (int cxWidth, int cyHeight, int iSize);
 		LONG WMTimer (DWORD dwID);
 
-		static LONG APIENTRY MainWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam);
+		static LONG_PTR APIENTRY MainWndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 		SHIOptions m_Options;
 		IHIController *m_pController;

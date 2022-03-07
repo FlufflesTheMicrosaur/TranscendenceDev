@@ -229,7 +229,8 @@ class CFilterShimmer : public TBlt<CFilterShimmer>
 
 		CG32bitPixel Filter (CG32bitPixel rgbSrc, CG32bitPixel *pDest) const
 			{
-			if (PERM(((DWORD)pDest >> 2) * LARGE_PRIME2 + m_dwRnd) < m_byOpacity)
+			//We are using the pointer as part of the rng seed, not storing it
+			if (PERM(((DWORD)*(DWORD*)&pDest >> 2) * LARGE_PRIME2 + m_dwRnd) < m_byOpacity)
 				return rgbSrc;
 			else
 				return CG32bitPixel::Null();

@@ -45,7 +45,7 @@ void mathVoronoiEx (const TArray<CVector> &Points, TArray<SVoronoiEdge> *retSegm
 		}
 
 	VoronoiDiagramGenerator Generator;
-	Generator.generateVoronoi(pInputX, pInputY, Points.GetCount(), rMinX, rMaxX, rMinY, rMaxY, 0.0, false);
+	Generator.generateVoronoi(pInputX, pInputY, (int)Points.GetCount(), rMinX, rMaxX, rMinY, rMaxY, 0.0, false);
 
 	//	Get the output
 
@@ -114,7 +114,7 @@ void mathVoronoi (const TArray<CVector> &Points, TArray<CLine> *retSegments, Met
 		}
 
 	VoronoiDiagramGenerator Generator;
-	Generator.generateVoronoi(pInputX, pInputY, Points.GetCount(), rMinX, rMaxX, rMinY, rMaxY, 0.0, false);
+	Generator.generateVoronoi(pInputX, pInputY, (int)Points.GetCount(), rMinX, rMaxX, rMinY, rMaxY, 0.0, false);
 
 	//	Get the output
 

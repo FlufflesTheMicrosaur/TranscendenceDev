@@ -314,7 +314,7 @@ void CTranscendenceWnd::ShowCommsMenu (CSpaceObject *pObj)
 						sKey,
 						sName,
 						CMenuData::FLAG_SORT_BY_KEY,
-						(void*)i);
+						(void*)(size_t)i);
 			}
 
 		m_MenuDisplay.Invalidate();
@@ -344,7 +344,7 @@ bool CTranscendenceWnd::ShowCommsSquadronMenu (void)
 		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("B"), SO_BREAK_AND_ATTACK, 0, (void*)msgBreakAndAttack);
 
 	if ((dwStatus & resCanFormUp) || (dwStatus & resCanAbortAttack))
-		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("F"), SO_FORM_UP, 0, (void*)msgFormUp, (void*)0xffffffff);
+		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("F"), SO_FORM_UP, 0, (void*)(size_t)msgFormUp, (void*)(size_t)0xffffffff);
 
 	if (dwStatus & resCanAttackInFormation)
 		m_MenuData.AddMenuItem(NULL_STR, CONSTLIT("I"), SO_ATTACK_IN_FORMATION, 0, (void*)msgAttackInFormation);

@@ -142,17 +142,17 @@ void CLabelArranger::ArrangeSideColumns (TArray<SLabelDesc> &Labels) const
     //  Generate two sorted columns, left and right
 
     TSortMap<Metric, int> LeftCol(DescendingSort);
-    LeftCol.GrowToFit(Labels.GetCount());
+    LeftCol.GrowToFit((int)Labels.GetCount());
 
     TSortMap<Metric, int> RightCol(DescendingSort);
-    RightCol.GrowToFit(Labels.GetCount());
+    RightCol.GrowToFit((int)Labels.GetCount());
 
 	//	Keep track of unbound labels, sorted alphabetically
 
 	TSortMap<CString, int> Unbound;
 
     int cxColumn = 0;
-    for (i = 0; i < Labels.GetCount(); i++)
+    for (i = 0; i < (int)Labels.GetCount(); i++)
         {
         const SLabelDesc &Label = Labels[i];
 

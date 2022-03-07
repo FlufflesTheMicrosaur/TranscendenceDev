@@ -125,13 +125,13 @@ template <class OBJ> class TSharedPtr
 template <class OBJ> bool operator== (const TSharedPtr<OBJ> &lhs, const TSharedPtr<OBJ> &rhs) { return (OBJ *)lhs == (OBJ *)rhs; }
 template <class OBJ> bool operator!= (const TSharedPtr<OBJ> &lhs, const TSharedPtr<OBJ> &rhs) { return (OBJ *)lhs != (OBJ *)rhs; }
 
-template <class OBJ> bool operator== (const TSharedPtr<OBJ> &lhs, int rhs) { return ((int)(OBJ *)lhs == rhs); }
-template <class OBJ> bool operator== (int lhs, const TSharedPtr<OBJ> &rhs) { return (lhs == (int)(OBJ *)rhs); }
+template <class OBJ> bool operator== (const TSharedPtr<OBJ> &lhs, int rhs) { return ((OBJ *)lhs == (OBJ*)(size_t)rhs); }
+template <class OBJ> bool operator== (int lhs, const TSharedPtr<OBJ> &rhs) { return ((OBJ*)(size_t)lhs == (OBJ *)rhs); }
 template <class OBJ> bool operator== (const TSharedPtr<OBJ> &lhs, std::nullptr_t rhs) { return !(bool)lhs; }
 template <class OBJ> bool operator== (std::nullptr_t lhs, const TSharedPtr<OBJ> &rhs) { return !(bool)rhs; }
 
-template <class OBJ> bool operator!= (const TSharedPtr<OBJ> &lhs, int rhs) { return ((int)(OBJ *)lhs != rhs); }
-template <class OBJ> bool operator!= (int lhs, const TSharedPtr<OBJ> &rhs) { return (lhs != (int)(OBJ *)rhs); }
+template <class OBJ> bool operator!= (const TSharedPtr<OBJ> &lhs, int rhs) { return ((OBJ *)lhs != (OBJ*)(size_t)rhs); }
+template <class OBJ> bool operator!= (int lhs, const TSharedPtr<OBJ> &rhs) { return ((OBJ*)(size_t)lhs != (OBJ *)rhs); }
 template <class OBJ> bool operator!= (const TSharedPtr<OBJ> &lhs, std::nullptr_t rhs) { return (bool)lhs; }
 template <class OBJ> bool operator!= (std::nullptr_t lhs, const TSharedPtr<OBJ> &rhs) { return (bool)rhs; }
 
@@ -238,13 +238,13 @@ template <class OBJ> class TUniquePtr
 template <class OBJ> bool operator== (const TUniquePtr<OBJ> &lhs, const TUniquePtr<OBJ> &rhs) { return (OBJ *)lhs == (OBJ *)rhs; }
 template <class OBJ> bool operator!= (const TUniquePtr<OBJ> &lhs, const TUniquePtr<OBJ> &rhs) { return (OBJ *)lhs != (OBJ *)rhs; }
 
-template <class OBJ> bool operator== (const TUniquePtr<OBJ> &lhs, int rhs) { return ((int)(OBJ *)lhs == rhs); }
-template <class OBJ> bool operator== (int lhs, const TUniquePtr<OBJ> &rhs) { return (lhs == (int)(OBJ *)rhs); }
+template <class OBJ> bool operator== (const TUniquePtr<OBJ> &lhs, int rhs) { return ((OBJ *)lhs == (OBJ *)(size_t)rhs); }
+template <class OBJ> bool operator== (int lhs, const TUniquePtr<OBJ> &rhs) { return ((OBJ *)(size_t)lhs == (OBJ *)rhs); }
 template <class OBJ> bool operator== (const TUniquePtr<OBJ> &lhs, std::nullptr_t rhs) { return !(bool)lhs; }
 template <class OBJ> bool operator== (std::nullptr_t lhs, const TUniquePtr<OBJ> &rhs) { return !(bool)rhs; }
 
-template <class OBJ> bool operator!= (const TUniquePtr<OBJ> &lhs, int rhs) { return ((int)(OBJ *)lhs != rhs); }
-template <class OBJ> bool operator!= (int lhs, const TUniquePtr<OBJ> &rhs) { return (lhs != (int)(OBJ *)rhs); }
+template <class OBJ> bool operator!= (const TUniquePtr<OBJ> &lhs, int rhs) { return ((OBJ *)lhs != (OBJ *)(size_t)rhs); }
+template <class OBJ> bool operator!= (int lhs, const TUniquePtr<OBJ> &rhs) { return ((OBJ *)(size_t)lhs != (OBJ *)rhs); }
 template <class OBJ> bool operator!= (const TUniquePtr<OBJ> &lhs, std::nullptr_t rhs) { return (bool)lhs; }
 template <class OBJ> bool operator!= (std::nullptr_t lhs, const TUniquePtr<OBJ> &rhs) { return (bool)rhs; }
 

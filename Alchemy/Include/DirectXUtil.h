@@ -269,7 +269,7 @@ class CSoundMgr
 		int AllocChannel (void);
 		void CleanUpChannel (SChannel &Channel);
 		SChannel *GetChannel (int iChannel) { return &m_Channels[iChannel]; }
-		int GetChannelCount (void) { return m_Channels.GetCount(); }
+		int GetChannelCount (void) { return (int)m_Channels.GetCount(); }
 		ALERROR LoadWaveFile (HMMIO hFile, int *retiChannel);
 
 		LPDIRECTSOUND m_pDS;

@@ -21,17 +21,15 @@ bool CCAtomTable::AddEntry (ICCItem *pAtom, ICCItem *pEntry, bool bForceLocalAdd
 //	True for success.
 
 	{
-	ICCItem *pPrevEntry = NULL;
-	int iOldEntry;
+	ICCItem* pPrevEntry;
 	bool bAdded;
 
-	if (m_Table.ReplaceEntry(pAtom->GetIntegerValue(), (int)pEntry->Reference(), true, &bAdded, &iOldEntry) != NOERROR)
+	if (m_Table.ReplaceEntry(pAtom->GetIntegerValue(), pEntry->Reference(), true, &bAdded, (void**)&pPrevEntry) != NOERROR)
 		throw CException(ERR_MEMORY);
 
 	//	If we have a previous entry, decrement its refcount since we're
 	//	throwing it away
 
-	pPrevEntry = (ICCItem *)iOldEntry;
 	if (!bAdded && pPrevEntry)
 		pPrevEntry->Discard();
 
@@ -63,13 +61,12 @@ void CCAtomTable::DestroyItem (void)
 
 	//	Release all the entries
 
-	for (i = 0; i < m_Table.GetCount(); i++)
+	for (i = 0; i < m_Table.GetCountInt(); i++)
 		{
-		int iKey, iValue;
+		void* pKey;
 		ICCItem *pItem;
 
-		m_Table.GetEntry(i, &iKey, &iValue);
-		pItem = (ICCItem *)iValue;
+		m_Table.GetEntry(i, &pKey, (void**)&pItem);
 		pItem->Discard();
 		}
 
@@ -91,7 +88,7 @@ ICCItem *CCAtomTable::ListSymbols (CCodeChain *pCC)
 	{
 	//	If there are no symbols, return Nil
 
-	if (m_Table.GetCount() == 0)
+	if (m_Table.GetCountInt() == 0)
 		return pCC->CreateNil();
 
 	//	Otherwise, make a list
@@ -108,16 +105,16 @@ ICCItem *CCAtomTable::ListSymbols (CCodeChain *pCC)
 
 		pList = (CCLinkedList *)pResult;
 
-		for (i = 0; i < m_Table.GetCount(); i++)
+		for (i = 0; i < m_Table.GetCountInt(); i++)
 			{
 			ICCItem *pItem;
-			int iKey;
+			void* pKey;
 
-			m_Table.GetEntry(i, &iKey, NULL);
+			m_Table.GetEntry(i, &pKey, NULL);
 
 			//	Make an item for the symbol
 
-			pItem = pCC->CreateInteger(iKey);
+			pItem = pCC->CreatePointer(pKey);
 
 			//	Add the item to the list
 
@@ -149,10 +146,9 @@ ICCItem *CCAtomTable::LookupEx (CCodeChain *pCC, ICCItem *pAtom, bool *retbFound
 
 	{
 	ALERROR error;
-	int iValue;
 	ICCItem *pBinding;
 
-	if (error = m_Table.Find(pAtom->GetIntegerValue(), &iValue))
+	if (error = m_Table.Find(pAtom->GetIntegerValue(), (void**)&pBinding))
 		{
 		if (error == ERR_NOTFOUND)
 			{
@@ -165,7 +161,6 @@ ICCItem *CCAtomTable::LookupEx (CCodeChain *pCC, ICCItem *pAtom, bool *retbFound
 			throw CException(ERR_MEMORY);
 		}
 
-	pBinding = (ICCItem *)iValue;
 	ASSERT(pBinding);
 
 	if (retbFound)

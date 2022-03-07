@@ -37,20 +37,20 @@ CIDTable::~CIDTable (void)
 	{
 	if (m_bOwned)
 		{
-		int i;
+		size_t i;
 
-		for (i = 0; i < CPtrDictionary::GetCount(); i++)
+		for (i = 0; i < CPtrDictionary::GetCountInt(); i++)
 			{
-			int iKey;
+			void* pKey;
 			CObject *pValue;
 
-			CPtrDictionary::GetEntry(i, &iKey, (void **)&pValue);
+			CPtrDictionary::GetEntry(i, &pKey, (void **)&pValue);
 			delete pValue;
 			}
 		}
 	}
 
-int CIDTable::Compare (int iKey1, int iKey2) const
+int CIDTable::Compare (size_t iKey1, size_t iKey2) const
 
 //	Compare
 //
@@ -80,32 +80,32 @@ void CIDTable::CopyHandler (CObject *pOriginal)
 #endif
 	}
 
-int CIDTable::GetKey (int iEntry) const
+size_t CIDTable::GetKey (size_t iEntry) const
 
 //	GetKey
 //
 //	Returns the key of the nth entry
 
 	{
-	int iKey;
+	void* pKey;
 	void* pValue;
 
-	GetEntry(iEntry, &iKey, &pValue);
+	GetEntry(iEntry, &pKey, &pValue);
 
-	return iKey;
+	return (size_t)pKey;
 	}
 
-CObject *CIDTable::GetValue (int iEntry) const
+CObject *CIDTable::GetValue (size_t iEntry) const
 
 //	GetValue
 //
 //	Returns the value of the nth entry
 
 	{
-	int iKey;
+	void* pKey;
 	void* pValue;
 
-	GetEntry(iEntry, &iKey, &pValue);
+	GetEntry(iEntry, &pKey, &pValue);
 	return (CObject *)pValue;
 	}
 
@@ -145,11 +145,11 @@ ALERROR CIDTable::LoadHandler (CUnarchiver *pUnarchiver)
 	for (i = 0; i < (int)dwCount; i++)
 		{
 		CObject *pValue;
-		int iKey;
+		void* pKey;
 
 		//	Read in the key
 
-		if (error = pUnarchiver->ReadData((char *)&iKey, sizeof(DWORD)))
+		if (error = pUnarchiver->ReadData((char *)&pKey, sizeof(size_t)))
 			return error;
 
 		//	If we own the object, read in the object
@@ -161,7 +161,7 @@ ALERROR CIDTable::LoadHandler (CUnarchiver *pUnarchiver)
 			}
 		else if (m_bNoReference)
 			{
-			if (error = pUnarchiver->ReadData((char *)&pValue, sizeof(DWORD)))
+			if (error = pUnarchiver->ReadData((char *)&pValue, sizeof(size_t)))
 				return error;
 			}
 #ifndef LATER
@@ -170,13 +170,13 @@ ALERROR CIDTable::LoadHandler (CUnarchiver *pUnarchiver)
 			throw CException(ERR_FAIL);
 #endif
 
-		CPtrDictionary::SetEntry(i, iKey, (void*)pValue);
+		CPtrDictionary::SetEntry(i, pKey, (void*)pValue);
 		}
 
 	return NOERROR;
 	}
 
-ALERROR CIDTable::Lookup (int iKey, CObject **retpValue) const
+ALERROR CIDTable::Lookup (size_t iKey, CObject **retpValue) const
 
 //	Lookup
 //
@@ -186,14 +186,14 @@ ALERROR CIDTable::Lookup (int iKey, CObject **retpValue) const
 	ALERROR error;
 	void* pValue;
 
-	if (error = CPtrDictionary::Find(iKey, &pValue))
+	if (error = CPtrDictionary::Find((void*)iKey, &pValue))
 		return error;
 
 	*retpValue = (CObject *)pValue;
 	return NOERROR;
 	}
 
-ALERROR CIDTable::LookupEx (int iKey, int *retiEntry) const
+ALERROR CIDTable::LookupEx (size_t iKey, size_t*retiEntry) const
 
 //	LookupEx
 //
@@ -202,7 +202,7 @@ ALERROR CIDTable::LookupEx (int iKey, int *retiEntry) const
 	{
 	ALERROR error;
 
-	if (error = CPtrDictionary::FindEx(iKey, retiEntry))
+	if (error = CPtrDictionary::FindEx((void*)iKey, retiEntry))
 		return error;
 
 	return NOERROR;
@@ -219,7 +219,7 @@ ALERROR CIDTable::RemoveAll (void)
 
 	if (m_bOwned)
 		{
-		for (int i = 0; i < GetCount(); i++)
+		for (int i = 0; i < GetCountInt(); i++)
 			{
 			CObject *pObj = GetValue(i);
 			if (pObj)
@@ -232,7 +232,7 @@ ALERROR CIDTable::RemoveAll (void)
 	return CPtrDictionary::RemoveAll();
 	}
 
-ALERROR CIDTable::RemoveEntry (int iKey, CObject **retpOldValue)
+ALERROR CIDTable::RemoveEntry (size_t iKey, CObject **retpOldValue)
 
 //	RemoveEntry
 //
@@ -244,7 +244,7 @@ ALERROR CIDTable::RemoveEntry (int iKey, CObject **retpOldValue)
 
 	//	Let the dictionary do the removing
 
-	if (error = CPtrDictionary::RemoveEntry(iKey, &pOldValue))
+	if (error = CPtrDictionary::RemoveEntry((void*)iKey, &pOldValue))
 		return error;
 
 	CObject *pOldObj = (CObject *)pOldValue;
@@ -260,7 +260,7 @@ ALERROR CIDTable::RemoveEntry (int iKey, CObject **retpOldValue)
 	return NOERROR;
 	}
 
-ALERROR CIDTable::ReplaceEntry (int iKey, CObject *pValue, bool bAdd, CObject **retpOldValue)
+ALERROR CIDTable::ReplaceEntry (size_t iKey, CObject *pValue, bool bAdd, CObject **retpOldValue)
 
 //	ReplaceEntry
 //
@@ -275,7 +275,7 @@ ALERROR CIDTable::ReplaceEntry (int iKey, CObject *pValue, bool bAdd, CObject **
 
 	//	Let the dictionary code do the actual adding
 
-	if (error = CPtrDictionary::ReplaceEntry(iKey, (void*)pValue, bAdd, &bAdded, &pOldValue))
+	if (error = CPtrDictionary::ReplaceEntry((void*)iKey, (void*)pValue, bAdd, &bAdded, &pOldValue))
 		return error;
 
 	//	If we added a new object, then there is no old value
@@ -319,22 +319,22 @@ ALERROR CIDTable::SaveHandler (CArchiver *pArchiver)
 
 	//	Write out the number of entries that we've got
 
-	dwCount = (DWORD)CPtrDictionary::GetCount();
+	dwCount = (DWORD)CPtrDictionary::GetCountInt();
 	if (error = pArchiver->WriteData((char *)&dwCount, sizeof(DWORD)))
 		return error;
 
 	//	Write out each object
 
-	for (i = 0; i < CPtrDictionary::GetCount(); i++)
+	for (i = 0; i < CPtrDictionary::GetCountInt(); i++)
 		{
-		int iKey;
+		void* pKey;
 		void* vpValue;
 
-		CPtrDictionary::GetEntry(i, &iKey, &vpValue);
+		CPtrDictionary::GetEntry(i, &pKey, &vpValue);
 
 		//	Write out the key
 
-		if (error = pArchiver->WriteData((char *)&iKey, sizeof(void*)))
+		if (error = pArchiver->WriteData((char *)&pKey, sizeof(void*)))
 			return error;
 
 		//	If we're owned, write out the value. If we're not a reference
@@ -354,7 +354,7 @@ ALERROR CIDTable::SaveHandler (CArchiver *pArchiver)
 			}
 		else
 			{
-			int iID;
+			size_t iID;
 			CObject *pValue = (CObject *)vpValue;
 
 			if (error = pArchiver->Reference2ID(pValue, &iID))
@@ -368,19 +368,19 @@ ALERROR CIDTable::SaveHandler (CArchiver *pArchiver)
 	return NOERROR;
 	}
 
-void CIDTable::SetValue (int iEntry, CObject *pValue, CObject **retpOldValue)
+void CIDTable::SetValue (size_t iEntry, CObject *pValue, CObject **retpOldValue)
 
 //	SetValue
 //
 //	Sets the value
 
 	{
-	int iKey;
+	void* pKey;
 
-	GetEntry(iEntry, &iKey, (void**)&pValue);
+	GetEntry(iEntry, &pKey, (void**)&pValue);
 
 	if (retpOldValue)
 		*retpOldValue = (CObject *)pValue;
 
-	CPtrDictionary::SetEntry(iEntry, iKey, (void*)pValue);
+	CPtrDictionary::SetEntry(iEntry, pKey, (void*)pValue);
 	}

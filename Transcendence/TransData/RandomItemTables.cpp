@@ -129,7 +129,7 @@ void GenerateRandomItemTables (CUniverse &Universe, CXMLElement *pCmdLine)
 			//	Fill the table with entries for each 
 			//	item at this level
 
-			for (i = 0; i < SortedList.GetCount(); i++)
+			for (i = 0; i < SortedList.GetCountInt(); i++)
 				{
 				CItemType *pType = (CItemType *)SortedList.GetValue(i);
 				int iScore;

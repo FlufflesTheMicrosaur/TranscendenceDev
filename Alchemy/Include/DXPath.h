@@ -12,7 +12,7 @@ class CGPath
 		void Close (void);
 		void CreateSubPathStrokePath (int iSubPath, Metric rLineWidth, CGPath *retPath);
 		void DeleteAll (void) { m_SubPaths.DeleteAll(); }
-		int GetSubPathCount (void) const { return m_SubPaths.GetCount(); }
+		int GetSubPathCount (void) const { return (int)m_SubPaths.GetCount(); }
 		int GetSubPathPolygonPoints (int iSubPath, TArray<CVector> *retPoints) const;
 		int GetVertexCount (void) const;
 		void Init (void);

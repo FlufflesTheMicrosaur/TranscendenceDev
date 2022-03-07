@@ -294,7 +294,7 @@ bool Kernel::fileOpen (const CString &sFile, const CString &sParameters, const C
 //	Launches the current file.
 
 	{
-	int iResult = (int)::ShellExecute(NULL,
+	size_t iResult = (size_t)::ShellExecute(NULL,
 			NULL,
 			pathMakeAbsolute(sFile.GetASCIIZPointer()).GetASCIIZPointer(),
 			(!sParameters.IsBlank() ? sParameters.GetASCIIZPointer() : NULL),
@@ -302,7 +302,7 @@ bool Kernel::fileOpen (const CString &sFile, const CString &sParameters, const C
 			SW_SHOWDEFAULT);
 	if (iResult <= 32)
 		{
-		if (retsError) *retsError = strPatternSubst(CONSTLIT("Unable to launch program: %s; error = %d"), sFile, iResult);
+		if (retsError) *retsError = strPatternSubst(CONSTLIT("Unable to launch program: %s; error = %d"), sFile, (int)iResult);
 		return false;
 		}
 
@@ -604,8 +604,8 @@ CString Kernel::pathGetResourcePath (char *pszResID)
 //	resID:\{resID}
 
 	{
-	if ((DWORD)pszResID < 65536)
-		return strPatternSubst(CONSTLIT("resID:\\@%d"), (DWORD)pszResID);
+	if ((size_t)pszResID < 65536)
+		return strPatternSubst(CONSTLIT("resID:\\@%d"), (size_t)pszResID);
 	else
 		return strPatternSubst(CONSTLIT("resID:\\%s"), CString(pszResID));
 	}

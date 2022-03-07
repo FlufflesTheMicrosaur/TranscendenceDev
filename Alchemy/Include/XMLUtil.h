@@ -110,7 +110,7 @@ class CXMLElement
 		double GetAttributeFloat (const CString &sName) const;
 		const CString &GetAttributeName (int iIndex) const { return m_Keywords.GetIdentifier(m_Attributes.GetKey(iIndex)); }
 		int GetAttributeTriState (const CString &sName) const;
-		int GetContentElementCount (void) const { return m_ContentElements.GetCount(); }
+		int GetContentElementCount (void) const { return (int)m_ContentElements.GetCount(); }
 		CXMLElement *GetContentElement (int iOrdinal) const { return ((iOrdinal >= 0 && iOrdinal < m_ContentElements.GetCount()) ? m_ContentElements[iOrdinal] : NULL); }
 		CXMLElement *GetContentElementByTag (const CString &sTag) const;
 		CXMLElement *GetContentElementByTag (DWORD dwID) const;
@@ -130,7 +130,7 @@ class CXMLElement
 
 		static DWORD GetKeywordID (const CString &sValue) { return m_Keywords.Atomize(sValue); }
 		static int GetKeywordCount (void) { return m_Keywords.GetCount(); }
-		static int GetKeywordMemoryUsage (void) { return m_Keywords.GetMemoryUsage(); }
+		static int GetKeywordMemoryUsage (void) { return (int)m_Keywords.GetMemoryUsage(); }
 		static bool IsBoolTrueValue (const CString &sValue) { return (strEquals(sValue, CONSTLIT("true")) || strEquals(sValue, CONSTLIT("1"))); }
 		static bool IsValidElementTag (const CString &sValue);
 		static CString MakeAttribute (const CString &sText) { return strToXMLText(sText); }

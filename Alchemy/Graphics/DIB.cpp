@@ -364,7 +364,7 @@ ALERROR dibGetInfo (HBITMAP hDIB, int *retcxWidth, int *retcyHeight, void **retp
         // scanlines, adjust the bmWidthBytes value. 
 
 		if (sysGetAPIFlags() & API_FLAG_WINNT)
-			ds.dsBm.bmWidthBytes = AlignUp(ds.dsBm.bmWidthBytes, sizeof(DWORD));
+			ds.dsBm.bmWidthBytes = AlignUp((int)ds.dsBm.bmWidthBytes, (int)sizeof(DWORD));
 
         // If biHeight is positive, then the bitmap is a bottom-up DIB. 
         // If biHeight is negative, then the bitmap is a top-down DIB. 
@@ -372,7 +372,7 @@ ALERROR dibGetInfo (HBITMAP hDIB, int *retcxWidth, int *retcyHeight, void **retp
 		if (ds.dsBmih.biHeight > 0)
 			{
 			if (retpBase)
-				*retpBase = (void *) (((int) ds.dsBm.bmBits) + (ds.dsBm.bmWidthBytes * (ds.dsBm.bmHeight - 1))); 
+				*retpBase = (void*) ((char*)ds.dsBm.bmBits + (ds.dsBm.bmWidthBytes * (ds.dsBm.bmHeight - 1)));
 			if (retiStride)
 				*retiStride = (int)(-ds.dsBm.bmWidthBytes);
 			}         
@@ -752,7 +752,7 @@ ALERROR ReadDIBInfo (IReadBlock *pBlock, HANDLE *rethDIB, int *retiBitsOffset, B
 	if (bf.bfOffBits)
 		*retiBitsOffset = bf.bfOffBits;
 	else
-		*retiBitsOffset = pPos - pBlock->GetPointer(0, 1);
+		*retiBitsOffset = (int)(pPos - pBlock->GetPointer(0, 1));
 
 	if (retbi)
 		*retbi = bi;

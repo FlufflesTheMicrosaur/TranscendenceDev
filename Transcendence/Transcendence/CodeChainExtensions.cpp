@@ -704,11 +704,11 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 
 #define EXTENSIONS_COUNT		(sizeof(g_Extensions) / sizeof(g_Extensions[0]))
 
-inline CShip *GetShipArg (ICCItem *pArg) { return ((CSpaceObject *)(pArg->GetIntegerValue()))->AsShip(); }
-inline CStation *GetStationArg (ICCItem *pArg) { return (CStation *)pArg->GetIntegerValue(); }
-inline CDockScreen *GetDockScreenArg (CCodeChainCtx &CCX, ICCItem *pArg) { return (CCX.GetScreen() ? (CDockScreen *)CCX.GetScreen() : (CDockScreen *)pArg->GetIntegerValue()); }
-inline CArmorClass *GetArmorClassArg (ICCItem *pArg) { return (CArmorClass *)pArg->GetIntegerValue(); }
-inline CPlayerShipController *GetPlayerArg (ICCItem *pArg) { return (CPlayerShipController *)pArg->GetIntegerValue(); }
+inline CShip *GetShipArg (ICCItem *pArg) { return ((CSpaceObject *)(pArg->GetPointerValue()))->AsShip(); }
+inline CStation *GetStationArg (ICCItem *pArg) { return (CStation *)pArg->GetPointerValue(); }
+inline CDockScreen *GetDockScreenArg (CCodeChainCtx &CCX, ICCItem *pArg) { return (CCX.GetScreen() ? (CDockScreen *)CCX.GetScreen() : (CDockScreen *)pArg->GetPointerValue()); }
+inline CArmorClass *GetArmorClassArg (ICCItem *pArg) { return (CArmorClass *)pArg->GetPointerValue(); }
+inline CPlayerShipController *GetPlayerArg (ICCItem *pArg) { return (CPlayerShipController *)pArg->GetPointerValue(); }
 
 CG32bitImage *GetCanvasArg (CEvalContext *pEvalCtx, ICCItem *pArgs, int iArg)
 
@@ -721,7 +721,7 @@ CG32bitImage *GetCanvasArg (CEvalContext *pEvalCtx, ICCItem *pArgs, int iArg)
 
 	if (pArgs->GetCount() > iArg + 1)
 		{
-		CDockScreen *pScreen = (CDockScreen *)pArgs->GetElement(iArg)->GetIntegerValue();
+		CDockScreen *pScreen = (CDockScreen *)pArgs->GetElement(iArg)->GetPointerValue();
 		if (pScreen == NULL)
 			return NULL;
 

@@ -83,7 +83,7 @@ ALERROR CXMLElement::AppendContent (const CString &sContent, int iIndex)
 	{
 	//	Always append to the last content element
 
-	int iCount = m_ContentText.GetCount();
+	int iCount = (int)m_ContentText.GetCount();
 	if (iCount == 0)
 		m_ContentText.Insert(sContent);
 	else if (iIndex >= 0 && iIndex < iCount)
@@ -1000,7 +1000,7 @@ ALERROR CXMLElement::SetContentText (const CString &sContent, int iIndex)
 	{
 	//	Always append to the last content element
 
-	int iCount = m_ContentText.GetCount();
+	int iCount = (int)m_ContentText.GetCount();
 	if (iCount == 0)
 		m_ContentText.Insert(sContent);
 	else if (iIndex >= 0 && iIndex < iCount)

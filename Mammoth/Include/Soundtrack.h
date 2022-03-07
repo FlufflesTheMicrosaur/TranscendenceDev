@@ -89,7 +89,7 @@ class CMCIMixer
 		void UpdatePlayPos (int iChannel, int iPos = -1);
 		bool Wait (DWORD dwTimeout);
 
-		static LONG APIENTRY ParentWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam);
+		static LONG_PTR APIENTRY ParentWndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam);
 		static DWORD WINAPI ProcessingThread (LPVOID pData);
 
 		HWND m_hParent;

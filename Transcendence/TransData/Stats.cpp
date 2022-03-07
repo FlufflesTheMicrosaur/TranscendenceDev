@@ -137,9 +137,9 @@ void GenerateStationFrequencyTable (CUniverse &Universe, CXMLElement *pCmdLine)
 
 		//	Print out the stations for this level
 
-		if (Sort.GetCount() > 0)
+		if (Sort.GetCountInt() > 0)
 			{
-			for (i = 0; i < Sort.GetCount(); i++)
+			for (i = 0; i < Sort.GetCountInt(); i++)
 				{
 				const CStationType *pType = (CStationType *)Sort.GetValue(i);
 				const CStationEncounterDesc &EncounterDesc = pType->GetEncounterDesc();

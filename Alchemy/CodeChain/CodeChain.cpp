@@ -184,6 +184,27 @@ ICCItem *CCodeChain::CreateErrorCode (int iErrorCode)
 	return pError;
 	}
 
+ICCItem* CCodeChain::CreatePointer(void* vpValue)
+
+//	CreateDouble
+//
+//	Creates a double
+
+	{
+	ICCItem* pItem;
+	CCPointer* pPointer;
+
+	pItem = m_PointerPool.CreateItem();
+	if (pItem->IsError())
+		return pItem;
+
+	pPointer = dynamic_cast<CCPointer*>(pItem);
+	pPointer->Reset();
+	pPointer->SetValue(vpValue);
+
+	return pPointer->Reference();
+	}
+
 ICCItem *CCodeChain::CreateDouble (double dValue)
 
 //	CreateDouble
@@ -733,6 +754,15 @@ ALERROR CCodeChain::DefineGlobalInteger (const CString &sVar, int iValue)
 	pValue->Discard();
 	return error;
 	}
+
+ALERROR CCodeChain::DefineGlobalPointer(const CString& sVar, void* vpValue)
+{
+	ALERROR error;
+	ICCItem* pValue = CreatePointer(vpValue);
+	error = DefineGlobal(sVar, pValue);
+	pValue->Discard();
+	return error;
+}
 
 ALERROR CCodeChain::DefineGlobalString (const CString &sVar, const CString &sValue)
 	{

@@ -41,7 +41,7 @@ void GenerateEntitiesTable (const CString &sDataFile, CXMLElement *pCmdLine)
 	CString sName;
 	DWORD dwValue;
 	while (NextEntity(&pPos, pEnd, &sName, &dwValue))
-		Entities.AddEntry(sName, (CObject *)dwValue);
+		Entities.AddEntry(sName, (CObject *)(size_t)dwValue);
 
 	DataFile.Close();
 

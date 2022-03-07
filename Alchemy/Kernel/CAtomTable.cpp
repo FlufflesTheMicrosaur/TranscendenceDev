@@ -66,7 +66,7 @@ ALERROR CAtomTable::AppendAtom (const CString &sString, int *retiAtom)
 
 	//	Lookup the value in the symbol table
 
-	if (error = pTable->AddEntry(sString, (CObject *)m_iNextAtom))
+	if (error = pTable->AddEntry(sString, (CObject *)(size_t)m_iNextAtom))
 		return error;
 
 	//	Next atom

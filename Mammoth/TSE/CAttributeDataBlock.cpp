@@ -521,7 +521,7 @@ void CAttributeDataBlock::ReadDataEntries (IReadStream *pStream)
 		CObject::Unflatten(sData, (CObject **)&pData);
 		if (pData)
 			{
-			for (int i = 0; i < pData->GetCount(); i++)
+			for (int i = 0; i < pData->GetCountInt(); i++)
 				{
 				SDataEntry *pEntry = m_Data.SetAt(pData->GetKey(i));
 				CString *pDest = (CString *)pData->GetValue(i);

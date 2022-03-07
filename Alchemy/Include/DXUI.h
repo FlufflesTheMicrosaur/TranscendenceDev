@@ -95,7 +95,7 @@ class AGScreen : public IAreaContainer
 		void DestroyArea (DWORD dwTag);
 		AGArea *FindArea (DWORD dwTag);
 		AGArea *GetArea (int iIndex) { return m_Areas[iIndex]; }
-		int GetAreaCount (void) { return m_Areas.GetCount(); }
+		int GetAreaCount (void) { return (int)m_Areas.GetCount(); }
 		const RECT &GetRect (void) { return m_rcRect; }
 		DWORD GetTimeSinceMouseMove (void) const { return (::GetTickCount() - m_dwLastMouseTime); }
 		const CG16bitFont &GetWingdingsFont (void) const;
@@ -123,7 +123,7 @@ class AGScreen : public IAreaContainer
 
 	private:
 		void FireMouseMove (const POINT &pt);
-		int GetAreaIndex (AGArea *pArea) { int iIndex; if (m_Areas.Find(pArea, &iIndex)) return iIndex; else return -1; }
+		int GetAreaIndex (AGArea *pArea) { size_t iIndex; if (m_Areas.Find(pArea, &iIndex)) return (int)iIndex; else return -1; }
 		AGArea *HitTest (const POINT &pt);
 		void RefreshMouseOver (void);
 		void SetMouseOver (AGArea *pArea);
@@ -158,7 +158,7 @@ class CGFrameArea : public AGArea, public IAreaContainer
 		ALERROR AddArea (AGArea *pArea, const RECT &rcRect, DWORD dwTag);
 		AGArea *FindArea (DWORD dwTag);
 		AGArea *GetArea (int iIndex) { return m_Areas[iIndex]; }
-		int GetAreaCount (void) { return m_Areas.GetCount(); }
+		int GetAreaCount (void) { return (int)m_Areas.GetCount(); }
 
 		//	AGArea virtuals
 		virtual bool LButtonDoubleClick (int x, int y) override;

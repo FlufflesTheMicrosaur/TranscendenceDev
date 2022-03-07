@@ -47,7 +47,7 @@ void CScriptParser::FlushToBuffer (void)
 	{
 	if (m_pPos > m_pStart)
 		{
-		m_Buffer.Write(m_pStart, m_pPos - m_pStart);
+		m_Buffer.Write(m_pStart, (int)(m_pPos - m_pStart));
 		m_pStart = m_pPos;
 		}
 	}

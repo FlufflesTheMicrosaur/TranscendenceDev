@@ -4954,7 +4954,7 @@ ALERROR CreateStationFromElement (SSystemCreateCtx *pCtx, const CXMLElement *pDe
 
 CString GetXMLObjID (const CXMLElement &Obj)
 	{
-	return strPatternSubst(CONSTLIT("xml_%x"), (DWORD)&Obj);
+	return strPatternSubst(CONSTLIT("xml_%x"), (size_t)&Obj);
 	}
 
 //	SSystemCreateCtx -----------------------------------------------------------

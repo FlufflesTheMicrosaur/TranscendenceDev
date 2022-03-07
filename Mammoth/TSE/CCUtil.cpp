@@ -117,12 +117,12 @@ ICCItem *CreateDamageSource (CCodeChain &CC, const CDamageSource &Source)
 	ICCItem *pResult = CC.CreateSymbolTable();
 
 	if (Source.GetObj())
-		pResult->SetIntegerAt(CONSTLIT("obj"), (int)Source.GetObj());
+		pResult->SetPointerAt(CONSTLIT("obj"), Source.GetObj());
 
 	pResult->SetStringAt(CONSTLIT("cause"), GetDestructionName(Source.GetCause()));
 
 	if (Source.GetSecondaryObj())
-		pResult->SetIntegerAt(CONSTLIT("secondaryObj"), (int)Source.GetSecondaryObj());
+		pResult->SetPointerAt(CONSTLIT("secondaryObj"), Source.GetSecondaryObj());
 
 	if (Source.GetObj() == NULL)
 		{
@@ -319,14 +319,14 @@ CSpaceObject *CreateObjFromItem (const ICCItem *pItem, DWORD dwFlags)
 	if (pItem == NULL)
 		return NULL;
 
-	int iArg = pItem->GetIntegerValue();
-	if (iArg == 0)
+	void* pArg = pItem->GetPointerValue();
+	if (pArg == 0)
 		return NULL;
 
 	CSpaceObject *pObj;
 	try
 		{
-		pObj = reinterpret_cast<CSpaceObject *>(iArg);
+		pObj = reinterpret_cast<CSpaceObject *>(pArg);
 		}
 	catch (...)
 		{
@@ -348,7 +348,7 @@ CSpaceObject *CreateObjFromItem (const ICCItem *pItem, DWORD dwFlags)
 ICCItem *CreateObjPointer (CCodeChain &CC, CSpaceObject *pObj)
 	{
 	if (pObj)
-		return CC.CreateInteger((int)pObj);
+		return CC.CreatePointer(pObj);
 	else
 		return CC.CreateNil();
 	}
@@ -901,7 +901,7 @@ void DefineGlobalSpaceObject (CCodeChain &CC, const CString &sVar, const CSpaceO
 
 	{
 	if (pObj)
-		CC.DefineGlobalInteger(sVar, (int)pObj);
+		CC.DefineGlobalPointer(sVar, (void*)pObj);
 	else
 		CC.DefineGlobal(sVar, CC.GetNil());
 	}

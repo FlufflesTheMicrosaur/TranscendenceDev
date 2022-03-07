@@ -31,7 +31,7 @@ CPtrDictionary::~CPtrDictionary(void)
 {
 }
 
-ALERROR CPtrDictionary::AddEntry(int iKey, void* pValue)
+ALERROR CPtrDictionary::AddEntry(void* pKey, void* pValue)
 
 //	AddEntry
 //
@@ -39,28 +39,32 @@ ALERROR CPtrDictionary::AddEntry(int iKey, void* pValue)
 
 {
 	ALERROR error;
-	int iPos;
+	size_t iPos;
 
 	//	Look for the key in the array. If we find the key, return an error
 
-	if (FindSlot(iKey, &iPos))
+	if (FindSlot(pKey, &iPos))
 		return ERR_FAIL;
 
-	//	Add two elements to the array. The first is the key, the second
-	//	is the value.
+	//	Add an element to both arrays
 
-	if (error = m_Array.ExpandArray(iPos, 2))
+	if (error = m_Array.ExpandArray(iPos, 1))
 		return error;
+	if (error = m_Keys.ExpandArray(iPos, 1))
+	{
+		m_Array.RemoveElement(iPos);
+		return error;
+	}
 
 	//	Set the elements
 
-	m_Array.ReplaceElement(iPos, (void*)iKey);
-	m_Array.ReplaceElement(iPos + 1, pValue);
+	m_Keys.ReplaceElement(iPos, pKey);
+	m_Array.ReplaceElement(iPos, pValue);
 
 	return NOERROR;
 }
 
-int CPtrDictionary::Compare(int iKey1, int iKey2) const
+int CPtrDictionary::Compare(void* pKey1, void* pKey2) const
 
 //	Compare
 //
@@ -68,15 +72,15 @@ int CPtrDictionary::Compare(int iKey1, int iKey2) const
 //	keys are equal. If 1, Key1 is greater. If -1, Key2 is greater
 
 {
-	if (iKey1 == iKey2)
+	if (pKey1 == pKey2)
 		return 0;
-	else if (iKey1 > iKey2)
+	else if (pKey1 > pKey2)
 		return 1;
 	else
 		return -1;
 }
 
-ALERROR CPtrDictionary::Find(int iKey, void** retpValue) const
+ALERROR CPtrDictionary::Find(void* pKey, void** retpValue) const
 
 //	Find
 //
@@ -84,32 +88,32 @@ ALERROR CPtrDictionary::Find(int iKey, void** retpValue) const
 //	value is not found, return ERR_NOTFOUND.
 
 {
-	int iPos;
+	size_t iPos;
 
-	if (!FindSlot(iKey, &iPos))
+	if (!FindSlot(pKey, &iPos))
 		return ERR_NOTFOUND;
 
-	*retpValue = m_Array.GetElement(iPos + 1);
+	*retpValue = m_Array.GetElement(iPos);
 	return NOERROR;
 }
 
-ALERROR CPtrDictionary::FindEx(int iKey, int* retiEntry) const
+ALERROR CPtrDictionary::FindEx(void* pKey, size_t* retiEntry) const
 
 //	FindEx
 //
 //	Finds the key and returns the entry
 
 {
-	int iPos;
+	size_t iPos;
 
-	if (!FindSlot(iKey, &iPos))
+	if (!FindSlot(pKey, &iPos))
 		return ERR_NOTFOUND;
 
-	*retiEntry = iPos / 2;
+	*retiEntry = iPos;
 	return NOERROR;
 }
 
-ALERROR CPtrDictionary::FindOrAdd(int iKey, void* pValue, bool* retbFound, void** retpValue)
+ALERROR CPtrDictionary::FindOrAdd(void* pKey, void* pValue, bool* retbFound, void** retpValue)
 
 //	FindOrAdd
 //
@@ -119,34 +123,38 @@ ALERROR CPtrDictionary::FindOrAdd(int iKey, void* pValue, bool* retbFound, void*
 
 {
 	ALERROR error;
-	int iPos;
+	size_t iPos;
 
-	if (FindSlot(iKey, &iPos))
+	if (FindSlot(pKey, &iPos))
 	{
 		*retbFound = TRUE;
-		*retpValue = m_Array.GetElement(iPos + 1);
+		*retpValue = m_Array.GetElement(iPos);
 	}
 	else
 	{
 		*retbFound = FALSE;
 		*retpValue = pValue;
 
-		//	Add two elements to the array. The first is the key, the second
-		//	is the value.
+		//	Add an element to each array
 
-		if (error = m_Array.ExpandArray(iPos, 2))
+		if (error = m_Array.ExpandArray(iPos, 1))
 			return error;
+		if (error = m_Keys.ExpandArray(iPos, 1))
+		{
+			m_Array.RemoveElement(iPos);
+			return error;
+		}
 
 		//	Set the elements
 
-		m_Array.ReplaceElement(iPos, (void*)iKey);
-		m_Array.ReplaceElement(iPos + 1, pValue);
+		m_Keys.ReplaceElement(iPos, pKey);
+		m_Array.ReplaceElement(iPos, pValue);
 	}
 
 	return NOERROR;
 }
 
-bool CPtrDictionary::FindSlot(int iKey, int* retiPos) const
+bool CPtrDictionary::FindSlot(void* pKey, size_t* retiPos) const
 
 //	FindSlot
 //
@@ -156,12 +164,12 @@ bool CPtrDictionary::FindSlot(int iKey, int* retiPos) const
 //	FALSE otherwise.
 
 {
-	int iLeft, iRight, iCount;
-	int iEntryKey, iCompare;
+	size_t iLeft, iRight, iCount, iCompare;
+	void* pEntryKey;
 
 	//	If there are no entries, then we always fail
 
-	iCount = GetCount();
+	iCount = GetCountInt();
 	if (iCount == 0)
 	{
 		*retiPos = 0;
@@ -175,7 +183,7 @@ bool CPtrDictionary::FindSlot(int iKey, int* retiPos) const
 
 	while (iRight > iLeft)
 	{
-		int iTry;
+		size_t iTry;
 
 		//	Pick a point in between our two extremes
 
@@ -185,15 +193,15 @@ bool CPtrDictionary::FindSlot(int iKey, int* retiPos) const
 		//	we store the key and the value in a single array, so
 		//	we need to multiply by two.
 
-		iEntryKey = (int)m_Array.GetElement(iTry * 2);
+		pEntryKey = m_Keys.GetElement(iTry);
 
 		//	Figure out if we've matched the key
 
-		iCompare = Compare(iEntryKey, iKey);
+		iCompare = Compare(pEntryKey, pKey);
 
 		if (iCompare == 0)
 		{
-			*retiPos = iTry * 2;
+			*retiPos = iTry;
 			return TRUE;
 		}
 		else if (iCompare == 1)
@@ -205,35 +213,35 @@ bool CPtrDictionary::FindSlot(int iKey, int* retiPos) const
 	//	If we could not find the key, compute the insertion
 	//	position
 
-	iEntryKey = (int)m_Array.GetElement(iLeft * 2);
-	iCompare = Compare(iEntryKey, iKey);
+	pEntryKey = m_Keys.GetElement(iLeft);
+	iCompare = Compare(pEntryKey, pKey);
 	if (iCompare == 0)
 	{
-		*retiPos = iLeft * 2;
+		*retiPos = iLeft;
 		return TRUE;
 	}
 	else if (iCompare == 1)
-		*retiPos = iLeft * 2;
+		*retiPos = iLeft;
 	else
-		*retiPos = (iLeft + 1) * 2;
+		*retiPos = (iLeft + 1);
 
 	return FALSE;
 }
 
-void CPtrDictionary::GetEntry(int iEntry, int* retiKey, void** retpValue) const
+void CPtrDictionary::GetEntry(size_t iEntry, void** retpKey, void** retpValue) const
 
 //	GetEntry
 //
 //	Returns the given entry
 
 {
-	if (retiKey)
-		*retiKey = (int)m_Array.GetElement(iEntry * 2);
+	if (retpKey)
+		*retpKey = m_Keys.GetElement(iEntry);
 	if (retpValue)
-		*retpValue = m_Array.GetElement(iEntry * 2 + 1);
+		*retpValue = m_Array.GetElement(iEntry);
 }
 
-ALERROR CPtrDictionary::RemoveEntry(int iKey, void** retpOldValue)
+ALERROR CPtrDictionary::RemoveEntry(void* pKey, void** retpOldValue)
 
 //	RemoveEntry
 //
@@ -241,19 +249,19 @@ ALERROR CPtrDictionary::RemoveEntry(int iKey, void** retpOldValue)
 
 {
 	ALERROR error;
-	int iPos;
+	size_t iPos;
 
-	if (FindSlot(iKey, &iPos))
+	if (FindSlot(pKey, &iPos))
 	{
 		void* pOldValue;
 
 		//	Get the old value
 
-		pOldValue = m_Array.GetElement(iPos + 1);
+		pOldValue = m_Array.GetElement(iPos);
 
 		//	Remove the entry
 
-		if (error = m_Array.RemoveRange(iPos, iPos + 1))
+		if (error = m_Array.RemoveRange(iPos, iPos) | m_Keys.RemoveRange(iPos, iPos))
 			return error;
 
 		//	Done
@@ -267,7 +275,7 @@ ALERROR CPtrDictionary::RemoveEntry(int iKey, void** retpOldValue)
 	return NOERROR;
 }
 
-ALERROR CPtrDictionary::RemoveEntryByOrdinal(int iEntry, void** retpOldValue)
+ALERROR CPtrDictionary::RemoveEntryByOrdinal(size_t iEntry, void** retpOldValue)
 
 //	RemoveEntryByOrdinal
 //
@@ -279,11 +287,11 @@ ALERROR CPtrDictionary::RemoveEntryByOrdinal(int iEntry, void** retpOldValue)
 
 	//	Get the old value
 
-	pOldValue = m_Array.GetElement(iEntry + 1);
+	pOldValue = m_Array.GetElement(iEntry);
 
 	//	Remove the entry
 
-	if (error = m_Array.RemoveRange(iEntry, iEntry + 1))
+	if (error = m_Array.RemoveRange(iEntry, iEntry) | m_Keys.RemoveRange(iEntry, iEntry))
 		return error;
 
 	//	Done
@@ -294,7 +302,7 @@ ALERROR CPtrDictionary::RemoveEntryByOrdinal(int iEntry, void** retpOldValue)
 	return NOERROR;
 }
 
-ALERROR CPtrDictionary::ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue)
+ALERROR CPtrDictionary::ReplaceEntry(void* pKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue)
 
 //	ReplaceEntry
 //
@@ -304,25 +312,29 @@ ALERROR CPtrDictionary::ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* re
 
 {
 	ALERROR error;
-	int iPos;
+	size_t iPos;
 	void* pOldValue;
 
 	//	Look for the key in the array. If we don't find the key, return an error
 
-	if (!FindSlot(iKey, &iPos))
+	if (!FindSlot(pKey, &iPos))
 	{
 		if (bAdd)
 		{
-			//	Add two elements to the array. The first is the key, the second
-			//	is the value.
+			//	Add an element to each array
 
-			if (error = m_Array.ExpandArray(iPos, 2))
+			if (error = m_Array.ExpandArray(iPos, 1))
 				return error;
+			if (error = m_Keys.ExpandArray(iPos, 1))
+			{
+				m_Array.RemoveElement(iPos);
+				return error;
+			}
 
 			//	Set the elements
 
-			m_Array.ReplaceElement(iPos, (void*)iKey);
-			m_Array.ReplaceElement(iPos + 1, pValue);
+			m_Keys.ReplaceElement(iPos, pKey);
+			m_Array.ReplaceElement(iPos, pValue);
 
 			//	Done
 
@@ -337,11 +349,11 @@ ALERROR CPtrDictionary::ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* re
 
 	//	Remember the old value
 
-	pOldValue = m_Array.GetElement(iPos + 1);
+	pOldValue = m_Array.GetElement(iPos);
 
 	//	Set the value
 
-	m_Array.ReplaceElement(iPos + 1, pValue);
+	m_Array.ReplaceElement(iPos, pValue);
 
 	//	Return it
 
@@ -354,13 +366,13 @@ ALERROR CPtrDictionary::ReplaceEntry(int iKey, void* pValue, bool bAdd, bool* re
 	return NOERROR;
 }
 
-void CPtrDictionary::SetEntry(int iEntry, int iKey, void* pValue)
+void CPtrDictionary::SetEntry(size_t iEntry, void* pKey, void* pValue)
 
 //	SetEntry
 //
 //	Sets the given entry
 
 {
-	m_Array.ReplaceElement(iEntry * 2, (void*)iKey);
-	m_Array.ReplaceElement(iEntry * 2 + 1, pValue);
+	m_Keys.ReplaceElement(iEntry, pKey);
+	m_Array.ReplaceElement(iEntry, pValue);
 }

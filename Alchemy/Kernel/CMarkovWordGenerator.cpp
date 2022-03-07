@@ -143,7 +143,7 @@ CMarkovWordGenerator::SFragHead *CMarkovWordGenerator::AppendChainChar (SFragHea
 	while (*pChain != 0)
 		pChain++;
 
-	int iChainCount = (pChain - pChainStart) + 1;
+	int iChainCount = (int)(pChain - pChainStart) + 1;
 
 	//	Allocate the new fragment
 
@@ -187,7 +187,7 @@ bool CMarkovWordGenerator::Find (char *pFrag, int *retiPos)
 
 	{
 	int iTop = 0;
-	int iBottom = m_Table.GetCount();
+	int iBottom = (int)m_Table.GetCount();
 
 	int iPos = iTop + (iBottom - iTop) / 2;
 	while (iPos != iBottom)

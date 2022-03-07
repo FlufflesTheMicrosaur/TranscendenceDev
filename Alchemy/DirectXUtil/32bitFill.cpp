@@ -155,7 +155,7 @@ void CG32bitImage::Fill (CG32bitPixel Value)
 		{
 		CG32bitPixel *pDest = GetPixelPos(0, 0);
 		CG32bitPixel *pDestEnd = GetPixelPos(0, GetHeight());
-		DWORD dwBlock = ((pDestEnd - pDest) / 8) * 8;
+		DWORD dwBlock = (DWORD)(((pDestEnd - pDest) / 8) * 8);
 		CG32bitPixel *pDestBlockEnd = pDest + dwBlock;
 
 		//	Unrolled
@@ -877,7 +877,7 @@ void CG32bitImage::Set (CG32bitPixel Value)
 	CG32bitPixel *pDest = GetPixelPos(0, 0);
 	CG32bitPixel *pDestEnd = GetPixelPos(0, m_cyHeight);
 
-	DWORD dwBlock = ((pDestEnd - pDest) / 8) * 8;
+	DWORD dwBlock = (DWORD)(((pDestEnd - pDest) / 8) * 8);
 	CG32bitPixel *pDestBlockEnd = pDest + dwBlock;
 
 	//	Unrolled
@@ -956,7 +956,7 @@ void CG32bitImage::Set (CG32bitImage &Src)
 	CG32bitPixel *pDest = GetPixelPos(0, 0);
 	CG32bitPixel *pDestEnd = GetPixelPos(0, m_cyHeight);
 
-	DWORD dwBlock = ((pDestEnd - pDest) / 8) * 8;
+	DWORD dwBlock = (DWORD)(((pDestEnd - pDest) / 8) * 8);
 	CG32bitPixel *pDestBlockEnd = pDest + dwBlock;
 
 	//	Unrolled

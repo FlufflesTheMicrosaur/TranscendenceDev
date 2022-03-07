@@ -636,7 +636,7 @@ void CG16bitImage::BltToSurface (LPDIRECTDRAWSURFACE7 pSurface, SurfaceTypes iTy
 
 		int iLinesToBlt = min(m_cyHeight, (int)desc.dwHeight);
 		int iPixelSize = ((iType == r8g8b8) ? sizeof(DWORD) : sizeof(WORD));
-		int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / sizeof(DWORD), sizeof(DWORD));
+		int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / (int)sizeof(DWORD), (int)sizeof(DWORD));
 		int iSourcePitch = m_iRGBRowSize;
 		int iDestPitch = desc.lPitch / sizeof(DWORD);
 
@@ -758,7 +758,7 @@ void CG16bitImage::BltToSurface (LPDIRECTDRAWSURFACE7 pSurface, SurfaceTypes iTy
 
 		int iLinesToBlt = min(m_cyHeight, (int)desc.dwHeight);
 		int iPixelSize = ((iType == r8g8b8) ? sizeof(DWORD) : sizeof(WORD));
-		int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / sizeof(DWORD), sizeof(DWORD));
+		int iDWORDsPerLine = AlignUp(min(m_cxWidth, (int)desc.dwWidth) * iPixelSize / (int)sizeof(DWORD), (int)sizeof(DWORD));
 		int iSourcePitch = m_iRGBRowSize;
 		int iDestPitch = desc.lPitch / sizeof(DWORD);
 

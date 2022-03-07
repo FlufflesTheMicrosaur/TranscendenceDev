@@ -51,8 +51,8 @@ void DrawGradientRectHorz (CG16bitImage &Dest,
 	WORD *pPos = Dest.GetRowStart(y) + x;
 	WORD *pPosEnd = pPos + cxWidth;
 	WORD *pColEnd = Dest.GetRowStart(y + cyHeight) + x;
-	int iRowSize = (Dest.GetRowStart(1) - Dest.GetRowStart(0));
-	int iColSize = pColEnd - pPos;
+	int iRowSize = (int)(Dest.GetRowStart(1) - Dest.GetRowStart(0));
+	int iColSize = (int)(pColEnd - pPos);
 
 	int xStochastic = x;
 

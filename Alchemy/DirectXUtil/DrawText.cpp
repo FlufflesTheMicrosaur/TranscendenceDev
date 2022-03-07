@@ -28,7 +28,7 @@ void CGDraw::Text (CG32bitImage &Dest, const CVector &vPos, const CString &sText
 	if (pFontAlpha == NULL)
 		return;
 
-	int iFontAlphaRow = FontImage.GetAlphaRow(1) - FontImage.GetAlphaRow(0);
+	int iFontAlphaRow = (int)(FontImage.GetAlphaRow(1) - FontImage.GetAlphaRow(0));
 
 	//	Blt the characters to our line image
 

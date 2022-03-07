@@ -1510,15 +1510,15 @@ CString CSpaceObject::DebugDescribe (CSpaceObject *pObj)
 		if (pObj == NULL)
 			return CONSTLIT("none");
 		else if (pObj->IsDestroyed())
-			return strPatternSubst(CONSTLIT("%x %s (%s) [destroyed]"), (DWORD)pObj, pObj->GetNounPhrase(), pObj->GetObjClassName());
+			return strPatternSubst(CONSTLIT("%x %s (%s) [destroyed]"), (size_t)pObj, pObj->GetNounPhrase(), pObj->GetObjClassName());
 		else
-			return strPatternSubst(CONSTLIT("%x %s (%s)"), (DWORD)pObj, pObj->GetNounPhrase(), pObj->GetObjClassName());
+			return strPatternSubst(CONSTLIT("%x %s (%s)"), (size_t)pObj, pObj->GetNounPhrase(), pObj->GetObjClassName());
 		}
 	catch (...)
 		{
 		}
 
-	return strPatternSubst(CONSTLIT("%x [invalid]"), (DWORD)pObj);
+	return strPatternSubst(CONSTLIT("%x [invalid]"), (size_t)pObj);
 	}
 
 CString CSpaceObject::DebugLoadError (SLoadCtx &Ctx)

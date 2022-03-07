@@ -603,7 +603,7 @@ void CEnvironmentGrid::Paint (SViewportPaintCtx &Ctx, CG32bitImage &Dest)
 	//	Figure out how high each horizontal chunk is
 
 	int cyTotal = yEnd - yStart;
-	int cyChunk = Max(1, cyTotal / Ctx.pThreadPool->GetThreadCount());
+	int cyChunk = Max(1, cyTotal / (int)Ctx.pThreadPool->GetThreadCount());
 
 	//	Start async tasks
 

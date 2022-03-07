@@ -80,7 +80,7 @@ void DrawNebulosity8bit (CG16bitImage &Dest, int x, int y, int cxWidth, int cyHe
 	Metric rRange = (Metric)(byMax - byMin) + 0.99999f;
 	Metric rFactor = rRange / (2.0f * rMaxValue);
 
-	int iFreqCount = FreqList.GetCount();
+	int iFreqCount = (int)FreqList.GetCount();
 
 	//	Fill
 

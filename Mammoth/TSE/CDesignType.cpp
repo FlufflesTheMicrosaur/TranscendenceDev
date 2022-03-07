@@ -3553,7 +3553,7 @@ ALERROR CEffectCreatorRef::Bind (SDesignLoadCtx &Ctx)
 			}
 		catch (...)
 			{
-			::kernelDebugLogPattern("Crash deleting singleton: %08x. UNID = %08x", (DWORD)m_pSingleton, m_dwUNID);
+			::kernelDebugLogPattern("Crash deleting singleton: %16x. UNID = %08x", (size_t)m_pSingleton, m_dwUNID);
 			throw;
 			}
 

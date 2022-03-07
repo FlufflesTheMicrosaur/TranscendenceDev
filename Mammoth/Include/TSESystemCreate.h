@@ -98,7 +98,7 @@ class CSystemCreateStats
 		int GetEncounterTableCount (void) const { return m_EncounterTables.GetCount(); }
 		const SFillLocationsTable &GetFillLocationsTable (int iIndex) const { return m_FillLocationsTables[iIndex]; }
 		int GetFillLocationsTableCount (void) const { return m_FillLocationsTables.GetCount(); }
-		int GetLabelAttributesCount (void) { return m_LabelAttributeCounts.GetCount(); }
+		int GetLabelAttributesCount (void) { return (int)m_LabelAttributeCounts.GetCountInt(); }
 		void GetLabelAttributes (int iIndex, CString *retsAttribs, int *retiCount);
 		int GetTotalLabelCount (void) { return m_iLabelCount; }
 		void SetPermute (bool bValue = true) { m_bPermute = bValue; }

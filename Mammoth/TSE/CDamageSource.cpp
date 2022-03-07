@@ -183,7 +183,7 @@ DWORD CDamageSource::GetObjID (void) const
 	//	If we have an object ID, then that's enough
 
 	else if (IsObjID())
-		return (DWORD)m_pSource;
+		return (DWORD)(size_t)m_pSource;
 
 	//	If we have an actual object pointer, then return it.
 
@@ -463,7 +463,7 @@ void CDamageSource::OnObjDestroyed (CSpaceObject &ObjDestroyed)
 		if (!m_pSource->CanHitFriends())
 			m_dwFlags |= FLAG_CANNOT_HIT_FRIENDS;
 
-		m_pSource = (CSpaceObject *)m_pSource->GetID();
+		m_pSource = (CSpaceObject *)(size_t)m_pSource->GetID();
 		m_dwFlags |= FLAG_OBJ_ID;
 		}
 
@@ -520,7 +520,7 @@ void CDamageSource::ReadFromStream (SLoadCtx &Ctx)
 	//	If this is an object ID, then we just store it in m_pSource.
 
 	if (IsObjID())
-		m_pSource = (CSpaceObject *)dwObjID;
+		m_pSource = (CSpaceObject *)(size_t)dwObjID;
 
 	//	Otherwise, we need to resolve the pointer
 
@@ -584,7 +584,7 @@ void CDamageSource::SetObj (CSpaceObject *pSource)
 	if (pSource && pSource->IsDestroyed())
 		{
 		m_sSourceName = pSource->GetNamePattern(0, &m_dwSourceNameFlags);
-		m_pSource = (CSpaceObject *)pSource->GetID();
+		m_pSource = (CSpaceObject *)(size_t)pSource->GetID();
 		m_dwFlags |= FLAG_OBJ_ID;
 		}
 
@@ -617,7 +617,7 @@ void CDamageSource::WriteToStream (IWriteStream *pStream)
 
 	if (IsObjID())
 		{
-		dwSave = GetRawObjID();
+		dwSave = (DWORD)(size_t)GetRawObjID();
 		pStream->Write((char *)&dwSave, sizeof(DWORD));
 		}
 

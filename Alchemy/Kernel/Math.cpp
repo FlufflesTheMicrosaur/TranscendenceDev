@@ -176,6 +176,15 @@ DWORD Kernel::mathRandom (void)
 	return g_Seed;
 	}
 
+size_t Kernel::mathRandomPtr(void)
+//Workaround for 64bit porting, in which some usecases require up to size_t of randomness
+	{
+	if (sizeof(size_t) == 8)
+		return mathRandomPtr(0, (size_t)0xffffffffffffffff);
+	else
+		return mathRandom();
+	}
+
 int Kernel::mathRandom (int iFrom, int iTo)
 
 //	mathRandom
@@ -199,6 +208,24 @@ int Kernel::mathRandom (int iFrom, int iTo)
 		}
 
 	return iRandom + iFrom;
+	}
+
+size_t Kernel::mathRandomPtr(size_t iFrom, size_t iTo)
+//Workaround for 64bit porting, in which some usecases require up to size_t of randomness
+//Not meant to be a good or proper prng, just a fast one that outputs size_t reasonably
+//distributed bits.
+	{
+	if (sizeof(size_t) == 4)
+		return  (mathRandom(0, 0x7fffffff) << 1) + mathRandom(0, 1);
+	size_t a, b, c, d, e;
+	e = mathRandom(0, 0xf); //generate 4 bits to pad this out
+	a = ((size_t)mathRandom(0, 0x7fffffff) << 1) + e % 2;
+	b = ((size_t)mathRandom(0, 0x7fffffff) << 1) + (e >> 1) % 2;
+	c = ((size_t)mathRandom(0, 0x7fffffff) << 1) + (e >> 2) % 2;
+	d = ((size_t)mathRandom(0, 0x7fffffff) << 1) + (e >> 3);
+	a *= b;
+	c *= d;
+	return ((a << 32) | (c << 32 >> 32)) % (iTo - iFrom) + iFrom;
 	}
 
 double Kernel::mathRandomMinusOneToOne (void)
@@ -249,7 +276,10 @@ int Kernel::mathRound (double x)
 	const double round_to_nearest = 0.5;
 	int i;
 
-#ifndef __GNUC__
+#ifdef _M_AMD64
+	i = (int)round(x);
+#else
+#ifndef __GNUC__ 
 	__asm
 		{
 		fld x
@@ -267,6 +297,7 @@ int Kernel::mathRound (double x)
 		"sarl $1, %0\n"
 		: "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
         );
+#endif
 #endif
 	return (i);
 	}

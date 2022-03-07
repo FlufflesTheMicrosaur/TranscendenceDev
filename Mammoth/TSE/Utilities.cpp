@@ -2115,7 +2115,7 @@ ALERROR ParseDamageTypeList (const CString &sList, TArray<CString> *retList)
 
 	//	Now parse each element
 
-	int iCount = Min(DamageAdj.GetCount(), (int)damageCount);
+	int iCount = Min((int)DamageAdj.GetCount(), (int)damageCount);
 	for (i = 0; i < iCount; i++)
 		{
 		CString sDamageType;

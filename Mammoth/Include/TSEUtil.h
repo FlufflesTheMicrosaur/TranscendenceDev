@@ -583,7 +583,7 @@ class CDamageSource
 			};
 
 		DWORD GetObjID (void) const;
-		DWORD GetRawObjID (void) const { return (DWORD)m_pSource; }
+		CSpaceObject* GetRawObjID (void) const { return m_pSource; }
 		bool IsObjPointer (void) const { return (m_pSource && !IsObjID()); }
 		bool IsObjID (void) const { return ((m_dwFlags & FLAG_OBJ_ID) == FLAG_OBJ_ID); }
 
@@ -797,10 +797,10 @@ class CSpaceObjectList
 		void DeleteAll (void) { m_List.DeleteAll(); }
 		void FastAdd (CSpaceObject *pObj, int *retiIndex = NULL) { if (retiIndex) *retiIndex = m_List.GetCount(); m_List.Insert(pObj); }
 		void FastAdd (const CSpaceObjectList &List);
-		bool FindObj (const CSpaceObject *pObj, int *retiIndex = NULL) const { return m_List.Find(const_cast<CSpaceObject *>(pObj), retiIndex); }
+		bool FindObj (const CSpaceObject *pObj, size_t *retiIndex = NULL) const { return m_List.Find(const_cast<CSpaceObject *>(pObj), retiIndex); }
 		int GetCount (void) const { return m_List.GetCount(); }
 		CSpaceObject *GetObj (int iIndex) const { return m_List[iIndex]; }
-		CSpaceObject *GetRandomObj (void) const { return (m_List.GetCount() == 0 ? NULL : m_List[mathRandom(0, m_List.GetCount() - 1)]); }
+		CSpaceObject *GetRandomObj (void) const { return (m_List.GetCount() == 0 ? NULL : m_List[mathRandomPtr(0, m_List.GetCount() - 1)]); }
 		TArray<CSpaceObject *> &GetRawList (void) { return m_List; }
 		bool IsEmpty (void) const { return (m_List.GetCount() == 0); }
 		void NotifyOnObjDestroyed (SDestroyCtx &Ctx);

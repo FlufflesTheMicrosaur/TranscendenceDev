@@ -243,7 +243,7 @@ void CLargeSet::Set (DWORD dwValue)
 	DWORD dwPos = dwValue / BITS_PER_DWORD;
 	DWORD dwBit = dwValue % BITS_PER_DWORD;
 	
-	int iOldCount = m_Set.GetCount();
+	int iOldCount = (int)m_Set.GetCount();
 	if (dwPos >= (DWORD)iOldCount)
 		{
 		m_Set.InsertEmpty(dwPos - iOldCount + 1);

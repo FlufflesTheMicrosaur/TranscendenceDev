@@ -456,7 +456,7 @@ CString CMissile::DebugCrashInfo (void) const
 		}
 	catch (...)
 		{
-		sResult.Append(strPatternSubst(CONSTLIT("m_pExhaust: %x [invalid]\r\n"), (DWORD)m_pExhaust));
+		sResult.Append(strPatternSubst(CONSTLIT("m_pExhaust: %x [invalid]\r\n"), (size_t)m_pExhaust));
 		}
 
 	//	m_pEnhancements
@@ -470,7 +470,7 @@ CString CMissile::DebugCrashInfo (void) const
 		}
 	catch (...)
 		{
-		sResult.Append(strPatternSubst(CONSTLIT("m_pEnhancements: %x [invalid]\r\n"), (DWORD)(CItemEnhancementStack *)m_pEnhancements));
+		sResult.Append(strPatternSubst(CONSTLIT("m_pEnhancements: %x [invalid]\r\n"), (size_t)(CItemEnhancementStack *)m_pEnhancements));
 		}
 
 	//	m_pPainter
@@ -484,7 +484,7 @@ CString CMissile::DebugCrashInfo (void) const
 		}
 	catch (...)
 		{
-		sResult.Append(strPatternSubst(CONSTLIT("m_pPainter: %x [invalid]\r\n"), (DWORD)m_pPainter));
+		sResult.Append(strPatternSubst(CONSTLIT("m_pPainter: %x [invalid]\r\n"), (size_t)m_pPainter));
 		}
 
 	//	Objects

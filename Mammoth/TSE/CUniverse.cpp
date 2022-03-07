@@ -2335,7 +2335,7 @@ void CUniverse::PutPlayerInSystem (CShip *pPlayerShip, const CVector &vPos, CSys
 
 	//	Set globals
 
-	m_CC.DefineGlobalInteger(STR_G_PLAYER_SHIP, (int)pPlayerShip);
+	m_CC.DefineGlobalPointer(STR_G_PLAYER_SHIP, pPlayerShip);
 
 	//	POV
 
@@ -2913,7 +2913,7 @@ void CUniverse::SetPlayerShip (CSpaceObject *pPlayer)
 	CCodeChain &CC = GetCC();
 
 	m_pPlayerShip = pPlayer;
-	CC.DefineGlobal(STR_G_PLAYER_SHIP, (m_pPlayerShip ? CC.CreateInteger((int)m_pPlayerShip) : CC.CreateNil()));
+	CC.DefineGlobal(STR_G_PLAYER_SHIP, (m_pPlayerShip ? CC.CreatePointer(m_pPlayerShip) : CC.CreateNil()));
 	}
 
 bool CUniverse::SetPOV (CSpaceObject *pPOV)
@@ -2966,7 +2966,7 @@ void CUniverse::StartGame (bool bNewGame)
 	//	At this point we can define the player variables
 
 	CC.DefineGlobal(STR_G_PLAYER, (m_pPlayer ? m_pPlayer->CreateGlobalRef(CC) : CC.CreateNil()));
-	CC.DefineGlobal(STR_G_PLAYER_SHIP, (m_pPlayerShip ? CC.CreateInteger((int)m_pPlayerShip) : CC.CreateNil()));
+	CC.DefineGlobal(STR_G_PLAYER_SHIP, (m_pPlayerShip ? CC.CreatePointer(m_pPlayerShip) : CC.CreateNil()));
 
 	//	Load images necessary for the system
 

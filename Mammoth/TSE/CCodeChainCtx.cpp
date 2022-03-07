@@ -308,7 +308,7 @@ CSpaceObject *CCodeChainCtx::AsSpaceObject (ICCItem *pItem)
 	CSpaceObject *pObj;
 	try
 		{
-		pObj = reinterpret_cast<CSpaceObject *>(pItem->GetIntegerValue());
+		pObj = reinterpret_cast<CSpaceObject *>(pItem->GetPointerValue());
 		if (pObj && ((DWORD)pObj->GetCategory() & ~CSpaceObject::catMask))
 			pObj = NULL;
 		}

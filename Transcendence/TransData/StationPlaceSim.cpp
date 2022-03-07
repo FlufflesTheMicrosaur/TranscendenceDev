@@ -165,7 +165,7 @@ void GenerateStationPlaceSim (CUniverse &Universe, CXMLElement *pCmdLine)
 	for (i = 0; i < DIST_BUCKET_COUNT; i++)
 		iTotals[i] = 0;
 
-	for (i = 0; i < AllSystems.GetCount(); i++)
+	for (i = 0; i < AllSystems.GetCountInt(); i++)
 		{
 		SPSimSystemInfo *pSystemEntry = (SPSimSystemInfo *)AllSystems.GetValue(i);
 

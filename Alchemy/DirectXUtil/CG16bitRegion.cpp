@@ -178,7 +178,7 @@ void CG16bitRegion::Blt (CG32bitImage &Dest, int xDest, int yDest, CG32bitImage 
 						ASSERT(cxBlt == 0 || cxConsume == cxCount);
 						}
 
-					pCode += AlignUp(cxOriginalCount, sizeof(WORD)) / 2;
+					pCode += AlignUp((size_t)cxOriginalCount, sizeof(WORD)) / 2;
 					break;
 					}
 
@@ -412,7 +412,7 @@ void CG16bitRegion::ColorTransBltAlpha (CG16bitImage &Dest, int xDest, int yDest
 						ASSERT(cxBlt == 0 || cxConsume == cxCount);
 						}
 
-					pCode += AlignUp(cxOriginalCount, sizeof(WORD)) / 2;
+					pCode += AlignUp((size_t)cxOriginalCount, sizeof(WORD)) / 2;
 					break;
 					}
 
@@ -1168,10 +1168,10 @@ void CG16bitRegion::WriteCodeRun (WORD *&pCode, DWORD &dwCodeSize, BYTE *pRun, D
 //	Writes the given code
 
 	{
-	DWORD dwCodeLength = 1 + (AlignUp(dwCount, sizeof(WORD)) / 2);
+	DWORD dwCodeLength = 1 + (AlignUp(dwCount, (int)sizeof(WORD)) / 2);
 	if (dwCodeSize + dwCodeLength > m_dwAlloc)
 		{
-		AllocCode(m_dwAlloc + AlignUp(dwCodeLength, ALLOC_GRANULARITY));
+		AllocCode(m_dwAlloc + AlignUp((int)dwCodeLength, (int)ALLOC_GRANULARITY));
 		pCode = m_pCode + dwCodeSize;
 		}
 

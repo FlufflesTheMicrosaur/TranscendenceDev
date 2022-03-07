@@ -103,6 +103,7 @@ class ICCItem : public CObject
 			Double,
 			Vector,
 			SymbolTable,
+			Pointer,
 			};
 
 		ICCItem (IObjectClass *pClass);
@@ -121,6 +122,7 @@ class ICCItem : public CObject
 		//	List interface
 
 		void AppendInteger (int iValue);
+		void AppendPointer (void* pValue);
 		void AppendString (const CString &sValue);
 
 		virtual void Append (ICCItem *pValue) { }
@@ -154,6 +156,7 @@ class ICCItem : public CObject
 		virtual CString GetHelp (void) { return NULL_STR; }
 		virtual int GetIntegerValue (void) const { return 0; }
 		virtual double GetDoubleValue (void) const { return 0.; }
+		virtual void* GetPointerValue(void) const { return nullptr; }
 		virtual CString GetStringValue (void) const { return LITERAL(""); }
 		virtual ValueTypes GetValueType (void) const = 0;
 		virtual CString GetTypeOf (void);
@@ -164,6 +167,7 @@ class ICCItem : public CObject
 		virtual bool IsFunction (void) const = 0;
 		virtual bool IsIdentifier (void) const = 0;
 		virtual bool IsInteger (void) const = 0;
+		virtual bool IsPointer (void) const = 0;
 		virtual bool IsDouble (void) const = 0;
 		virtual bool IsLambdaFunction (void) const { return false; }
 		virtual bool IsNil (void) const = 0;
@@ -188,11 +192,13 @@ class ICCItem : public CObject
 		bool GetBooleanAt (const CString &sKey) const;
 		double GetDoubleAt (const CString &sKey, double rDefault = 0.0) const;
 		int GetIntegerAt (const CString &sKey, int iDefault = 0) const;
+		void* GetPointerAt (const CString &sKey, void* pDefault = nullptr) const;
 		CString GetStringAt (const CString &sKey, const CString &sDefault = NULL_STR) const;
 		void SetAt (const CString &sKey, ICCItem *pValue);
 		void SetBooleanAt (const CString &sKey, bool bValue);
 		void SetDoubleAt (const CString &sKey, double rValue);
 		void SetIntegerAt (const CString &sKey, int iValue);
+		void SetPointerAt (const CString &sKey, void* pValue);
 		void SetStringAt (const CString &sKey, const CString &sValue);
 
 		virtual bool AddEntry (ICCItem *pKey, ICCItem *pEntry, bool bForceLocalAdd = false, bool bMustBeNew = false) { return true; }
@@ -249,6 +255,8 @@ class ICCItemPtr
 		explicit ICCItemPtr (ICCItem::ValueTypes iType);
 		explicit ICCItemPtr (const CString &sValue);
 		explicit ICCItemPtr (int iValue);
+		explicit ICCItemPtr (void* pValue);
+		explicit ICCItemPtr (size_t pValue);
 		explicit ICCItemPtr (DWORD dwValue);
 		explicit ICCItemPtr (double rValue);
 		explicit ICCItemPtr (bool bValue);
@@ -310,6 +318,7 @@ class ICCAtom : public ICCItem
 		virtual bool IsAtom (void) const override { return true; }
 		virtual bool IsInteger (void) const override { return false; }
 		virtual bool IsDouble(void) const override { return false; }
+		virtual bool IsPointer(void) const override { return false; }
 		virtual bool IsNil (void) const override { return false; }
 		virtual ICCItem *Tail (CCodeChain *pCC) override;
 	};
@@ -327,7 +336,36 @@ class CCNumeral : public ICCAtom
 		virtual bool IsFunction(void) const override { return false; }
 		virtual bool IsInteger(void) const override { return false;  }
 		virtual bool IsDouble(void) const override { return false;  }
+		virtual bool IsPointer(void) const override { return false; }
 	};
+
+class CCPointer : public CCNumeral
+{
+public:
+	CCPointer(void);
+
+	void* GetValue(void) { return m_pValue; }
+	void SetValue(void* pValue) { m_pValue = pValue; }
+
+	//	ICCItem virtuals
+	virtual ICCItem* Clone(CCodeChain* pCC) override;
+	virtual bool IsInteger(void) const override { return false; }
+	virtual bool IsDouble(void) const override { return false; }
+	virtual bool IsPointer(void) const override { return true; }
+	virtual int GetIntegerValue(void) const override { return 0; }
+	virtual double GetDoubleValue(void) const override { return nan(""); }
+	virtual void* GetPointerValue(void) const override { return m_pValue; }
+	virtual CString GetStringValue(void) const override { return strFromPtr(m_pValue); }
+	virtual ValueTypes GetValueType(void) const override { return Integer; }
+	virtual CString Print(DWORD dwFlags = 0) const override;
+	virtual void Reset(void) override;
+
+protected:
+	virtual void DestroyItem(void) override;
+
+private:
+	void* m_pValue;							//	Value of pointer
+};
 
 class CCInteger : public CCNumeral
 	{
@@ -341,6 +379,7 @@ class CCInteger : public CCNumeral
 		virtual ICCItem *Clone(CCodeChain *pCC) override;
 		virtual bool IsInteger(void) const override { return true; }
 		virtual bool IsDouble(void) const override { return false; }
+		virtual bool IsPointer(void) const override { return false; }
 		virtual int GetIntegerValue (void) const override { return m_iValue; }
 		virtual double GetDoubleValue(void) const override { return double(m_iValue); }
 		virtual CString GetStringValue (void) const override { return strFromInt(m_iValue); }
@@ -369,6 +408,7 @@ class CCDouble : public CCNumeral
 		virtual ICCItem *Clone(CCodeChain *pCC) override;
 		virtual bool IsInteger(void) const override { return false; }
 		virtual bool IsDouble(void) const override { return true; }
+		virtual bool IsPointer(void) const override { return false; }
 		virtual int GetIntegerValue(void) const override { return int(m_dValue); }
 		virtual double GetDoubleValue(void) const override { return m_dValue; }
 		virtual CString GetStringValue(void) const override { return strFromDouble(m_dValue); }
@@ -396,11 +436,13 @@ class CCNil : public ICCAtom
 		virtual void Discard (void) override { }
 		virtual int GetCount (void) const override { return 0; }
 		virtual int GetIntegerValue (void) const override { return 0; }
+		virtual void* GetPointerValue(void) const override { return nullptr; }
 		virtual CString GetStringValue (void) const override { return LITERAL("Nil"); }
 		virtual ValueTypes GetValueType (void) const override { return Nil; }
 		virtual bool IsConstant (void) const override { return true; }
 		virtual bool IsIdentifier (void) const override { return false; }
 		virtual bool IsInteger (void) const override { return true; }
+		virtual bool IsPointer (void) const override { return true; }
 		virtual bool IsDouble(void) const override { return false; }
 		virtual bool IsFunction (void) const override { return false; }
 		virtual bool IsNil (void) const override { return true; }
@@ -428,6 +470,7 @@ class CCTrue : public ICCAtom
 		virtual bool IsConstant (void) const override { return true; }
 		virtual bool IsIdentifier (void) const override { return false; }
 		virtual bool IsFunction (void) const override { return false; }
+		virtual bool IsPointer(void) const override { return false; }
 		virtual bool IsTrue (void) const override { return true; }
 		virtual CString Print (DWORD dwFlags = 0) const override { return LITERAL("True"); }
 		virtual void Reset (void) override { }
@@ -564,6 +607,7 @@ class ICCList : public ICCItem
 		virtual bool IsIdentifier (void) const override { return false; }
 		virtual bool IsInteger (void) const override { return false; }
 		virtual bool IsDouble(void) const override { return false; }
+		virtual bool IsPointer(void) const override { return false; }
 		virtual bool IsNil (void) const override { return (GetCount() == 0); }
 	};
 
@@ -665,6 +709,7 @@ public:
 	virtual bool IsFunction (void) const override { return false; }
 	virtual bool IsIdentifier (void) const override { return false; }
 	virtual bool IsInteger (void) const override { return false; }
+	virtual bool IsPointer(void) const override { return false; }
 	virtual bool IsDouble (void) const override { return false; }
 	virtual bool IsNil (void) const override { return (GetCount() == 0); }
 };
@@ -694,15 +739,15 @@ class CCVector : public ICCVector
 		virtual ICCItem *Clone (CCodeChain *pCC) override;
 		virtual ICCItem *CloneContainer (void) const override { return Reference(); }
 		virtual ICCItem *Enum (CEvalContext *pCtx, ICCItem *pCode) override;
-		virtual int GetCount (void) const override { return m_vData.GetCount(); }
+		virtual int GetCount (void) const override { return (int)m_vData.GetCount(); }
 		virtual ICCItem *GetElement (int iIndex) const override;
 		virtual ICCItem *Head (CCodeChain *pCC) override { return GetElement(0); }
 		virtual CString Print (DWORD dwFlags = 0) const override;
 		virtual ICCItem *Tail (CCodeChain *pCC) override;
 		virtual void Reset (void) override;
 
-		virtual int GetShapeCount (void) const { return m_vShape.GetCount(); }
-		virtual int GetDimension (void) { return m_vShape.GetCount(); }
+		virtual int GetShapeCount (void) const { return (int)m_vShape.GetCount(); }
+		virtual int GetDimension (void) { return (int)m_vShape.GetCount(); }
 		virtual ICCItem *SetElement (int iIndex, double dValue);
 		virtual ICCItem *IndexVector (CCodeChain *pCC, ICCItem *pIndices) const;
 
@@ -741,7 +786,7 @@ class CCAtomTable : public ICCAtom
 		virtual void DestroyItem (void);
 
 	private:
-		CDictionary m_Table;
+		CPtrDictionary m_Table;
 	};
 
 //	This is a symbol table object
@@ -769,7 +814,7 @@ class CCSymbolTable : public ICCList
 		//	List interface
 
 		virtual ICCItem *Enum (CEvalContext *pCtx, ICCItem *pCode) override { ASSERT(false); return NULL; }
-		virtual int GetCount (void) const override { return m_Symbols.GetCount(); }
+		virtual int GetCount (void) const override { return (int)m_Symbols.GetCountInt(); }
 		virtual ICCItem *GetElement (int iIndex) const override;
 		virtual ICCItem *GetElement (const CString &sKey) const override;
 		virtual ICCItem *GetElement (CCodeChain *pCC, int iIndex) const override;
@@ -898,6 +943,7 @@ class CCodeChain
 		static ICCItem *CreateErrorCode (int iErrorCode);
 		static ICCItem *CreateInteger (int iValue);
 		static ICCItem *CreateDouble (double dValue);
+		static ICCItem* CreatePointer(void* pPtr);
 		static ICCItem *CreateLambda (ICCItem *pList, bool bArgsOnly);
 		static ICCItem *CreateLinkedList (void);
 		static ICCItemPtr CreateLiteral (const CString &sString);
@@ -943,6 +989,7 @@ class CCodeChain
 		ALERROR DefineGlobal (const CString &sVar, ICCItem *pValue);
 		ALERROR DefineGlobalInteger (const CString &sVar, int iValue);
 		ALERROR DefineGlobalString (const CString &sVar, const CString &sValue);
+		ALERROR DefineGlobalPointer (const CString& sVar, void* vpValue);
 		void DiscardAllGlobals (void);
 		ICCItem *EvaluateArgs (CEvalContext *pCtx, ICCItem *pArgs, const CString &sArgValidation);
 		IItemTransform *GetGlobalDefineHook (void) const { return m_pGlobalSymbols->GetDefineHook(); }
@@ -985,6 +1032,7 @@ class CCodeChain
 		static CCItemPool<CCSymbolTable> m_SymbolTablePool;
 		static CCItemPool<CCLambda> m_LambdaPool;
 		static CCItemPool<CCVector> m_VectorPool;
+		static CCItemPool<CCPointer> m_PointerPool;
 		static CConsPool m_ConsPool;
 	};
 

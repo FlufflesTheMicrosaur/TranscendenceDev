@@ -340,7 +340,7 @@ CString CNavigationPath::DebugDescribe (CSpaceObject *pObj, CNavigationPath *pNa
 		}
 	catch (...)
 		{
-		return strPatternSubst(CONSTLIT("%x [invalid]"), (DWORD)pNavPath);
+		return strPatternSubst(CONSTLIT("%x [invalid]"), (size_t)pNavPath);
 		}
 
 	//	Get the objects

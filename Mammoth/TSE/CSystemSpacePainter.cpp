@@ -350,7 +350,7 @@ void CSystemSpacePainter::PaintSpaceBackground (CG32bitImage &Dest, int xCenter,
 	//	Compute the chunks
 
 	int cyLeft = RectHeight(Ctx.rcView);
-	int cyChunk = cyLeft / Ctx.pThreadPool->GetThreadCount();
+	int cyChunk = cyLeft / (int)Ctx.pThreadPool->GetThreadCount();
 	int yStart = 0;
 
 	//	Start asynchronous tasks
@@ -398,7 +398,7 @@ void CSystemSpacePainter::PaintStarfield (CG32bitImage &Dest, const RECT &rcView
 	//	Paint each star
 
 	CG32bitPixel *pStart = Dest.GetPixelPos(0, 0);
-	int cyRow = Dest.GetPixelPos(0, 1) - pStart;
+	int cyRow = (int)(size_t)(Dest.GetPixelPos(0, 1) - pStart);
 
 	for (i = 0; i < m_Starfield.GetCount(); i++)
 		{
@@ -495,7 +495,7 @@ void CSystemSpacePainter::PaintStarshine (CG32bitImage &Dest, int xCenter, int y
 	//	Compute the chunks
 
 	int cyLeft = RectHeight(Ctx.rcView);
-	int cyChunk = cyLeft / Ctx.pThreadPool->GetThreadCount();
+	int cyChunk = cyLeft / (int)Ctx.pThreadPool->GetThreadCount();
 	int yStart = 0;
 
 	//	Start asynchronous tasks

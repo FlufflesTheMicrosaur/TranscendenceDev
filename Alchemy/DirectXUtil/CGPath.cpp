@@ -198,7 +198,7 @@ void CGPath::CreateSubPathStrokePath (int iSubPath, Metric rLineWidth, CGPath *r
 		SSubPath *pInner = &retPath->m_SubPaths[1];
 		pInner->bClosed = true;
 
-		int iPrev = SubPath.Lines.GetCount() - 1;
+		int iPrev = (int)SubPath.Lines.GetCount() - 1;
 		int iCur = 0;
 		int iNext = 1;
 
@@ -235,7 +235,7 @@ void CGPath::CreateSubPathStrokePath (int iSubPath, Metric rLineWidth, CGPath *r
 
 		//	We end up with twice as many points
 
-		int iNewPointCount = SubPath.Lines.GetCount() * 2;
+		int iNewPointCount = (int)SubPath.Lines.GetCount() * 2;
 		pNewPath->Lines.InsertEmpty(iNewPointCount);
 
 		//	Loop over all points
@@ -321,7 +321,7 @@ int CGPath::GetSubPathPolygonPoints (int iSubPath, TArray<CVector> *retPoints) c
 		retPoints->DeleteAll();
 
 	const SSubPath &SubPath = m_SubPaths[iSubPath];
-	int iCount = SubPath.Lines.GetCount();
+	int iCount = (int)SubPath.Lines.GetCount();
 
 	if (retPoints)
 		{
@@ -344,7 +344,7 @@ int CGPath::GetVertexCount (void) const
 	int iTotal = 0;
 
 	for (i = 0; i < m_SubPaths.GetCount(); i++)
-		iTotal += m_SubPaths[i].Lines.GetCount();
+		iTotal += (int)m_SubPaths[i].Lines.GetCount();
 
 	return iTotal;
 	}

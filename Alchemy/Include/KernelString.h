@@ -12,7 +12,7 @@
 
 struct SConstString
 	{
-	int iLen;
+	size_t iLen;
 	const char *pszString;
 	};
 
@@ -35,8 +35,8 @@ class CString
 		CString (void);
 		CString (const char *pString);
 		CString (CharacterSets iCharSet, const char *pString);
-		CString (const char *pString, int iLength);
-		CString (const char *pString, int iLength, BOOL bExternal);
+		CString (const char* pString, size_t iLength);
+		CString (const char* pString, size_t iLength, BOOL bExternal);
 		CString (const Kernel::SConstString &String);
 		~CString (void);
 
@@ -56,12 +56,12 @@ class CString
 		int GetLength (void) const;
 		int GetMemoryUsage (void) const;
 		char *GetPointer (void) const;
-		char *GetWritePointer (int iLength);
-		void GrowToFit (int iLength);
+		char *GetWritePointer (size_t iLength);
+		void GrowToFit (size_t iLength);
 		bool IsBlank (void) const { return (GetLength() == 0); }
 		void ReadFromStream (IReadStream *pStream);
-		void Transcribe (const char *pString, int iLen);
-		void Truncate (int iLength);
+		void Transcribe (const char *pString, size_t iLen);
+		void Truncate (size_t iLength);
 		void WriteToStream (IWriteStream *pStream) const;
 
 		//	These are used internally only
@@ -227,6 +227,7 @@ Kernel::CString strFormatMicroseconds (DWORD dwMicroseconds);
 Kernel::CString strFormatMilliseconds (DWORD dwMilliseconds);
 Kernel::CString strFromDouble (double rValue, int iDecimals = -1);
 Kernel::CString strFromInt (int iInteger, bool bSigned = true);
+Kernel::CString strFromPtr (void* pPtr);
 int strGetHexDigit (const char *pPos);
 char strGetHexDigit (int iDigit);
 inline bool strIsAlpha (const char *pPos) { return (::IsCharAlpha(*pPos) == TRUE); }

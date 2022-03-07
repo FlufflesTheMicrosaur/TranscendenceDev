@@ -39,7 +39,7 @@ ICCItem *CCodeChain::Link (const CString &sString, SLinkOptions &Options)
 
 		//	Otherwise, set the offset so we start at the correct place.
 
-		Options.iOffset += (pPos - pStart);
+		Options.iOffset += (int)(pPos - pStart);
 		}
 
 	//	Link
@@ -79,7 +79,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 
 		pPos++;
 
-		pResult = LinkFragment(sString, iOffset + (pPos - pStart), &iLinked, &iCurLine);
+		pResult = LinkFragment(sString, iOffset + (int)(pPos - pStart), &iLinked, &iCurLine);
 		if (pResult->IsError())
 			return pResult;
 
@@ -119,7 +119,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 				{
 				int iLinked;
 
-				ICCItemPtr pItem = LinkFragment(sString, iOffset + (pPos - pStart), &iLinked, &iCurLine);
+				ICCItemPtr pItem = LinkFragment(sString, iOffset + (int)(pPos - pStart), &iLinked, &iCurLine);
 				if (pItem->IsError())
 					return pItem;
 
@@ -186,7 +186,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 
 				int iLinked;
 
-				ICCItemPtr pKey = LinkFragment(sString, iOffset + (pPos - pStart), &iLinked, &iCurLine);
+				ICCItemPtr pKey = LinkFragment(sString, iOffset + (int)(pPos - pStart), &iLinked, &iCurLine);
 				if (pKey->IsError())
 					return pKey;
 
@@ -201,7 +201,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 
 				//	Get the value
 
-				ICCItemPtr pValue = LinkFragment(sString, iOffset + (pPos - pStart), &iLinked, &iCurLine);
+				ICCItemPtr pValue = LinkFragment(sString, iOffset + (int)(pPos - pStart), &iLinked, &iCurLine);
 				if (pValue->IsError())
 					return pValue;
 
@@ -377,7 +377,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 
 		else if (*pPos == SYMBOL_QUOTE)
 			pResult = CreateParseError(iCurLine, strPatternSubst(CONSTLIT("Identifiers must not use single quote characters: %s"), 
-					strSubString(sString, iOffset + (pStartString - pStart), (pPos + 1 - pStartString))));
+					strSubString(sString, iOffset + (int)(pStartString - pStart), (int)(pPos + 1 - pStartString))));
 
 		//	Otherwise, get the identifier
 
@@ -385,7 +385,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 			{
 			//	Create a string from the portion
 
-			sIdentifier = strSubString(sString, iOffset + (pStartString - pStart), (pPos - pStartString));
+			sIdentifier = strSubString(sString, iOffset + (int)(pStartString - pStart), (int)(pPos - pStartString));
 
 			//	Check to see if this is a reserved identifier
 
@@ -402,7 +402,7 @@ ICCItemPtr CCodeChain::LinkFragment (const CString &sString, int iOffset, int *r
 	//	that we read
 
 	if (retiLinked)
-		*retiLinked = (pPos - pStart);
+		*retiLinked = (int)(pPos - pStart);
 
 	if (ioiCurLine)
 		*ioiCurLine = iCurLine;

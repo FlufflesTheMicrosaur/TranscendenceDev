@@ -214,7 +214,7 @@ bool CGameSession::ShowEnableDisableMenu ()
 					sExtra,
 					sHelp,
 					(pDevice->IsEnabled() ? 0 : CMenuData::FLAG_GRAYED),
-					(void*)i);
+					(void*)(size_t)i);
 
 			//	Next key
 
@@ -256,7 +256,7 @@ void CGameSession::DoInvokeMenu (DWORD dwEntry)
 	if (!pPlayerShip)
 		return;
 
-	CPower *pPower = (CPower *)dwEntry;
+	CPower *pPower = (CPower *)(size_t)dwEntry;
 	pPlayerShip->InvokePower(*pPower, pPlayer->GetTarget());
 	}
 

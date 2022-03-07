@@ -81,7 +81,7 @@ int CGButtonArea::Justify (const RECT &rcRect)
 			m_pDescFont->BreakText(m_sDesc, m_cxJustifyWidth, &m_Lines, CG16bitFont::SmartQuotes);
 			}
 
-		cyHeight += (m_Lines.GetCount() * m_pDescFont->GetHeight());
+		cyHeight += (int)(m_Lines.GetCount() * m_pDescFont->GetHeight());
 		}
 
 	//	Add padding
@@ -319,7 +319,7 @@ void CGButtonArea::SetLabelAccelerator (const CString &sKey, int iKeyOffset)
 			{
 			if (bFirstLetter && CharLower((LPTSTR)(BYTE)(*pKey)) == CharLower((LPTSTR)(BYTE)(*pPos)))
 				{
-				m_iAccelerator = pPos - pStart;
+				m_iAccelerator = (int)(pPos - pStart);
 				return;
 				}
 

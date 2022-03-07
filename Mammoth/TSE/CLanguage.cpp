@@ -234,7 +234,7 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 
 		//	Add the next segment
 
-		int iLen = pSegEnd - pSeg;
+		int iLen = (int)(pSegEnd - pSeg);
 		if (iLen > 0)
 			{
 			if (iLen > iOutLeft)

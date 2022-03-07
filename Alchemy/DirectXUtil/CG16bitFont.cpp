@@ -682,7 +682,7 @@ void CG16bitFont::DrawText (CG32bitImage &Dest,
 
 	BreakText(sText, RectWidth(rcRect), &Lines, dwFlags);
 
-	int iLines = Lines.GetCount();
+	int iLines = (int)Lines.GetCount();
 	int cyHeight = iLines * m_cyHeight + (iLineAdj * (iLines - 1));
 
 	//	If we're truncating, see if we exceeded the vertical height.
@@ -1216,7 +1216,7 @@ void CG16bitFont::WriteToStream (IWriteStream *pStream)
 	dwSave = g_iStartChar;
 	pStream->Write((char *)&dwSave, sizeof(DWORD));
 
-	dwSave = m_Metrics.GetCount();
+	dwSave = (DWORD)m_Metrics.GetCount();
 	pStream->Write((char *)&dwSave, sizeof(DWORD));
 	for (i = 0; i < m_Metrics.GetCount(); i++)
 		{
@@ -1240,7 +1240,7 @@ void FormatLine (char *pPos, int iLen, bool *ioInSmartQuotes, TArray<CString> *r
 		{
 		//	Add a new empty line
 
-		int iIndex = retLines->GetCount();
+		int iIndex = (int)retLines->GetCount();
 		retLines->Insert(NULL_STR);
 		CString &sLine = retLines->GetAt(iIndex);
 

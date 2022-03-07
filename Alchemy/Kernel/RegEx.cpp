@@ -28,7 +28,7 @@ class CNFA
 		void DebugDump (void);
 		int GetEndState (void) const { return (m_pEnd ? m_pEnd->iID : -1); }
 		int GetStartState (void) const { return (m_pStart ? m_pStart->iID : -1); }
-		int GetStateCount (void) const { return m_States.GetCount(); }
+		int GetStateCount (void) const { return (int)m_States.GetCount(); }
 		int GetSubExpressionCount (void);
 		bool GetSubExpressions (TArray<SRegExMatch> *retMatches) const;
 		bool IsEmpty (void) { return (m_States.GetCount() == 0); }
@@ -71,7 +71,7 @@ class CNFA
 				~CSubExpState (void) { if (m_pArray) delete m_pArray; }
 				CSubExpState &operator= (const CSubExpState &Obj) { if (m_pArray) delete m_pArray; if (Obj.m_pArray) m_pArray = new TArray<SSubExp>(*Obj.m_pArray); else m_pArray = NULL; return *this; }
 
-				int GetCount (void) { return (m_pArray ? m_pArray->GetCount() : 0); }
+				int GetCount (void) { return (int)(m_pArray ? m_pArray->GetCount() : 0); }
 				char *GetEnd (int iIndex) { return m_pArray->GetAt(iIndex).pEnd; }
 				char *GetStart (int iIndex) { return m_pArray->GetAt(iIndex).pStart; }
 				void Init (int iCount) { if (m_pArray == NULL) { m_pArray = new TArray<SSubExp>; m_pArray->InsertEmpty(iCount); } }
@@ -937,7 +937,7 @@ CNFA::SState *CNFA::InsertState (SState *pNewState)
 	if (pNewState == NULL)
 		pNewState = new SState;
 
-	pNewState->iID = m_States.GetCount();
+	pNewState->iID = (int)m_States.GetCount();
 	m_States.Insert(pNewState);
 
 	return pNewState;

@@ -305,7 +305,7 @@ template <class KEY, class VALUE> class TSortMap
 
 		bool FindPos (const KEY &key, int *retiPos = NULL) const
 			{
-			int iCount = m_Index.GetCount();
+			int iCount = (int)m_Index.GetCount();
 			int iMin = 0;
 			int iMax = iCount;
 			int iTry = iMax / 2;
@@ -361,7 +361,7 @@ template <class KEY, class VALUE> class TSortMap
 
 		int GetCount (void) const
 			{
-			return m_Index.GetCount();
+			return (int)m_Index.GetCount();
 			}
 
 		const KEY &GetKey (int iIndex) const
@@ -383,7 +383,7 @@ template <class KEY, class VALUE> class TSortMap
 			{
 			int i;
 
-			int iPos = m_Array.GetCount();
+			int iPos = (int)m_Array.GetCount();
 			m_Array.InsertEmpty(iCount);
 			m_Free.GrowToFit(iCount);
 			for (i = 0; i < iCount; i++)
@@ -643,7 +643,7 @@ template <class KEY, class VALUE> class TSortMap
 			SEntry *pEntry;
 			if (m_Free.GetCount() == 0)
 				{
-				*retiPos = m_Array.GetCount();
+				*retiPos = (int)m_Array.GetCount();
 				pEntry = m_Array.Insert();
 				}
 			else

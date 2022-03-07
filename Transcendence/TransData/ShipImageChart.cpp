@@ -225,7 +225,7 @@ void GenerateShipImageChart (CUniverse &Universe, CXMLElement *pCmdLine)
 
 	//	Allocate a map that tracks where to paint each ship
 
-	CPaintMap Map(Table.GetCount());
+	CPaintMap Map(Table.GetCountInt());
 
 	//	Arrange the ships
 
@@ -249,7 +249,7 @@ void GenerateShipImageChart (CUniverse &Universe, CXMLElement *pCmdLine)
 
 	//	Paint the images
 
-	for (i = 0; i < Table.GetCount(); i++)
+	for (i = 0; i < Table.GetCountInt(); i++)
 		{
 		CShipClass *pClass = (CShipClass *)Table.GetValue(i);
 
@@ -414,7 +414,7 @@ void ArrangeByCell (CSymbolTable &Table, int cxDesiredWidth, CPaintMap &Map)
 	//	Compute the number of rows & columns
 
 	int iInitCols = (cxDesiredWidth / cxCell) + ((cxDesiredWidth % cxCell) ? 1 : 0);
-	int iInitRows = AlignUp(20 * Table.GetCount(), iInitCols) / iInitCols;
+	int iInitRows = AlignUp(20 * Table.GetCountInt(), iInitCols) / iInitCols;
 
 	//	Create an array that keeps track of which cells we've used up
 
@@ -422,7 +422,7 @@ void ArrangeByCell (CSymbolTable &Table, int cxDesiredWidth, CPaintMap &Map)
 
 	//	Figure out where to place all the ships
 
-	for (i = 0; i < Table.GetCount(); i++)
+	for (i = 0; i < Table.GetCountInt(); i++)
 		{
 		CShipClass *pClass = (CShipClass *)Table.GetValue(i);
 
@@ -454,7 +454,7 @@ void ArrangeByRow (CSymbolTable &Table, SArrangeDesc &Desc, CPaintMap &Map)
 	int cyInternalSpacing = 2 * Desc.pHeader->GetHeight();
 	int cyNameSpacing = Desc.pHeader->GetHeight() / 2;
 
-	while (iNext < Table.GetCount())
+	while (iNext < Table.GetCountInt())
 		{
 		int i;
 		int cxWidthLeft = Desc.cxDesiredWidth;
@@ -463,7 +463,7 @@ void ArrangeByRow (CSymbolTable &Table, SArrangeDesc &Desc, CPaintMap &Map)
 
 		//	First figure out how many ships will fit
 		
-		while (iNext < Table.GetCount())
+		while (iNext < Table.GetCountInt())
 			{
 			CShipClass *pClass = (CShipClass *)Table.GetValue(iNext);
 			int cxSize = RectWidth(pClass->GetImage().GetImageRect());

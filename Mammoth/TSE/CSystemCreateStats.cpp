@@ -21,7 +21,7 @@ CSystemCreateStats::~CSystemCreateStats (void)
 	{
 	int i;
 
-	for (i = 0; i < m_LabelAttributeCounts.GetCount(); i++)
+	for (i = 0; i < m_LabelAttributeCounts.GetCountInt(); i++)
 		{
 		SLabelAttributeEntry *pEntry = (SLabelAttributeEntry *)m_LabelAttributeCounts.GetValue(i);
 		delete pEntry;

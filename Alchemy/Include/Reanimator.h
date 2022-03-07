@@ -994,7 +994,7 @@ class CListScroller : public IPropertyAnimator
 			{ }
 
 		void AddScrollPos (Metric rPos, Metric rAnchor = 0.0);
-		int GetCount (void) { return m_ScrollPos.GetCount(); }
+		int GetCount (void) { return (int)m_ScrollPos.GetCount(); }
 		int GetCurScrollPos (void);
 		Metric GetScrollPos (int iPos, Metric *retrAnchor = NULL) { if (retrAnchor) *retrAnchor = m_ScrollPos[iPos].rLinePos; return m_ScrollPos[iPos].rScrollPos; }
 		void SetAtPos (int iPos);

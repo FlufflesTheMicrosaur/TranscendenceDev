@@ -30,7 +30,7 @@ CLinePainter::ESlopeTypes CLinePainter::CalcIntermediates (const CG32bitImage &I
 
 	//	Calculate row increment
 
-	m_iPosRowInc = Image.GetPixelPos(0, 1) - Image.GetPixelPos(0, 0);
+	m_iPosRowInc = (int)(Image.GetPixelPos(0, 1) - Image.GetPixelPos(0, 0));
 
 	//	If a zero-length line, then we're done.
 

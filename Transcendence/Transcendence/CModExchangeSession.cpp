@@ -92,7 +92,7 @@ void CModExchangeSession::CmdDisableExtension (void)
 
 	//	Tell our controller to enable the extension and then refresh
 
-	m_HI.HICommand(CMD_DISABLE_EXTENSION, (void *)CatalogEntry.GetUNID());
+	m_HI.HICommand(CMD_DISABLE_EXTENSION, (void *)(size_t)CatalogEntry.GetUNID());
 	CmdRefresh();
 	}
 
@@ -119,7 +119,7 @@ void CModExchangeSession::CmdEnableExtension (void)
 
 	//	Tell our controller to enable the extension and then refresh
 
-	m_HI.HICommand(CMD_ENABLE_EXTENSION, (void *)CatalogEntry.GetUNID());
+	m_HI.HICommand(CMD_ENABLE_EXTENSION, (void *)(size_t)CatalogEntry.GetUNID());
 	CmdReload();
 	}
 

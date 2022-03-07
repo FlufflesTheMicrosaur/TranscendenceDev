@@ -1124,8 +1124,8 @@ ALERROR CDockScreen::InitCodeChain (CTranscendenceWnd *pTrans, CSpaceObject *pSt
 
 	//	Define some globals
 
-	CC.DefineGlobalInteger(CONSTLIT("gSource"), (int)pStation);
-	CC.DefineGlobalInteger(CONSTLIT("gScreen"), (int)this);
+	CC.DefineGlobalPointer(CONSTLIT("gSource"), pStation);
+	CC.DefineGlobalPointer(CONSTLIT("gScreen"), this);
 
 	return NOERROR;
 	}

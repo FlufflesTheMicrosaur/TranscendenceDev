@@ -70,7 +70,7 @@ bool Kernel::sysOpenURL (const CString &sURL)
 
 	{
 	HINSTANCE hResult = ::ShellExecute(NULL, "open", sURL.GetASCIIZPointer(), NULL, NULL, SW_SHOWNORMAL);
-	if ((DWORD)hResult <= 32)
+	if ((size_t)hResult <= 32)
 		{
 		//	Errors are <= 32.
 		return false;
@@ -151,7 +151,7 @@ DWORD Kernel::utlHashFunctionCase (BYTE *pKey, int iKeyLen)
 
 #undef mix
 
-void Kernel::utlMemSet (LPVOID pDest, DWORD Count, BYTE Value)
+void Kernel::utlMemSet (LPVOID pDest, size_t Count, BYTE Value)
 
 //	utlMemSet
 //
@@ -166,7 +166,7 @@ void Kernel::utlMemSet (LPVOID pDest, DWORD Count, BYTE Value)
 	std::memset(pDest, Value, Count);
 	}
 
-void Kernel::utlMemCopy (const char *pSource, char *pDest, DWORD dwCount)
+void Kernel::utlMemCopy (const char *pSource, char *pDest, size_t dwCount)
 
 //	utlMemCopy
 //
@@ -181,7 +181,7 @@ void Kernel::utlMemCopy (const char *pSource, char *pDest, DWORD dwCount)
 	std::memcpy(pDest, pSource, dwCount);
 	}
 
-BOOL Kernel::utlMemCompare (char *pSource, char *pDest, DWORD dwCount)
+BOOL Kernel::utlMemCompare (char *pSource, char *pDest, size_t dwCount)
 
 //	utlMemCompare
 //
