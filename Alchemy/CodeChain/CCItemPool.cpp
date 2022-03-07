@@ -20,6 +20,7 @@ template class CCItemPool<CCSymbolTable>;
 template class CCItemPool<CCLambda>;
 template class CCItemPool<CCAtomTable>;
 template class CCItemPool<CCVector>;
+template class CCItemPool<CCPointer>;
 
 template <class ItemClass>
 CCItemPool<ItemClass>::CCItemPool (void)

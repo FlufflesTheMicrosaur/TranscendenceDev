@@ -340,32 +340,32 @@ class CCNumeral : public ICCAtom
 	};
 
 class CCPointer : public CCNumeral
-{
-public:
-	CCPointer(void);
+	{
+	public:
+		CCPointer(void);
 
-	void* GetValue(void) { return m_pValue; }
-	void SetValue(void* pValue) { m_pValue = pValue; }
+		void* GetValue(void) { return m_pValue; }
+		void SetValue(void* pValue) { m_pValue = pValue; }
 
-	//	ICCItem virtuals
-	virtual ICCItem* Clone(CCodeChain* pCC) override;
-	virtual bool IsInteger(void) const override { return false; }
-	virtual bool IsDouble(void) const override { return false; }
-	virtual bool IsPointer(void) const override { return true; }
-	virtual int GetIntegerValue(void) const override { return 0; }
-	virtual double GetDoubleValue(void) const override { return nan(""); }
-	virtual void* GetPointerValue(void) const override { return m_pValue; }
-	virtual CString GetStringValue(void) const override { return strFromPtr(m_pValue); }
-	virtual ValueTypes GetValueType(void) const override { return Integer; }
-	virtual CString Print(DWORD dwFlags = 0) const override;
-	virtual void Reset(void) override;
+		//	ICCItem virtuals
+		virtual ICCItem* Clone(CCodeChain* pCC) override;
+		virtual bool IsInteger(void) const override { return false; }
+		virtual bool IsDouble(void) const override { return false; }
+		virtual bool IsPointer(void) const override { return true; }
+		virtual int GetIntegerValue(void) const override { return 0; }
+		virtual double GetDoubleValue(void) const override { return nan(""); }
+		virtual void* GetPointerValue(void) const override { return m_pValue; }
+		virtual CString GetStringValue(void) const override { return strFromPtr(m_pValue); }
+		virtual ValueTypes GetValueType(void) const override { return Integer; }
+		virtual CString Print(DWORD dwFlags = 0) const override;
+		virtual void Reset(void) override;
 
-protected:
-	virtual void DestroyItem(void) override;
+	protected:
+		virtual void DestroyItem(void) override;
 
-private:
-	void* m_pValue;							//	Value of pointer
-};
+	private:
+		void* m_pValue;							//	Value of pointer
+	};
 
 class CCInteger : public CCNumeral
 	{
@@ -943,7 +943,7 @@ class CCodeChain
 		static ICCItem *CreateErrorCode (int iErrorCode);
 		static ICCItem *CreateInteger (int iValue);
 		static ICCItem *CreateDouble (double dValue);
-		static ICCItem* CreatePointer(void* pPtr);
+		static ICCItem *CreatePointer (void* pPtr);
 		static ICCItem *CreateLambda (ICCItem *pList, bool bArgsOnly);
 		static ICCItem *CreateLinkedList (void);
 		static ICCItemPtr CreateLiteral (const CString &sString);
@@ -968,6 +968,7 @@ class CCodeChain
 		static void DestroyPrimitive (ICCItem *pItem) { m_PrimitivePool.DestroyItem(pItem); }
 		static void DestroyString (ICCItem *pItem) { m_StringPool.DestroyItem(pItem); }
 		static void DestroySymbolTable (ICCItem *pItem) { m_SymbolTablePool.DestroyItem(pItem); }
+		static void DestroyPointer (ICCItem* pItem) { m_PointerPool.DestroyItem(pItem); }
 		static void DestroyVectorOld (ICCItem *pItem) { delete pItem; }
 		static void DestroyVector(ICCItem *pItem) { m_VectorPool.DestroyItem(pItem); }
 		static ICCItemPtr IncValue (ICCItem *pValue, const ICCItem *pInc = NULL);

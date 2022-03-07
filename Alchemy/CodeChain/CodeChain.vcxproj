@@ -1211,6 +1211,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug in Program Files|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SelfTest.cpp" />
+    <ClCompile Include="CCPointer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\CodeChain.h" />

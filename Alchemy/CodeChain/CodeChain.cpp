@@ -15,8 +15,9 @@
 #define ATOMTABLE_POOL								6
 #define VECTOR_POOL									7
 #define DOUBLE_POOL									8
+#define POINTER_POOL								9
 
-#define POOL_COUNT									9
+#define POOL_COUNT									10
 
 CCNil CCodeChain::m_Nil;
 CCTrue CCodeChain::m_True;
@@ -29,6 +30,7 @@ CCItemPool<CCAtomTable> CCodeChain::m_AtomTablePool;
 CCItemPool<CCSymbolTable> CCodeChain::m_SymbolTablePool;
 CCItemPool<CCLambda> CCodeChain::m_LambdaPool;
 CCItemPool<CCVector> CCodeChain::m_VectorPool;
+CCItemPool<CCPointer> CCodeChain::m_PointerPool;
 CConsPool CCodeChain::m_ConsPool;
 
 CCodeChain::CCodeChain (void) :
@@ -1521,6 +1523,7 @@ ICCItem *CCodeChain::PoolUsage (void)
 	iPoolCount[ATOMTABLE_POOL] = m_AtomTablePool.GetCount();
 	iPoolCount[VECTOR_POOL] = m_VectorPool.GetCount();
 	iPoolCount[DOUBLE_POOL] = m_DoublePool.GetCount();
+	iPoolCount[POINTER_POOL] = m_PointerPool.GetCount();
 
 	//	Create
 
