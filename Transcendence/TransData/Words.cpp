@@ -164,7 +164,7 @@ void AddWord (TraverseCtx &Ctx, const CString &sWord)
 
 	else
 		{
-		Ctx.pWordList->AddEntry(strToLower(sWord), NULL);
+		Ctx.pWordList->AddEntry(strToLower(sWord), (size_t)NULL);
 		}
 	}
 

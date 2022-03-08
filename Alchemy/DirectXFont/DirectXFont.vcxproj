@@ -153,8 +153,8 @@
       <Project>{696afbf6-ca1a-4302-b9ef-01bdbc483280}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\IntelJPEGUtil\IntelJPEGUtil.vcxproj">
-      <Project>{ecac7e19-acbc-4c3c-b89a-7bc7049b6f2e}</Project>
+    <ProjectReference Include="..\LibJPEGTurboUtil\LibJPEGTurboUtil.vcxproj">
+      <Project>{c68a844b-f08b-4913-bcff-b607c7bc1f6d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\XMLUtil\XMLUtil.vcxproj">

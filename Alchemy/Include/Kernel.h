@@ -939,7 +939,7 @@ class CResourceReadBlock : public CObject, public IReadBlock
 	{
 	public:
 		CResourceReadBlock (void);
-		CResourceReadBlock (HMODULE hInst, const char *pszRes, const char *pszType = RT_RCDATA);
+		CResourceReadBlock (HMODULE hInst, const char *pszRes, const char *pszType = (const char*)RT_RCDATA);
 		virtual ~CResourceReadBlock (void);
 
 		//	IReadBlock virtuals

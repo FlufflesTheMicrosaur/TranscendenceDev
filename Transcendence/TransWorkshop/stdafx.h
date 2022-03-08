@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #include "Alchemy.h"
-#include "IntelJPEGUtil.h"
+#include "LibJPEGTurboUtil.h"
 #include "Crypto.h"
 #include "XMLUtil.h"
 #include "Zip.h"

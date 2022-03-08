@@ -301,7 +301,7 @@
     <ClInclude Include="SteamUtilImpl.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="steam\lib\win32\steam_api.lib">
+    <Library Include="steam\lib\win64\steam_api64.lib">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

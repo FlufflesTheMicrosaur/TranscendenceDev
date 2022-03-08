@@ -24,7 +24,7 @@ void CSimViewer::Create (void)
 	ZeroMemory(&wc, sizeof(wc));
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_DBLCLKS;
-	wc.lpfnWndProc = CSimViewer::WndProc;
+	wc.lpfnWndProc = (WNDPROC)CSimViewer::WndProc;
     wc.hInstance = NULL;
 	wc.hIcon = NULL;
     wc.hCursor = NULL;
@@ -146,7 +146,7 @@ void CSimViewer::ProcessMessages (void)
 		}
 	}
 
-LONG APIENTRY CSimViewer::WndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam)
+LONG_PTR APIENTRY CSimViewer::WndProc (HWND hWnd, UINT message, UINT_PTR wParam, LONG_PTR lParam)
 	{
 	switch (message)
 		{
@@ -154,13 +154,13 @@ LONG APIENTRY CSimViewer::WndProc (HWND hWnd, UINT message, UINT wParam, LONG lP
 			{
 			LPCREATESTRUCT pCreate = (LPCREATESTRUCT)lParam;
 			CSimViewer *pViewer = (CSimViewer *)pCreate->lpCreateParams;
-			::SetWindowLong(hWnd, GWL_USERDATA, (LONG)pViewer);
+			::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pViewer);
 			return 0;
 			}
 
 		case WM_DESTROY:
 			{
-			CSimViewer *pViewer = (CSimViewer *)::GetWindowLong(hWnd, GWL_USERDATA);
+			CSimViewer *pViewer = (CSimViewer *)::GetWindowLongPtr(hWnd, GWLP_USERDATA);
 			pViewer->WMDestroy();
 			return 0;
 			}

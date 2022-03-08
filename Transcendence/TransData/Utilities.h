@@ -113,7 +113,7 @@ class CSimViewer
 
 	private:
 		void ProcessMessages (void);
-		static LONG APIENTRY WndProc (HWND hWnd, UINT message, UINT wParam, LONG lParam);
+		static LONG_PTR APIENTRY WndProc (HWND hWnd, UINT message, UINT_PTR wParam, LONG_PTR lParam);
 
 		HWND m_hWnd;
 		CG32bitImage m_Buffer;

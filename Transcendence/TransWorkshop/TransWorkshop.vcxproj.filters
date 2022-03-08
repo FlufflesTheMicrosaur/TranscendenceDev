@@ -69,6 +69,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="steam\lib\win32\steam_api.lib" />
+    <Library Include="steam\lib\win64\steam_api64.lib" />
   </ItemGroup>
 </Project>

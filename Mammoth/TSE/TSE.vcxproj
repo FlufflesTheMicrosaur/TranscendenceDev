@@ -2861,8 +2861,8 @@
       <Project>{d52d8a0e-fd89-44d9-903d-624aad7e7155}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\IntelJPEGUtil\IntelJPEGUtil.vcxproj">
-      <Project>{ecac7e19-acbc-4c3c-b89a-7bc7049b6f2e}</Project>
+    <ProjectReference Include="..\..\Alchemy\LibJPEGTurboUtil\LibJPEGTurboUtil.vcxproj">
+      <Project>{c68a844b-f08b-4913-bcff-b607c7bc1f6d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Alchemy\Kernel\Kernel.vcxproj">
       <Project>{86ce5721-1967-49b7-9eed-3a014171daf1}</Project>
