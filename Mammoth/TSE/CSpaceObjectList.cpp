@@ -57,7 +57,7 @@ bool CSpaceObjectList::Delete (CSpaceObject *pObj)
 //	Remove the object. Returns TRUE if we removed the object.
 
 	{
-	size_t iIndex;
+	INT64 iIndex;
 	if (FindObj(pObj, &iIndex))
 		{
 		Delete((int)iIndex);

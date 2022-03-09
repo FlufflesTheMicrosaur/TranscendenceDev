@@ -552,7 +552,8 @@ void CMCIMixer::ProcessFadeIn (const SRequest &Request)
 	ProcessStop(Request, true);
 
 	//	Play on some channel
-
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
 	//	Open new file
@@ -632,6 +633,8 @@ void CMCIMixer::ProcessFadeOut (const SRequest &Request)
 #ifdef DEBUG_SOUNDTRACK
 	kernelDebugLogPattern("[%x] ProcessFadeOut", GetCurrentThreadId());
 #endif
+	if (m_iCurChannel < 0)
+		return;
 
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
@@ -692,6 +695,8 @@ void CMCIMixer::ProcessPlay (const SRequest &Request)
 
 	//	Play on some channel
 
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
 	//	Open new file
@@ -742,6 +747,8 @@ void CMCIMixer::ProcessPlayPause (const SRequest &Request)
 	kernelDebugLogPattern("[%x] ProcessPlayPause", GetCurrentThreadId());
 #endif
 
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
 	int iMode = MCIWndGetMode(hMCI, 0, NULL);
@@ -869,6 +876,8 @@ void CMCIMixer::ProcessSetPlayPaused (const SRequest &Request)
 //	Set to play or paused
 
 	{
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
 	int iMode = MCIWndGetMode(hMCI, 0, NULL);
@@ -904,6 +913,8 @@ void CMCIMixer::ProcessSetVolume (const SRequest &Request)
 	{
 	m_iDefaultVolume = Max(0, Request.iPos);
 
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 	MCIWndSetVolume(hMCI, m_iDefaultVolume);
 	LogDebug(strPatternSubst(CONSTLIT("MCIWndSetVolume %x."), (size_t)hMCI));
@@ -957,6 +968,8 @@ void CMCIMixer::ProcessWaitForPos (const SRequest &Request)
 	kernelDebugLogPattern("[%x] ProcessWaitForPos", GetCurrentThreadId());
 #endif
 
+	if (m_iCurChannel < 0)
+		return;
 	HWND hMCI = m_Channels[m_iCurChannel].hMCI;
 
 	int iPrevPos = -1;

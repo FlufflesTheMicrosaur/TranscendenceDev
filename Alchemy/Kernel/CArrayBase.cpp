@@ -14,7 +14,7 @@ DWORD g_dwArraysResized = 0;
 
 ::placement_new_class placement_new;
 
-CArrayBase::CArrayBase (HANDLE hHeap, size_t iGranularity) : m_pBlock(NULL)
+CArrayBase::CArrayBase (HANDLE hHeap, INT64 iGranularity) : m_pBlock(NULL)
 
 //	CArrayBase constructor
 
@@ -39,7 +39,7 @@ CArrayBase::~CArrayBase (void)
 	CleanUpBlock();
 	}
 
-void CArrayBase::AllocBlock (HANDLE hHeap, size_t iGranularity)
+void CArrayBase::AllocBlock (HANDLE hHeap, INT64 iGranularity)
 
 //	AllocBlock
 //
@@ -142,7 +142,7 @@ CString CArrayBase::DebugGetStats (void)
 #endif
 	}
 
-void CArrayBase::DeleteBytes (size_t iOffset, size_t iLength)
+void CArrayBase::DeleteBytes (INT64 iOffset, INT64 iLength)
 
 //	Delete
 //
@@ -167,14 +167,14 @@ void CArrayBase::DeleteBytes (size_t iOffset, size_t iLength)
 	m_pBlock->m_iSize -= iLength;
 	}
 
-void CArrayBase::InsertBytes (size_t iOffset, void *pData, size_t iLength, size_t iAllocQuantum)
+void CArrayBase::InsertBytes (INT64 iOffset, void *pData, INT64 iLength, INT64 iAllocQuantum)
 
 //	Insert
 //
 //	Insert the given data at the offset
 
 	{
-	size_t i;
+	INT64 i;
 
 	if (iLength <= 0)
 		return;
@@ -210,7 +210,7 @@ void CArrayBase::InsertBytes (size_t iOffset, void *pData, size_t iLength, size_
 	m_pBlock->m_iSize += iLength;
 	}
 
-ALERROR CArrayBase::Resize (size_t iNewSize, bool bPreserve, size_t iAllocQuantum)
+ALERROR CArrayBase::Resize (INT64 iNewSize, bool bPreserve, INT64 iAllocQuantum)
 
 //	Resize
 //
@@ -225,7 +225,7 @@ ALERROR CArrayBase::Resize (size_t iNewSize, bool bPreserve, size_t iAllocQuantu
 		{
 		//	Allocate a new block
 
-		size_t iNewAllocSize = sizeof(SHeader) + Max(GetSize() * 2, AlignUp64(iNewSize, iAllocQuantum));
+		INT64 iNewAllocSize = sizeof(SHeader) + (INT64)Max((size_t)GetSize() * 2, AlignUp64(iNewSize, iAllocQuantum));
 		SHeader *pNewBlock = (SHeader *)::HeapAlloc(GetHeap(), 0, iNewAllocSize);
 		if (pNewBlock == NULL)
 			{
@@ -256,7 +256,7 @@ ALERROR CArrayBase::Resize (size_t iNewSize, bool bPreserve, size_t iAllocQuantu
 
 		if (m_pBlock && bPreserve)
 			{
-			size_t i;
+			INT64 i;
 			char *pSource = GetBytes();
 			char *pDest = (char *)(&pNewBlock[1]);
 

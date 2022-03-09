@@ -643,27 +643,27 @@ public:
 
 	CPtrArray& operator= (const CPtrArray& Obj);
 
-	ALERROR AppendElement(void* pElement, size_t* retiIndex = NULL);
-	ALERROR CollapseArray(size_t iPos, size_t iCount) { return RemoveRange(iPos, iPos + iCount - 1); }
-	ALERROR ExpandArray(size_t iPos, size_t iCount);
-	size_t FindElement(void* pElement) const;
-	size_t GetCount(void) const;
+	ALERROR AppendElement(void* pElement, INT64* retiIndex = NULL);
+	ALERROR CollapseArray(INT64 iPos, INT64 iCount) { return RemoveRange(iPos, iPos + iCount - 1); }
+	ALERROR ExpandArray(INT64 iPos, INT64 iCount);
+	INT64 FindElement(void* pElement) const;
+	INT64 GetCount(void) const;
 	int GetCountInt(void) const { return (int)GetCount(); }
-	void* GetElement(size_t iIndex) const;
-	ALERROR InsertElement(void* pElement, size_t iPos, size_t* retiIndex);
-	ALERROR InsertRange(CPtrArray* pList, size_t iStart, size_t iEnd, size_t iPos);
-	ALERROR MoveRange(size_t iStart, size_t iEnd, size_t iPos);
-	ALERROR Set(size_t iCount, void** pData);
+	void* GetElement(INT64 iIndex) const;
+	ALERROR InsertElement(void* pElement, INT64 iPos, INT64* retiIndex);
+	ALERROR InsertRange(CPtrArray* pList, INT64 iStart, INT64 iEnd, INT64 iPos);
+	ALERROR MoveRange(INT64 iStart, INT64 iEnd, INT64 iPos);
+	ALERROR Set(INT64 iCount, void** pData);
 	ALERROR RemoveAll(void);
-	ALERROR RemoveElement(size_t iPos) { return RemoveRange(iPos, iPos); }
-	ALERROR RemoveRange(size_t iStart, size_t iEnd);
-	void ReplaceElement(size_t iPos, void* pElement);
+	ALERROR RemoveElement(INT64 iPos) { return RemoveRange(iPos, iPos); }
+	ALERROR RemoveRange(INT64 iStart, INT64 iEnd);
+	void ReplaceElement(INT64 iPos, void* pElement);
 	void Shuffle(void);
 
 private:
-	size_t m_iAllocSize;					//	Number of pointers allocated
+	INT64 m_iAllocSize;					//	Number of pointers allocated
 	void** m_pData;						//	Pointer to pointer array
-	size_t m_iLength;						//	Number of pointers used
+	INT64 m_iLength;						//	Number of pointers used
 };
 
 //	CString. Implementation of a standard string class

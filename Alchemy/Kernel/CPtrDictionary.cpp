@@ -164,7 +164,7 @@ bool CPtrDictionary::FindSlot(void* pKey, size_t* retiPos) const
 //	FALSE otherwise.
 
 {
-	size_t iLeft, iRight, iCount, iCompare;
+	INT64 iLeft, iRight, iCount, iCompare;
 	void* pEntryKey;
 
 	//	If there are no entries, then we always fail

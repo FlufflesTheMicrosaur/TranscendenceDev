@@ -123,7 +123,7 @@ class AGScreen : public IAreaContainer
 
 	private:
 		void FireMouseMove (const POINT &pt);
-		int GetAreaIndex (AGArea *pArea) { size_t iIndex; if (m_Areas.Find(pArea, &iIndex)) return (int)iIndex; else return -1; }
+		int GetAreaIndex (AGArea *pArea) { INT64 iIndex; if (m_Areas.Find(pArea, &iIndex)) return (int)iIndex; else return -1; }
 		AGArea *HitTest (const POINT &pt);
 		void RefreshMouseOver (void);
 		void SetMouseOver (AGArea *pArea);

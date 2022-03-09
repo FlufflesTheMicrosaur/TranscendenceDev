@@ -72,7 +72,7 @@ void AGScreen::DestroyArea (AGArea *pArea)
 
 	RECT rcRect = pArea->GetRect();
 
-	size_t iIndex;
+	INT64 iIndex;
 	if (m_Areas.Find(pArea, &iIndex))
 		{
 		m_Areas.Delete(iIndex);

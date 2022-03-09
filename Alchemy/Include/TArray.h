@@ -35,7 +35,7 @@ static constexpr int DEFAULT_ARRAY_GRANULARITY = 10;
 class CArrayBase
 	{
 	public:
-		void SetGranularity (size_t iGranularity) { if (m_pBlock == NULL) AllocBlock(::GetProcessHeap(), iGranularity); else m_pBlock->m_iGranularity = iGranularity; }
+		void SetGranularity (INT64 iGranularity) { if (m_pBlock == NULL) AllocBlock(::GetProcessHeap(), iGranularity); else m_pBlock->m_iGranularity = iGranularity; }
 
 		static CString DebugGetStats (void);
 
@@ -43,27 +43,27 @@ class CArrayBase
 		struct SHeader
 			{
 			HANDLE m_hHeap;				//	Heap on which block is allocated
-			size_t m_iSize;				//	Size of data portion (as seen by callers)
-			size_t m_iAllocSize;			//	Current size of block
-			size_t m_iGranularity;			//	Used by descendants to resize block
+			INT64 m_iSize;				//	Size of data portion (as seen by callers)
+			INT64 m_iAllocSize;			//	Current size of block
+			INT64 m_iGranularity;			//	Used by descendants to resize block
 			};
 
-		CArrayBase (HANDLE hHeap, size_t iGranularity);
+		CArrayBase (HANDLE hHeap, INT64 iGranularity);
 		CArrayBase (SHeader *pBlock) noexcept : m_pBlock(pBlock) 
 			{ }
 
 		~CArrayBase (void);
 
-		void AllocBlock (HANDLE hHeap, size_t iGranularity);
+		void AllocBlock (HANDLE hHeap, INT64 iGranularity);
 		void CleanUpBlock (void);
 		void CopyOptions (const CArrayBase &Src);
-		void DeleteBytes (size_t iOffset, size_t iLength);
+		void DeleteBytes (INT64 iOffset, INT64 iLength);
 		char *GetBytes (void) const { return (m_pBlock ? (char *)(&m_pBlock[1]) : NULL); }
-		size_t GetGranularity (void) const { return (m_pBlock ? m_pBlock->m_iGranularity : Kernel::DEFAULT_ARRAY_GRANULARITY); }
+		INT64 GetGranularity (void) const { return (m_pBlock ? m_pBlock->m_iGranularity : Kernel::DEFAULT_ARRAY_GRANULARITY); }
 		HANDLE GetHeap (void) const { return (m_pBlock ? m_pBlock->m_hHeap : ::GetProcessHeap()); }
-		size_t GetSize (void) const { return (m_pBlock ? m_pBlock->m_iSize : 0); }
-		void InsertBytes (size_t iOffset, void* pData, size_t iLength, size_t iAllocQuantum);
-		ALERROR Resize (size_t iNewSize, bool bPreserve, size_t iAllocQuantum);
+		INT64 GetSize (void) const { return (m_pBlock ? m_pBlock->m_iSize : 0); }
+		void InsertBytes (INT64 iOffset, void* pData, INT64 iLength, INT64 iAllocQuantum);
+		ALERROR Resize (INT64 iNewSize, bool bPreserve, INT64 iAllocQuantum);
 		void TakeHandoffBase (CArrayBase &Src);
 
 		SHeader *m_pBlock;
@@ -154,12 +154,12 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 	public:
 		TArray (void) : CArrayBase(NULL, DEFAULT_ARRAY_GRANULARITY) { }
 		explicit TArray (HANDLE hHeap) : CArrayBase(hHeap, DEFAULT_ARRAY_GRANULARITY) { }
-		explicit TArray (int iGranularity) : CArrayBase(NULL, iGranularity) { }
+		explicit TArray (INT64 iGranularity) : CArrayBase(NULL, iGranularity) { }
 		TArray (const TArray<VALUE> &Obj) : CArrayBase(Obj.GetHeap(), Obj.GetGranularity())
 			{
 			InsertBytes(0, NULL, Obj.GetCount() * sizeof(VALUE), GetGranularity() * sizeof(VALUE));
 
-			for (size_t i = 0; i < Obj.GetCount(); i++)
+			for (INT64 i = 0; i < Obj.GetCount(); i++)
 				{
 				VALUE *pElement = new(placement_new, GetBytes() + (i * sizeof(VALUE))) VALUE(Obj[i]);
 				}
@@ -178,7 +178,7 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			CopyOptions(Obj);
 			InsertBytes(0, NULL, Obj.GetCount() * sizeof(VALUE), GetGranularity() * sizeof(VALUE));
 
-			for (size_t i = 0; i < Obj.GetCount(); i++)
+			for (INT64 i = 0; i < Obj.GetCount(); i++)
 				{
 				VALUE *pElement = new(placement_new, GetBytes() + (i * sizeof(VALUE))) VALUE(Obj[i]);
 				}
@@ -194,25 +194,25 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			return *this;
 			}
 
-		const VALUE &operator [] (size_t iIndex) const { return GetAt(iIndex); }
-		VALUE &operator [] (size_t iIndex) { return GetAt(iIndex); }
+		const VALUE &operator [] (INT64 iIndex) const { return GetAt(iIndex); }
+		VALUE &operator [] (INT64 iIndex) { return GetAt(iIndex); }
 
-		void Delete (size_t iIndex)
+		void Delete (INT64 iIndex)
 			{
 			VALUE *pElement = (VALUE *)(GetBytes() + iIndex * sizeof(VALUE));
-			ASSERT((char *)pElement - GetBytes() < (int64_t)GetSize());
+			ASSERT((char *)pElement - GetBytes() < GetSize());
 			pElement->VALUE::~VALUE();
 			DeleteBytes(iIndex * sizeof(VALUE), sizeof(VALUE));
 			}
 
-		void Delete (size_t iIndex, size_t iCount)
+		void Delete (INT64 iIndex, INT64 iCount)
 			{
 			if (iIndex < 0 || iCount <= 0)
 				return;
 
 			iCount = Min(iCount, GetCount() - iIndex);
 			VALUE *pElement = (VALUE *)(GetBytes() + iIndex * sizeof(VALUE));
-			for (size_t i = 0; i < iCount; i++, pElement++)
+			for (INT64 i = 0; i < iCount; i++, pElement++)
 				pElement->VALUE::~VALUE();
 
 			DeleteBytes(iIndex * sizeof(VALUE), iCount * sizeof(VALUE));
@@ -232,7 +232,7 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 
 		void DeleteValue (const VALUE &ToDelete)
 			{
-			for (size_t i = 0; i < GetCount(); i++)
+			for (INT64 i = 0; i < GetCount(); i++)
 				if (GetAt(i) == ToDelete)
 					{
 					Delete(i);
@@ -240,11 +240,11 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 					}
 			}
 
-		bool Find (const VALUE &ToFind, size_t *retiIndex = NULL) const
+		bool Find (const VALUE &ToFind, INT64*retiIndex = NULL) const
 			{
-			size_t iCount = GetCount();
+			INT64 iCount = GetCount();
 
-			for (size_t i = 0; i < iCount; i++)
+			for (INT64 i = 0; i < iCount; i++)
 				if (GetAt(i) == ToFind)
 					{
 					if (retiIndex)
@@ -255,21 +255,21 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			return false;
 			}
 
-		const VALUE &GetAt (size_t iIndex) const
+		const VALUE &GetAt (INT64 iIndex) const
 			{
 			ASSERT(iIndex >= 0 && iIndex < GetCount());
 			const VALUE *pElement = (VALUE *)(GetBytes() + iIndex * sizeof(VALUE));
 			return *pElement;
 			}
 
-		VALUE &GetAt (size_t iIndex)
+		VALUE &GetAt (INT64 iIndex)
 			{
 			ASSERT(iIndex >= 0 && iIndex < GetCount());
 			VALUE *pElement = (VALUE *)(GetBytes() + iIndex * sizeof(VALUE));
 			return *pElement;
 			}
 
-		size_t GetCount64 (void) const
+		INT64 GetCount64 (void) const
 			{
 			return GetSize() / sizeof(VALUE);
 			}
@@ -279,15 +279,15 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			return (int)GetCount64();
 			}
 
-		void GrowToFit (size_t iCount)
+		void GrowToFit (INT64 iCount)
 			{
 			if (iCount > 0)
 				Resize(GetSize() + iCount * sizeof(VALUE), true, GetGranularity() * sizeof(VALUE));
 			}
 
-		void Insert (const VALUE &Value, size_t iIndex = -1)
+		void Insert (const VALUE &Value, INT64 iIndex = -1)
 			{
-			size_t iOffset;
+			INT64 iOffset;
 			if (iIndex == -1) iIndex = GetCount();
 			iOffset = iIndex * sizeof(VALUE);
 			InsertBytes(iOffset, NULL, sizeof(VALUE), GetGranularity() * sizeof(VALUE));
@@ -295,12 +295,12 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			VALUE *pElement = new(placement_new, GetBytes() + iOffset) VALUE(Value);
 			}
 
-		void Insert (const TArray<VALUE> &Src, size_t iIndex = -1)
+		void Insert (const TArray<VALUE> &Src, INT64 iIndex = -1)
 			{
-			size_t i;
+			INT64 i;
 
-			size_t iOffset;
-			if (iIndex == (size_t)-1) iIndex = GetCount();
+			INT64 iOffset;
+			if (iIndex == -1) iIndex = GetCount();
 			iOffset = iIndex * sizeof(VALUE);
 			InsertBytes(iOffset, NULL, Src.GetCount() * sizeof(VALUE), GetGranularity() * sizeof(VALUE));
 
@@ -312,15 +312,15 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 
 		VALUE *Insert (void)
 			{
-			size_t iOffset = GetCount() * sizeof(VALUE);
+			INT64 iOffset = GetCount() * sizeof(VALUE);
 			InsertBytes(iOffset, NULL, sizeof(VALUE), GetGranularity() * sizeof(VALUE));
 
 			return new(placement_new, GetBytes() + iOffset) VALUE;
 			}
 
-		VALUE *InsertAt (size_t iIndex)
+		VALUE *InsertAt (INT64 iIndex)
 			{
-			size_t iOffset;
+			INT64 iOffset;
 			if (iIndex == -1) iIndex = GetCount();
 			iOffset = iIndex * sizeof(VALUE);
 			InsertBytes(iOffset, NULL, sizeof(VALUE), GetGranularity() * sizeof(VALUE));
@@ -328,17 +328,17 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			return new(placement_new, GetBytes() + iOffset) VALUE;
 			}
 
-		void InsertEmpty (size_t iCount = 1, size_t iIndex = -1)
+		void InsertEmpty (INT64 iCount = 1, INT64 iIndex = -1)
 			{
 			if (iCount <= 0)
 				return;
 
-			size_t iOffset;
-			if (iIndex == (size_t) - 1) iIndex = GetCount();
+			INT64 iOffset;
+			if (iIndex == (INT64) - 1) iIndex = GetCount();
 			iOffset = iIndex * sizeof(VALUE);
 			InsertBytes(iOffset, NULL, iCount * sizeof(VALUE), GetGranularity() * sizeof(VALUE));
 
-			for (size_t i = 0; i < iCount; i++)
+			for (INT64 i = 0; i < iCount; i++)
 				{
 				VALUE *pElement = new(placement_new, GetBytes() + iOffset + (i * sizeof(VALUE))) VALUE;
 				}
@@ -346,10 +346,10 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 
 		void InsertSorted (const VALUE &Value, Kernel::ESortOptions Order = AscendingSort)
 			{
-			size_t iCount = GetCount();
-			size_t iMin = 0;
-			size_t iMax = iCount;
-			size_t iTry = iMax / 2;
+			INT64 iCount = GetCount();
+			INT64 iMin = 0;
+			INT64 iMax = iCount;
+			INT64 iTry = iMax / 2;
 
 			while (true)
 				{
@@ -380,7 +380,7 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 
 		VALUE Pop (void)
 			{
-			size_t iCount = GetCount();
+			INT64 iCount = GetCount();
 			if (iCount == 0)
 				return VALUE();
 
@@ -394,15 +394,15 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			Insert(Value);
 			}
 
-		void SetCount (size_t iNewCount)
+		void SetCount (INT64 iNewCount)
 			{
-			size_t iCurCount = GetCount();
+			INT64 iCurCount = GetCount();
 			if (iNewCount > iCurCount)
 				InsertEmpty(iNewCount - iCurCount);
 			else if (iNewCount < iCurCount)
 				{
 				VALUE *pElement = (VALUE *)GetBytes();
-				for (size_t i = iNewCount; i < iCurCount; i++, pElement++)
+				for (INT64 i = iNewCount; i < iCurCount; i++, pElement++)
 					pElement->VALUE::~VALUE();
 
 				DeleteBytes(iNewCount * sizeof(VALUE), (iCurCount - iNewCount) * sizeof(VALUE));
@@ -416,10 +416,10 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 
 			//	Fisher-Yates algorithm
 
-			size_t i = GetCount() - 1;
+			INT64 i = GetCount() - 1;
 			while (i > 0)
 				{
-				size_t x = mathRandomPtr(0, i);
+				INT64 x = (INT64)mathRandomPtr(0, i);
 
 				VALUE Temp = GetAt(x);
 				GetAt(x) = GetAt(i);

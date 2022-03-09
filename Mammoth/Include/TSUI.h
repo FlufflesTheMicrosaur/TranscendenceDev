@@ -247,7 +247,7 @@ class CKeyboardTracker
 	public:
 		int GetKeyDownCount (void) { return m_KeysDown.GetCount(); }
 		void OnKeyDown (int iVirtKey) { m_KeysDown.Insert(iVirtKey); }
-		void OnKeyUp (int iVirtKey) { size_t iIndex; if (m_KeysDown.Find(iVirtKey, &iIndex)) m_KeysDown.Delete(iIndex); }
+		void OnKeyUp (int iVirtKey) { INT64 iIndex; if (m_KeysDown.Find(iVirtKey, &iIndex)) m_KeysDown.Delete(iIndex); }
 
 	private:
 		TArray<int> m_KeysDown;

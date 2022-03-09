@@ -172,14 +172,14 @@ void CExtensionCollection::AddOrReplace (CExtension *pExtension)
 			{
 			TArray<CExtension *> &List = m_ByUNID.GetValue(iPos);
 
-			size_t iIndex;
+			INT64 iIndex;
 			if (List.Find(pPreviousExtension, &iIndex))
 				List.Delete(iIndex);
 			}
 
 		//	Remove from main list
 
-		size_t iIndex;
+		INT64 iIndex;
 		if (m_Extensions.Find(pPreviousExtension, &iIndex))
 			m_Extensions.Delete(iIndex);
 
