@@ -42,7 +42,7 @@ void ILog::LogOutput (DWORD dwFlags, char *pszLine, ...) const
 	CString sParsedLine;
 
 	char *pArgs = (char *)&pszLine + sizeof(pszLine);
-	sParsedLine = strPattern(CString(pszLine, ::strlen(pszLine), TRUE), (void **)pArgs);
+	sParsedLine = strPatternLegacy(CString(pszLine, ::strlen(pszLine), TRUE), (void **)pArgs);
 
 	LogOutput(dwFlags, sParsedLine);
 	}

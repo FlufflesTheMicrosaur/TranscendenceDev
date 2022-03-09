@@ -226,7 +226,7 @@ ICCItem *fnTransEngine (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			CString sResult;
 			try
 				{
-				sResult = strPattern(sPattern, (LPVOID *)ArgBlock.GetPointer());
+				sResult = strPatternLegacy(sPattern, (LPVOID *)ArgBlock.GetPointer());
 				}
 			catch (...)
 				{

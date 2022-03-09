@@ -25,9 +25,12 @@
 #include "PreComp.h"
 #include "Internets.h"
 
-void WritePadding (CString &sOutput, char chChar, int iLen);
+CString Kernel::strTranslateStdEntity(Kernel::CString sEntity)
+{
+	return CHTML::TranslateStdEntity(sEntity);
+}
 
-CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
+CString Kernel::strPatternLegacy (const CString &sPattern, LPVOID *pArgs)
 
 //	strPattern
 //
@@ -37,7 +40,7 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 	CString sOutput;
 	sOutput.GrowToFit(4000);
 	const char *pPos = sPattern.GetPointer();
-	int iLength = sPattern.GetLength();
+	INT64 iLength = sPattern.GetLength();
 	const char *pRunStart;
 	int iRunLength;
 	int iLastInteger = 1;
@@ -105,7 +108,7 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 
 					if (iLength > (pNewPos - pPos))
 						{
-						iLength -= (int)(pNewPos - pPos);
+						iLength -= (pNewPos - pPos);
 						pPos = pNewPos;
 						}
 					}
@@ -121,7 +124,7 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 
 					sOutput.Append(*pParam, CString::FLAG_ALLOC_EXTRA);
 
-					pArgs += AlignUp((int64_t)sizeof(CString), (int64_t)sizeof(LPVOID)) / (int64_t)sizeof(LPVOID);
+					pArgs += AlignUp(sizeof(CString), sizeof(LPVOID)) / sizeof(LPVOID);
 					pPos++;
 					iLength--;
 					}
@@ -258,7 +261,8 @@ CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
 	return CString(sOutput.GetPointer(), sOutput.GetLength());
 	}
 
-CString Kernel::strPatternSubst (CString sLine, ...)
+
+CString Kernel::strPatternSubstLegacy (CString sLine, ...)
 
 //	strPatternSubst
 //
@@ -269,11 +273,11 @@ CString Kernel::strPatternSubst (CString sLine, ...)
 	CString sParsedLine;
 
 	pArgs = (char *) &sLine + sizeof(sLine);
-	sParsedLine = strPattern(sLine, (void **)pArgs);
+	sParsedLine = strPatternLegacy(sLine, (void **)pArgs);
 	return sParsedLine;
 	}
 
-void WritePadding (CString &sOutput, char chChar, int iLen)
+void Kernel::WritePadding (Kernel::CString &sOutput, char chChar, int iLen)
 	{
 	if (iLen > 0)
 		{
@@ -289,7 +293,7 @@ void WritePadding (CString &sOutput, char chChar, int iLen)
 		while (pPos < pEndPos)
 			*pPos++ = chChar;
 
-		sOutput.Append(pBuffer, iLen, CString::FLAG_ALLOC_EXTRA);
+		sOutput.Append(pBuffer, iLen, Kernel::CString::FLAG_ALLOC_EXTRA);
 
 		if (pBuffer != szBuffer)
 			delete [] pBuffer;

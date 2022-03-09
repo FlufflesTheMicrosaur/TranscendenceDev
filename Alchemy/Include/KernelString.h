@@ -250,8 +250,13 @@ inline int strParseInt (const char *pStart, int iNullResult, const char **retpEn
 int strParseIntOfBase (const char *pStart, int iBase, int iNullResult, const char **retpEnd = NULL, bool *retbNullValue = NULL);
 
 void strParseWhitespace (const char *pPos, const char **retpPos);
-Kernel::CString strPattern (const Kernel::CString &sPattern, LPVOID *pArgs);
-Kernel::CString strPatternSubst (Kernel::CString sLine, ...);
+Kernel::CString strPatternLegacy (const Kernel::CString &sPattern, LPVOID *pArgs);
+Kernel::CString strPatternSubstLegacy(Kernel::CString sLine, ...);
+void WritePadding(Kernel::CString& sOutput, char chChar, int iLen);
+Kernel::CString strTranslateStdEntity(Kernel::CString sEntity);
+
+//template <typename ... Args>
+//Kernel::CString strPatternSubst (Kernel::CString sLine, Args ... args);
 
 constexpr DWORD STRPROC_NO_DOUBLE_QUOTES =			0x00000001;
 constexpr DWORD STRPROC_ESCAPE_DOUBLE_QUOTES =		0x00000002;
@@ -271,3 +276,156 @@ Kernel::CString strToXMLText (const Kernel::CString &sString, bool bInBody = fal
 Kernel::CString strTrimWhitespace (const Kernel::CString &sString, bool bLeading = true, bool bTrailing = true);
 Kernel::CString strWord (const Kernel::CString &sString, int iWordPos);
 
+//  Variadic Template based string functions that have to be in this file otherwise linking fails
+
+template <class... Args>
+int autowsprintf(LPSTR retBuffer, LPCTSTR formatBuffer, Args ... args) { return wsprintfA(retBuffer, formatBuffer, args...); }
+
+template <class... Args>
+int autowsprintf(LPWSTR retBuffer, LPCWSTR formatBuffer, Args ... args) { return wsprintfW(retBuffer, formatBuffer, args...); }
+
+//TODO: something is going wrong here
+template <class T, class... Args>
+void copyVariadicArg(INT64 i, void** retp, T front, Args ... args) { //REMEMBER TO CLEAN UP AFTER USING
+	if (!i)
+	{
+		T* retT = new T(front);
+		*retp = retT;
+		return;
+	}
+	if constexpr (sizeof...(args) > 0)
+		return copyVariadicArg(i--, retp, args...);
+}
+
+inline void copyVariadicArg(INT64 i, void** retp) { *retp = nullptr; }
+
+template <class T, class... Args>
+T getVariadicArgAs(INT64 i, Args ... args) {
+	T* tGet = nullptr;
+	copyVariadicArg(i, (void**)&tGet, args...);
+	T tRet = *tGet;
+	delete tGet;
+	return tRet;
+}
+
+template <typename ... Args>
+Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
+
+//  The original version of strPattern/strPatternSubst is now
+//  under the '*legacy' function names.
+//  This is an attempt to reimplement the logic using somewhat more
+//  debuggable and modern code than the pre-C89 implementation
+//  of variadic function that george was using previously.
+//  Its not working quite right yet, due to issues retrieving the
+//  args, but the legacy code was crashing too so...
+
+{
+	CString sOutput;
+	sOutput.GrowToFit(4000);
+	char* pPatternPos = sLine.GetPointer();
+	char* pPatternRunStart = pPatternPos;
+	char* pPatternEnd = pPatternPos + sLine.GetLength();
+	bool b1000Separator, bPadWithZeros, b64bit = false;
+	INT64 iFieldWidth, iLastNumber, iVariadicIndex = 0;
+	while (pPatternPos <= pPatternEnd)
+	{
+		if (*pPatternPos == '%')
+		{
+			pPatternPos++;
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			//handle if just an escaped % sign
+			if (*pPatternPos == '%')
+			{
+				pPatternPos++;
+				continue;
+			}
+			//store what we have accumulated
+			sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
+			//handle the format types
+			// [opt] , = add a 1000s seperator
+			// [opt] l = expects a 64bit number, support for legacy patterns
+			// [opt] 0-9 = field width
+			// Type:
+			//  s = string
+			//  d = digits
+			//  x/X = hexidecimal lower/upper case (see: wsprintfA)
+			//  p = plural ("s" if last numeric arg was != 1)
+			//  & = entity name
+			if (*pPatternPos == ',')
+			{
+				b1000Separator = true;
+				pPatternPos++;
+			}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			if (*pPatternPos == 'l')
+			{
+				b64bit = true;//might not need this
+				pPatternPos++;
+			}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			while (*pPatternPos >= '0' && *pPatternPos <= '9' && pPatternPos < pPatternEnd)
+			{
+				if (!iFieldWidth && *pPatternPos == '0')
+					bPadWithZeros = true;
+				iFieldWidth *= 10;
+				iFieldWidth += (*pPatternPos - '0');
+				pPatternPos++;
+			}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			//Handle the actual options now
+			if (*pPatternPos == 's')//expected arg is a string
+			{
+				sOutput.Append(getVariadicArgAs<CString>(iVariadicIndex, args...), CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+			}
+			else if (*pPatternPos == 'd')//expected arg is a number and to print in decimals
+			{
+				iLastNumber = getVariadicArgAs<INT64>(iVariadicIndex, args...);
+				DWORD dwFlags = (b1000Separator ? FORMAT_THOUSAND_SEPARATOR : 0)
+					| (bPadWithZeros ? FORMAT_LEADING_ZERO : 0);
+				sOutput.Append(strFormatInteger(iLastNumber, (int)iFieldWidth, dwFlags), CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+			}
+			else if (*pPatternPos == 'p' && iLastNumber != 1)//no arg, just check for pluralization
+				sOutput.Append("s", 1, CString::FLAG_ALLOC_EXTRA);
+			else if (*pPatternPos == 'x' || *pPatternPos == 'X')//expected arg is a number and to print in hex
+			{
+				iLastNumber = getVariadicArgAs<INT64>(iVariadicIndex, args...);
+				char szBuffer[256];
+				int iLen = autowsprintf(szBuffer, (*pPatternPos == 'x' ? "%x" : "%X"), iLastNumber);
+				if (iFieldWidth > 0)
+					WritePadding(sOutput, (bPadWithZeros ? '0' : ' '), (int)(iFieldWidth - iLen));
+				sOutput.Append((LPCSTR)szBuffer, iLen, CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+			}
+			else if (*pPatternPos == '&')//expected arg is an entity and to print the entity name
+			{
+				CString sResult = strTranslateStdEntity(getVariadicArgAs<CString>(iVariadicIndex, args...));
+				sOutput.Append(sResult);
+				iVariadicIndex++;
+			}
+			else
+				//invalid format, george's code seems to ignore this
+				sOutput.Append(pPatternPos - 1, 2, CString::FLAG_ALLOC_EXTRA);
+			pPatternPos++;
+			//reset the run and other variables that might have been used
+			pPatternRunStart = pPatternPos;
+			iFieldWidth = 0;
+			b1000Separator, b64bit = false;
+		}
+		else
+			pPatternPos++;
+	}
+	//store what we have accumulated
+	if (pPatternRunStart < pPatternEnd)
+		sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
+	return sOutput;
+}

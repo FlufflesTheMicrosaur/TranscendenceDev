@@ -267,7 +267,7 @@ void Kernel::kernelDebugLogPattern (const char *pszLine, ...)
 		CString sParsedLine;
 
 		char *pArgs = (char *)&pszLine + sizeof(pszLine);
-		sParsedLine = strPattern(CString(pszLine, (int)::strlen(pszLine), TRUE), (void**)pArgs);
+		sParsedLine = strPatternLegacy(CString(pszLine, (int)::strlen(pszLine), TRUE), (void**)pArgs);
 
 		g_pDebugLog->LogOutput(ILOG_FLAG_TIMEDATE, sParsedLine);
 		}
