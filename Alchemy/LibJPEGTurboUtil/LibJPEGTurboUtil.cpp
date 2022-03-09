@@ -96,7 +96,7 @@ ALERROR JPEGLoadFromResource(HINSTANCE hInst, char* pszRes, DWORD dwFlags, HPALE
 	void* pImage;
 	int iSize;
 
-	hRes = FindResource(hInst, (LPCWSTR)pszRes, (LPCWSTR)"JPEG");
+	hRes = FindResource(hInst, (LPCSTR)pszRes, (LPCSTR)"JPEG");
 	if (hRes == NULL)
 		return ERR_NOTFOUND;
 
