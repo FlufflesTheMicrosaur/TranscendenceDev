@@ -284,11 +284,13 @@ int autowsprintf(LPSTR retBuffer, LPCTSTR formatBuffer, Args ... args) { return 
 template <class... Args>
 int autowsprintf(LPWSTR retBuffer, LPCWSTR formatBuffer, Args ... args) { return wsprintfW(retBuffer, formatBuffer, args...); }
 
+inline Kernel::CString formatVariadicArg(INT64 i, std::string sFmt) { return Kernel::CString(""); }
+
 template <class T, class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, T current, Args ... args)
 {
 	if (!i)
-		return CString(std::format(sFmt, current));
+		return CString(const_cast<char*>(std::format(sFmt, current).c_str()));
 	return formatVariadicArg(i--, sFmt, args...);
 }
 

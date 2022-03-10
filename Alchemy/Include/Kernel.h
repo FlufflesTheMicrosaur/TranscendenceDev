@@ -24,6 +24,7 @@
 #endif
 
 #include <mmsystem.h>
+#include <format>
 
 //	For some reason, <kernelspecs.h> defines HIGH_LEVEL, which ends up 
 //	conflicting with a lot of other definitions.
