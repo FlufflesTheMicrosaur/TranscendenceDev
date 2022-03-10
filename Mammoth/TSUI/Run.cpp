@@ -284,7 +284,7 @@ LONG_PTR APIENTRY CHumanInterface::MainWndProc (HWND hWnd, UINT message, WPARAM 
 			return 0;
 
 		case WM_HI_TASK_COMPLETE:
-			g_pHI->OnTaskComplete((int)wParam, (DWORD)lParam);
+			g_pHI->OnTaskComplete((int)wParam, lParam);
 			return 0;
 
 		case WM_KEYDOWN:
