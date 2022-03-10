@@ -284,34 +284,6 @@ int autowsprintf(LPSTR retBuffer, LPCTSTR formatBuffer, Args ... args) { return 
 template <class... Args>
 int autowsprintf(LPWSTR retBuffer, LPCWSTR formatBuffer, Args ... args) { return wsprintfW(retBuffer, formatBuffer, args...); }
 
-//TODO: something is going wrong here
-template <class TC, class T, class... Args>
-void copyVariadicArg(INT64 i, void** retp, T front, Args ... args) { //REMEMBER TO CLEAN UP AFTER USING
-	if (!i)
-	{
-		if (TC* retT = dynamic_cast<TC*>(&front))
-		{
-			retT = new TC(*retT);
-			*retp = retT;
-			return;
-		}
-	}
-	if constexpr (sizeof...(args) > 0)
-		return copyVariadicArg<TC>(i--, retp, args...);
-}
-
-template <class TC>
-void copyVariadicArg(INT64 i, void** retp) { *retp = nullptr; }
-
-template <class T, class... Args>
-T getVariadicArgAs(INT64 i, Args ... args) {
-	T* tGet = nullptr;
-	copyVariadicArg<T>(i, (void**)&tGet, args...);
-	T tRet = *tGet;
-	delete tGet;
-	return tRet;
-}
-
 template <class T, class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, T current, Args ... args)
 {
