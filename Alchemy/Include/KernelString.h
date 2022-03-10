@@ -285,27 +285,39 @@ template <class... Args>
 int autowsprintf(LPWSTR retBuffer, LPCWSTR formatBuffer, Args ... args) { return wsprintfW(retBuffer, formatBuffer, args...); }
 
 //TODO: something is going wrong here
-template <class T, class... Args>
+template <class TC, class T, class... Args>
 void copyVariadicArg(INT64 i, void** retp, T front, Args ... args) { //REMEMBER TO CLEAN UP AFTER USING
 	if (!i)
 	{
-		T* retT = new T(front);
-		*retp = retT;
-		return;
+		if (TC* retT = dynamic_cast<TC*>(&front))
+		{
+			retT = new TC(*retT);
+			*retp = retT;
+			return;
+		}
 	}
 	if constexpr (sizeof...(args) > 0)
-		return copyVariadicArg(i--, retp, args...);
+		return copyVariadicArg<TC>(i--, retp, args...);
 }
 
-inline void copyVariadicArg(INT64 i, void** retp) { *retp = nullptr; }
+template <class TC>
+void copyVariadicArg(INT64 i, void** retp) { *retp = nullptr; }
 
 template <class T, class... Args>
 T getVariadicArgAs(INT64 i, Args ... args) {
 	T* tGet = nullptr;
-	copyVariadicArg(i, (void**)&tGet, args...);
+	copyVariadicArg<T>(i, (void**)&tGet, args...);
 	T tRet = *tGet;
 	delete tGet;
 	return tRet;
+}
+
+template <class T, class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, T current, Args ... args)
+{
+	if (!i)
+		return CString(std::format(sFmt, current));
+	return formatVariadicArg(i--, sFmt, args...);
 }
 
 template <typename ... Args>
@@ -325,8 +337,9 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 	char* pPatternPos = sLine.GetPointer();
 	char* pPatternRunStart = pPatternPos;
 	char* pPatternEnd = pPatternPos + sLine.GetLength();
-	bool b1000Separator, bPadWithZeros, b64bit = false;
-	INT64 iFieldWidth, iLastNumber, iVariadicIndex = 0;
+	bool b1000Separator = false, bPadWithZeros = false, b64bit = false;
+	CString sFormattedArg = CString("");
+	INT64 iFieldWidth = 0, iLastNumber = 0, iVariadicIndex = 0;
 	while (pPatternPos <= pPatternEnd)
 	{
 		if (*pPatternPos == '%')
@@ -383,12 +396,13 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 			//Handle the actual options now
 			if (*pPatternPos == 's')//expected arg is a string
 			{
-				sOutput.Append(getVariadicArgAs<CString>(iVariadicIndex, args...), CString::FLAG_ALLOC_EXTRA);
+				sOutput.Append(formatVariadicArg(iVariadicIndex,"{}", args...), CString::FLAG_ALLOC_EXTRA);
 				iVariadicIndex++;
 			}
 			else if (*pPatternPos == 'd')//expected arg is a number and to print in decimals
 			{
-				iLastNumber = getVariadicArgAs<INT64>(iVariadicIndex, args...);
+				sFormattedArg = formatVariadicArg(iVariadicIndex, "{}", args...);
+				iLastNumber = strtoll(sFormattedArg.GetPointer(), NULL, 10);
 				DWORD dwFlags = (b1000Separator ? FORMAT_THOUSAND_SEPARATOR : 0)
 					| (bPadWithZeros ? FORMAT_LEADING_ZERO : 0);
 				sOutput.Append(strFormatInteger(iLastNumber, (int)iFieldWidth, dwFlags), CString::FLAG_ALLOC_EXTRA);
@@ -398,7 +412,8 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 				sOutput.Append("s", 1, CString::FLAG_ALLOC_EXTRA);
 			else if (*pPatternPos == 'x' || *pPatternPos == 'X')//expected arg is a number and to print in hex
 			{
-				iLastNumber = getVariadicArgAs<INT64>(iVariadicIndex, args...);
+				sFormattedArg = formatVariadicArg(iVariadicIndex, "{}", args...);
+				iLastNumber = strtoll(sFormattedArg.GetPointer(), NULL, 10);
 				char szBuffer[256];
 				int iLen = autowsprintf(szBuffer, (*pPatternPos == 'x' ? "%x" : "%X"), iLastNumber);
 				if (iFieldWidth > 0)
@@ -408,7 +423,7 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 			}
 			else if (*pPatternPos == '&')//expected arg is an entity and to print the entity name
 			{
-				CString sResult = strTranslateStdEntity(getVariadicArgAs<CString>(iVariadicIndex, args...));
+				CString sResult = strTranslateStdEntity(formatVariadicArg(iVariadicIndex, "{}", args...));
 				sOutput.Append(sResult);
 				iVariadicIndex++;
 			}
