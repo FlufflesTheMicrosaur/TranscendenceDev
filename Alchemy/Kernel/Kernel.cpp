@@ -175,7 +175,7 @@ void Kernel::kernelClearDebugLog (void)
 	kernelSetDebugLog(NULL);
 	}
 
-CString Kernel::kernelGetSessionDebugLog (void)
+Kernel::CString Kernel::kernelGetSessionDebugLog (void)
 
 //	kernetGetSessionDebugLog
 //

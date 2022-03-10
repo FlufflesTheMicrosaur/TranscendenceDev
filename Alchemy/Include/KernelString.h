@@ -278,20 +278,78 @@ Kernel::CString strWord (const Kernel::CString &sString, int iWordPos);
 
 //  Variadic Template based string functions that have to be in this file otherwise linking fails
 
+//These are needed to handle various issues with winapi strings...
 template <class... Args>
 int autowsprintf(LPSTR retBuffer, LPCTSTR formatBuffer, Args ... args) { return wsprintfA(retBuffer, formatBuffer, args...); }
 
 template <class... Args>
 int autowsprintf(LPWSTR retBuffer, LPCWSTR formatBuffer, Args ... args) { return wsprintfW(retBuffer, formatBuffer, args...); }
 
+std::string strFromLPWSTR(LPWSTR s);
+
+//  Helper functions for converting arbitrary variadic args to something that std::format can handle
+
+//Base case for recursive variadic handling
 inline Kernel::CString formatVariadicArg(INT64 i, std::string sFmt) { return Kernel::CString(""); }
+
+//  Define templates for all the cases that we know we can handle just fine (incl auto-promotion for numerics):
+
+//handle unsigned shorts which dont get promoted for some reason
+//template <class... Args>
+//Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, UINT16 current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+//handle other ints
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, INT64 current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+//handle std::string
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, std::string current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+//handle george::string
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, Kernel::CString current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+//handle classic char* strings
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, char* current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+//handle floating point
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, double current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
+
+//Special cases for conversions that the standard inner loop cant handle:
+
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, LPWSTR current, Args ... args)
+{
+	if (!i)
+		return CString(const_cast<char*>(std::format(sFmt, strFromLPWSTR(current)).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+}
+
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, UINT16 current, Args ... args)
+{
+	int iPromoted = (int)current;
+	if (!i)
+		return CString(const_cast<char*>(std::format(sFmt, iPromoted).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+}
+
+
+//Generic case for unknown arg that we should return a placeholder for
 
 template <class T, class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, T current, Args ... args)
 {
 	if (!i)
+		return CString(const_cast<char*>(std::format("<|UNKNOWN strPatternSubst Arg Type encountered!: {} - please add handling for this type in KernelString.h of Kernel|>", typeid(T).name()).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+}
+
+//helper interior function for the standard conversion overloads
+template <class T, class... Args>
+Kernel::CString strInnerVariadicArgFormat(INT64 i, std::string sFmt, T current, Args ... args)
+{
+	if (!i)
 		return CString(const_cast<char*>(std::format(sFmt, current).c_str()));
-	return formatVariadicArg(i--, sFmt, args...);
+	return formatVariadicArg(--i, sFmt, args...);
 }
 
 template <typename ... Args>
@@ -329,7 +387,7 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 				continue;
 			}
 			//store what we have accumulated
-			sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
+			sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart - 1), CString::FLAG_ALLOC_EXTRA);
 			//handle the format types
 			// [opt] , = add a 1000s seperator
 			// [opt] l = expects a 64bit number, support for legacy patterns
@@ -415,6 +473,6 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 	}
 	//store what we have accumulated
 	if (pPatternRunStart < pPatternEnd)
-		sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
+		sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternEnd - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
 	return sOutput;
 }

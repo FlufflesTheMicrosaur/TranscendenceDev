@@ -885,6 +885,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='SteamRelease|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='SteamRelease|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="ConvertWinapiStr.cpp" />
     <ClCompile Include="CPeriodicWaiter.cpp" />
     <ClCompile Include="CPolygon.cpp" />
     <ClCompile Include="CProjection3D.cpp" />
