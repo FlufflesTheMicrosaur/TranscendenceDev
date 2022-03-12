@@ -99,15 +99,15 @@ ALERROR CSymbolTable::AddEntry (const CString &sKey, CObject *pValue)
 	return NOERROR;
 	}
 
-int CSymbolTable::Compare (size_t iKey1, size_t iKey2) const
+int CSymbolTable::Compare (void* vpKey1, void* vpKey2) const
 
 //	Compare
 //
 //	Compares two keys
 
 	{
-	CString *pKey1 = (CString *)iKey1;
-	CString *pKey2 = (CString *)iKey2;
+	CString *pKey1 = (CString *)vpKey1;
+	CString *pKey2 = (CString *)vpKey2;
 
 	return strCompareAbsolute(*pKey1, *pKey2);
 	}

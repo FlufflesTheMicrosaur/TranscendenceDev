@@ -825,7 +825,7 @@ class CSymbolTable : public CPtrDictionary
 		void SetValue (size_t iEntry, CObject *pValue, CObject **retpOldValue);
 
 	protected:
-		virtual int Compare (size_t iKey1, size_t iKey2) const;
+		virtual int Compare (void* vpKey1, void* vpKey2) const;
 		virtual void CopyHandler (CObject *pOriginal);
 		virtual ALERROR LoadHandler (CUnarchiver *pUnarchiver);
 		virtual ALERROR SaveHandler (CArchiver *pArchiver);
