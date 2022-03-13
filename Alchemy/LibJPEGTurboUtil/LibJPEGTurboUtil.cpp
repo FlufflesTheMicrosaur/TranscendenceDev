@@ -34,7 +34,7 @@ ALERROR JPEGLoadFromMemory(char* pImage, int iSize, DWORD dwFlags, HPALETTE hPal
 
 {
 	ALERROR error;
-	DWORD dwJpegSize = (DWORD)sizeof(pImage);
+	DWORD dwJpegSize = (DWORD)iSize;
 	int iJpegSubsamp, width, height;
 
 	tjhandle hJpegDecompressor = tjInitDecompress();
