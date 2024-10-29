@@ -51,6 +51,7 @@ SOptionDefaults g_OptionData[CGameSettings::OPTIONS_COUNT] =
 
 		{	"playerName",				optionString,	"",			0	},
 		{	"playerGenome",				optionString,	"",			0	},
+		{	"playerGenomeType",			optionInteger,	"0",			0	},
 		{	"playerShipClass",			optionInteger,	"0",		OPTION_FLAG_HEX	},
 		{	"lastAdventure",			optionInteger,	"0",		OPTION_FLAG_HEX	},
 		{	"lastDifficulty",			optionString,	"story",	0	},
