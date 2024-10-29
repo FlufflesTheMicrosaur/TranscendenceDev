@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TranscendenceModule>
+
+	<Image UNID="&rsGenomes;"		bitmap="Resources\sotp_genomes.png"  loadOnUse="true"/>
+	<!-- OXYGENIA IX (earth-based biological) -->
+
+	<GenomeType unid="&gnDefaultText;"
+		id="genome_default_text"
+		name="(DEFAULT TEXT GENOMETYPE)"
+		attributes="genderDefault">
+		<Image unid="&rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Lifeform</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">evolved</Text>
+			<Text id="visualTaxon">organic</Text>
+			<Text id="visualTaxon.Adj">organic</Text>
+			<Text id="skin">skin</Text>
+			<Text id="legs">leg(s)</Text>
+			<Text id="arms">arm(s)</Text>
+			<Text id="feet">foot(feet)</Text>
+			<Text id="hands">hand(s)</Text>
+			<Text id="rear">butt</Text>
+			<Text id="nose">nose</Text>
+			<Text id="mouth">mouth</Text>
+			<Text id="eyes">eyes</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+			<Text id="boy">offspring</Text>
+			<Text id="brother">sibling</Text>
+			<Text id="man">being</Text>
+			<Text id="his">their</Text>
+			<Text id="hers">their</Text>
+			<Text id="him">them</Text>
+			<Text id="he">they</Text>
+			<Text id="son">offspring</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&gnOxygeniaIX;"
+		inherit="&gnDefaultText;"
+		id="oxygenia_ix"
+		name="oxygenia-IX"
+		attributes="oxygenia_ix, genderDefault">
+		<Image unid="&rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+		</Language>
+	</GenomeType>
+
+	<!-- Baseline humans -->
+
+	<GenomeType unid="&gnHuman;"
+		inherit="&gnOxygeniaIX;"
+		id="oxygenia_ix.human"
+		name="human(s)"
+		adjective="human"
+		attributes="oxygenia_ix, mammal, human, genderDefault, 00200000_PlayerGenome">
+		<Image unid="&rsGenomes;"  imageX="64" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">evolved</Text>
+			<Text id="visualTaxon">mammal</Text>
+			<Text id="visualTaxon.Adj">mammalian</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+			<Text id="boy">child</Text>
+			<Text id="brother">sibling</Text>
+			<Text id="man">being</Text>
+			<Text id="his">their</Text>
+			<Text id="hers">their</Text>
+			<Text id="him">them</Text>
+			<Text id="he">they</Text>
+			<Text id="son">child</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&gnHumanMale;"
+		inherit="&gnHuman;"
+		id="oxygenia_ix.human.male"
+		name="human male(s)"
+		adjective="human"
+		attributes="oxygenia_ix, mammal, human, genderMasculine, 00200000_PlayerGenome">
+		<Image unid="&rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+			<Text id="boy">boy</Text>
+			<Text id="brother">brother</Text>
+			<Text id="man">man</Text>
+			<Text id="his">his</Text>
+			<Text id="hers">his</Text>
+			<Text id="him">him</Text>
+			<Text id="he">he</Text>
+			<Text id="son">son</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&gnHumanFemale;"
+		inherit="&gnHuman;"
+		id="oxygenia_ix.human.female"
+		name="human female(s)"
+		adjective="human"
+		attributes="oxygenia_ix, mammal, human, genderFeminine, 00200000_PlayerGenome">
+		<Image unid="&rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+			<Text id="boy">girl</Text>
+			<Text id="brother">sister</Text>
+			<Text id="man">woman</Text>
+			<Text id="his">hers</Text>
+			<Text id="hers">hers</Text>
+			<Text id="him">her</Text>
+			<Text id="he">her</Text>
+			<Text id="son">daughter</Text>
+			<Text id="sir">ma'am</Text>
+		</Language>
+	</GenomeType>
+
+
+	<GenomeType unid="&gnMicrosaur;"
+		inherit="&gnOxygeniaIX;"
+		id="oxygenia_ix.microsaur"
+		name="microsaur"
+		adjective="microsaurian"
+		attributes="oxygenia_ix, reptilian">
+		<Image unid="&rsGenomes;"  imageX="768" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">engineered</Text>
+			<Text id="visualTaxon">saurian</Text>
+			<Text id="visualTaxon.Adj">saurian</Text>
+			<Text id="skin">scales</Text>
+			<Text id="hands">claws</Text>
+			<Text id="nose">snout</Text>
+			<Text id="rear">tail</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Replacement for old gendered words lookup table -->
+			<Text id="boy">hatchling</Text>
+			<Text id="brother">sibling</Text>
+			<Text id="man">microsaur</Text>
+			<Text id="his">their</Text>
+			<Text id="hers">their</Text>
+			<Text id="him">them</Text>
+			<Text id="he">they</Text>
+			<Text id="son">hatchling</Text>
+			<Text id="sir">Supreme Overlord</Text>
+		</Language>
+	</GenomeType>
+	
+	<!-- METALLOSILICATE IX (earth-based inorganic) -->
+
+</TranscendenceModule>

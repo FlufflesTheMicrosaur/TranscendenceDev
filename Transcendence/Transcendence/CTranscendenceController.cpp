@@ -947,11 +947,12 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		//	NOTE: We don't save the player name if it is a default name. This 
 		//	allows us to pick a different name if we two different people sign in.
 		//	Also, it prevents from us from posting the computer's username to
-		//	the Multiverse (which some people see as a privacy issue).
+		//	the Multiverse (which is a privacy issue per current CA and EU law).
 
 		if (!pNewGame->bDefaultPlayerName)
 			m_Settings.SetString(CGameSettings::playerName, pNewGame->sPlayerName);
-
+		if (!pNewGame->pPlayerGenome == NULL) //compatibility for legacy APIs
+			m_Settings.SetString(CGameSettings::playerGenomeType, strPatternSubst("0x%08x", pNewGame->pPlayerGenome->GetUNID()));
 		m_Settings.SetString(CGameSettings::playerGenome, GetGenomeID(pNewGame->iPlayerGenome));
 		m_Settings.SetInteger(CGameSettings::playerShipClass, (int)pNewGame->dwPlayerShip);
 		m_Settings.SetInteger(CGameSettings::lastAdventure, (int)m_Model.GetUniverse().GetCurrentAdventureDesc().GetExtensionUNID());

@@ -106,6 +106,8 @@
 			include10StartingShips=	"true" 
 			startingSystem=			"SE"
 			startingPos=			"Start"
+
+			startingGenomeCriteria=	"* +00200000_PlayerGenome;"
 			>
 
 		<Properties>

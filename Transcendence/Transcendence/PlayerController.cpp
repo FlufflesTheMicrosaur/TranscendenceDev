@@ -2382,7 +2382,7 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 //
 //	Reads data from stream
 //
-//	DWORD		m_iGenome
+//	DWORD		m_iGenome (API < 54) / m_dwGenome (API 54+)
 //	DWORD		m_dwStartingShipClass
 //	CString		m_sStartingSystem
 //	DWORD		m_dwCharacterClass
@@ -2403,7 +2403,17 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 	DWORD dwLoad;
 
 	Ctx.pStream->Read(dwLoad);
-	m_iGenome = (GenomeTypes)dwLoad;
+
+	CUniverse *pUniv = &Ctx.GetUniverse();
+	if ((pUniv->GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| pUniv->GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		m_iGenome = (GenomeTypes)dwLoad;
+	else
+		{
+		m_dwGenome = dwLoad;
+		m_pGenome = pUniv->FindGenomeType(m_dwGenome);
+		}
+
 	Ctx.pStream->Read(m_dwStartingShipClass);
 	
 	if (Ctx.dwVersion >= 191)
@@ -3401,7 +3411,7 @@ void CPlayerShipController::WriteToStream (IWriteStream *pStream)
 //
 //	Write data to stream
 //
-//	DWORD		m_iGenome
+//	DWORD		m_iGenome (API < 54) / m_dwGenome (API 54+)
 //	DWORD		m_dwStartingShipClass
 //	CString		m_sStartingSystem
 //	DWORD		m_dwCharacterClass
@@ -3423,7 +3433,16 @@ void CPlayerShipController::WriteToStream (IWriteStream *pStream)
 
 	GetClass().WriteToStream(pStream);
 
-	pStream->Write((DWORD)m_iGenome);
+	
+	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		pStream->Write((DWORD)m_iGenome);
+	else
+	{
+		if (!m_dwGenome)
+			m_dwGenome = m_pGenome->GetUNID();
+		pStream->Write(m_dwGenome);
+	}
 	pStream->Write(m_dwStartingShipClass);
 	m_sStartingSystem.WriteToStream(pStream);
 

@@ -128,9 +128,12 @@ void CListSaveFilesTask::CreateFileEntry (CGameFile &GameFile, const CTimeDate &
 			Info.Insert(sName);
 		}
 
-	//	Gender
+	//	Genome
 
-	Info.Insert(strCapitalize(GetGenomeName(GameFile.GetPlayerGenome())));
+	if (GameFile.GetCreateAPI() < 54)
+		Info.Insert(strCapitalize(GetGenomeName(GameFile.GetPlayerGenomeLegacy())));
+	else
+		Info.Insert(strCapitalize(GameFile.GetPlayerGenomeName()));
 
 	//	State
 

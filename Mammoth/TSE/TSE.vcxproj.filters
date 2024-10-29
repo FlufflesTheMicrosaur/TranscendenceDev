@@ -401,6 +401,9 @@
     <ClInclude Include="..\Include\TSEAchievements.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\TSEGenomeType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CAdventureRecord.cpp">
@@ -1650,6 +1653,9 @@
     </ClCompile>
     <ClCompile Include="CAchievementRecord.cpp">
       <Filter>Source Files\Achievements</Filter>
+    </ClCompile>
+    <ClCompile Include="CGenomeType.cpp">
+      <Filter>Source Files\DesignTypes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

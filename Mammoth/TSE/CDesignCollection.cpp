@@ -1447,7 +1447,8 @@ void CDesignCollection::GetStats (SStats &Result) const
 	Result.iSystemTypes = m_ByType[designSystemType].GetCount();
 	Result.iEffectTypes = m_ByType[designEffectType].GetCount();
 	Result.iSupportTypes = m_ByType[designItemTable].GetCount() + m_ByType[designShipTable].GetCount() + m_ByType[designSystemTable].GetCount() + m_ByType[designGenericType].GetCount()
-			+ m_ByType[designEconomyType].GetCount() + m_ByType[designPower].GetCount() + m_ByType[designSpaceEnvironmentType].GetCount() + m_ByType[designSystemMap].GetCount();
+			+ m_ByType[designEconomyType].GetCount() + m_ByType[designPower].GetCount() + m_ByType[designSpaceEnvironmentType].GetCount() + m_ByType[designSystemMap].GetCount()
+			+ m_ByType[designGenomeType].GetCount();
 
 	//	Add up all the type memory usage
 

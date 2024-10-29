@@ -143,7 +143,8 @@ class CPlayerShipController : public IShipController
 		CPlayerGameStats &GetGameStats (void) { return m_Stats; }
 		CString GetItemStat (const CString &sStat, ICCItem *pItemCriteria) const { return m_Stats.GetItemStat(sStat, pItemCriteria); }
 		CString GetKeyEventStat (const CString &sStat, const CString &sNodeID, const CDesignTypeCriteria &Crit) const { return m_Stats.GetKeyEventStat(sStat, sNodeID, Crit); }
-		GenomeTypes GetPlayerGenome (void) const { return m_iGenome; }
+		GenomeTypes GetPlayerGenomeLegacy (void) const { return m_iGenome; }
+		CGenomeType *GetPlayerGenome (void) { return m_pGenome; }
 		CString GetPlayerName (void) const { return m_sName; }
 		const CString &GetRedirectMessage (void) const { return m_sRedirectMessage; }
 		int GetResurrectCount (void) const { return ::strToInt(m_Stats.GetStatString(CONSTLIT("resurrectCount")), 0); }
@@ -172,7 +173,8 @@ class CPlayerShipController : public IShipController
 		void RedirectDisplayMessage (bool bRedirect);
 		void SetCharacterClass (CGenericType *pClass) { m_pCharacterClass = pClass; }
 		void SetGameSession (CGameSession *pSession);
-		void SetGenome (GenomeTypes iGenome) { m_iGenome = iGenome; }
+		void SetGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
+		void SetGenome (CGenomeType* pGenome) { m_pGenome = pGenome; }
 		void SetMapHUD (bool bActive) { m_bMapHUD = bActive; }
 		void SetMouseAimAngle (int iAngle) { m_ManeuverController.CmdMouseAim(iAngle); }
 		void SetName (const CString &sName) { m_sName = sName; }
@@ -327,7 +329,9 @@ class CPlayerShipController : public IShipController
 		CUIMessageController m_UIMsgs;				//	Status of various UI messages, such as hints
 
 		CString m_sName;							//	Player name
-		GenomeTypes m_iGenome = genomeUnknown;		//	Player genome
+		CGenomeType* m_pGenome = NULL;				//	Player genome
+		DWORD m_dwGenome = 0;						//  Player genome UNID
+		GenomeTypes m_iGenome = genomeUnknown;		//	Legacy player genome (Pre-API 54)
 		DWORD m_dwStartingShipClass = 0;			//	Starting ship class
 		CString m_sStartingSystem;					//	Starting system
 		CGenericType *m_pCharacterClass = NULL;		//	Character class

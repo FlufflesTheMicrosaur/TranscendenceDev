@@ -357,6 +357,7 @@
     <ClInclude Include="..\Include\TSEAccessibilitySettings.h" />
     <ClInclude Include="..\Include\TSEAchievements.h" />
     <ClInclude Include="..\Include\TSEEngineDefs.h" />
+    <ClInclude Include="..\Include\TSEGenomeType.h" />
     <ClInclude Include="..\Include\TSEListImpl.h" />
     <ClInclude Include="..\Include\TSEOverlays.h" />
     <ClInclude Include="..\Include\TSESpaceObjectDefs.h" />
@@ -570,6 +571,7 @@
     <ClCompile Include="CGalacticMapPainter.cpp" />
     <ClCompile Include="CGateTimerManager.cpp" />
     <ClCompile Include="CGenericType.cpp" />
+    <ClCompile Include="CGenomeType.cpp" />
     <ClCompile Include="CGuardOrder.cpp" />
     <ClCompile Include="CHitCtx.cpp" />
     <ClCompile Include="CHullDesc.cpp" />

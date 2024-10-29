@@ -376,7 +376,23 @@ CString CLanguage::ComposeGenderedWordHelper (CUniverse &Universe, const CString
 	//	Otherwise, we use the player's gender
 
 	else
-		return ComposeGenderedWord(sWord, Universe.GetPlayerGenome());
+		{
+
+		if ((Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+			|| Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+			return ComposeGenderedWord(sWord, Universe.GetPlayerGenomeLegacy());
+		else
+			{
+			CString pRes;
+			Universe.GetPlayerGenome()->GetLanguageBlock().TranslateText(
+				*Universe.GetPlayerGenome(),
+				sWord,
+				CLanguageDataBlock::SParams(),
+				&pRes);
+			return pRes;
+			}
+		}
+		
 	}
 
 CString CLanguage::ComposeHitPointValue (int iHP, const SHPDisplayOptions &Options)

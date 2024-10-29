@@ -102,7 +102,8 @@ struct SFontTable
 struct SNewGameSettings
 	{
 	CString sPlayerName;						//	Character name
-	GenomeTypes iPlayerGenome = genomeUnknown;	//	Genome
+	GenomeTypes iPlayerGenome = genomeUnknown;	//	Legacy Genome (pre-API 54)
+	CGenomeType *pPlayerGenome = NULL;			//	Genome
 	CDifficultyOptions::ELevel iDifficulty = CDifficultyOptions::ELevel::Unknown;
 	DWORD dwPlayerShip = 0;						//	Starting ship class
 
@@ -788,7 +789,8 @@ class CTranscendencePlayer : public IPlayerController
 
 		virtual ICCItem *CreateGlobalRef (CCodeChain &CC) override { return CC.CreateInteger((int)m_pPlayer); }
 		virtual CPlayerGameStats *GetGameStats (void) const override { return &m_pPlayer->GetGameStats(); }
-		virtual GenomeTypes GetGenome (void) const override;
+		virtual GenomeTypes GetGenomeLegacy (void) const override;
+		virtual CGenomeType *GetGenome (void) const override;
 		virtual CString GetName (void) const override;
 		virtual EUIMode GetUIMode (void) const override;
 		virtual void OnMessageFromObj (const CSpaceObject *pSender, const CString &sMessage) override;

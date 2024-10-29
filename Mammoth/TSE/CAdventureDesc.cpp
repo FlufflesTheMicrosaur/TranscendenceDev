@@ -17,6 +17,7 @@
 #define INCLUDE_10_STARTING_CLASSES_ATTRIB		CONSTLIT("include10StartingShips")
 #define LEVEL_ATTRIB							CONSTLIT("level")
 #define NAME_ATTRIB								CONSTLIT("name")
+#define STARTING_GENOME_CRITERIA_ATTRIB			CONSTLIT("startingGenomeCriteria")
 #define STARTING_MAP_ATTRIB						CONSTLIT("startingMap")
 #define STARTING_POS_ATTRIB						CONSTLIT("startingPos")
 #define STARTING_SHIP_CRITERIA_ATTRIB			CONSTLIT("startingShipCriteria")
@@ -34,6 +35,7 @@
 #define LANGUAGE_DESCRIPTION					CONSTLIT("description")
 
 #define ERR_STARTING_SHIP_CRITERIA				CONSTLIT("Unable to parse startingShipCriteria")
+#define ERR_STARTING_GENOME_CRITERIA			CONSTLIT("Unable to parse startingGenomeCriteria")
 
 CAdventureDesc::CAdventureDesc (void) :
 		m_fIsCurrentAdventure(false),
@@ -177,6 +179,24 @@ ALERROR CAdventureDesc::GetStartingShipClasses (TSortMap<CString, CShipClass *> 
 	return NOERROR;
 	}
 
+ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CGenomeType*>* retClasses, CString* retsError)
+{
+	int i;
+	int dbg_NumGenomes = GetUniverse().GetGenomeTypeCount();
+	//	Make a list
+
+	retClasses->DeleteAll();
+	for (i = 0; i < GetUniverse().GetGenomeTypeCount(); i++)
+	{
+		CGenomeType* pGenome = GetUniverse().GetGenomeType(i);
+		if (IsValidStartingGenome(pGenome))
+		{
+			retClasses->Insert(pGenome->GetGenomeNameSingular(), pGenome);
+		}
+	}
+	return ALERROR();
+}
+
 bool CAdventureDesc::IsValidStartingClass (CShipClass *pClass)
 
 //	IsValidStartingClass
@@ -194,6 +214,11 @@ bool CAdventureDesc::IsValidStartingClass (CShipClass *pClass)
 
 	return (pClass->IsIncludedInAllAdventures() || pClass->MatchesCriteria(m_StartingShips));
 	}
+
+bool CAdventureDesc::IsValidStartingGenome(CGenomeType* pGenome)
+{
+	return (pGenome->MatchesCriteria(m_StartingGenomes));
+}
 
 ALERROR CAdventureDesc::OnBindDesign (SDesignLoadCtx &Ctx)
 
@@ -242,13 +267,21 @@ ALERROR CAdventureDesc::OnCreateFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc
 	if (error = ::LoadUNID(Ctx, pDesc->GetAttribute(BACKGROUND_ID_ATTRIB), &m_dwBackgroundUNID))
 		return ComposeLoadError(Ctx, Ctx.sError);
 
-	//	Starting ship criteria
+	//  Starting genome criteria
+	CString sGenomeCriteria;
+	if (!pDesc->FindAttribute(STARTING_GENOME_CRITERIA_ATTRIB, &sGenomeCriteria))
+		sGenomeCriteria = CONSTLIT("*");
 
-	CString sCriteria;
-	if (!pDesc->FindAttribute(STARTING_SHIP_CRITERIA_ATTRIB, &sCriteria))
-		sCriteria = CONSTLIT("*");
+	if (error = CDesignTypeCriteria::ParseCriteria(sGenomeCriteria, &m_StartingGenomes))
+		return ComposeLoadError(Ctx, ERR_STARTING_GENOME_CRITERIA);
 
-	if (error = CDesignTypeCriteria::ParseCriteria(sCriteria, &m_StartingShips))
+	//	Starting ship criteriaSTARTING_GENOME_CRITERIA_ATTRIB
+
+	CString sShipCriteria;
+	if (!pDesc->FindAttribute(STARTING_SHIP_CRITERIA_ATTRIB, &sShipCriteria))
+		sShipCriteria = CONSTLIT("*");
+
+	if (error = CDesignTypeCriteria::ParseCriteria(sShipCriteria, &m_StartingShips))
 		return ComposeLoadError(Ctx, ERR_STARTING_SHIP_CRITERIA);
 
 	m_fIncludeOldShipClasses = pDesc->GetAttributeBool(INCLUDE_10_STARTING_CLASSES_ATTRIB);

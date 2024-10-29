@@ -19,6 +19,7 @@
 #define ENCOUNTER_TABLE_TAG						CONSTLIT("EncounterTable")
 #define ENCOUNTER_TYPE_TAG						CONSTLIT("EncounterType")
 #define EVENTS_TAG								CONSTLIT("Events")
+#define GENOME_TYPE_TAG							CONSTLIT("GenomeType")
 #define GLOBAL_DATA_TAG							CONSTLIT("GlobalData")
 #define IMAGE_TAG								CONSTLIT("Image")
 #define IMAGE_COMPOSITE_TAG						CONSTLIT("ImageComposite")
@@ -433,6 +434,8 @@ ALERROR CDesignType::CreateFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, CDe
 			pType = new CObjectImage;
 		else if (strEquals(sTag, ECONOMY_TYPE_TAG))
 			pType = new CEconomyType;
+		else if (strEquals(sTag, GENOME_TYPE_TAG))
+			pType = new CGenomeType;
 		else if (strEquals(sTag, TEMPLATE_TYPE_TAG))
 			pType = new CTemplateType;
 		else if (strEquals(sTag, TYPE_TAG))

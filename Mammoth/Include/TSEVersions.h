@@ -5,9 +5,9 @@
 
 #pragma once
 
-constexpr DWORD API_VERSION =							53;
-constexpr DWORD UNIVERSE_SAVE_VERSION =					40;
-constexpr DWORD SYSTEM_SAVE_VERSION =					212;
+constexpr DWORD API_VERSION =							54;
+constexpr DWORD UNIVERSE_SAVE_VERSION =					41;
+constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 
 //	Uncomment out the following define when building a stable release
 
@@ -119,6 +119,9 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					212;
 //
 //	40: 1.9 Beta 4
 //		Added design type in dwFlags or CDesignType.
+//
+//	41: 1.9.2 Raptor 1
+//		Added CGenomeType, deprecated old GenomeTypes to API <54
 
 
 //	SYSTEM VERSION HISTORY -----------------------------------------------------
@@ -762,3 +765,9 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					212;
 //
 //	211: 1.9
 //		Change CShockwaveHitTest
+//
+//  212: 1.9.1
+//		(George you are missing the change made here)
+// 
+//	213: 1.9.2 Raptor 1
+//		Added new m_pGenome to player controller to use API 54/Univ 41 CGenomeType. GenomeTypes impl renamed to '*Legacy'
