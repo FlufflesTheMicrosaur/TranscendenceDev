@@ -1102,7 +1102,11 @@ ICCItem *fnPlyGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			}
 
 		case FN_PLY_GENOME:
-			pResult = pCC->CreateString(GetGenomeID(pPlayer->GetPlayerGenome()));
+			if ((g_pUniverse->GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+				|| g_pUniverse->GetCurrentAdventureDesc().GetAPIVersion() < 54))
+				pResult = pCC->CreateString(GetGenomeID(pPlayer->GetPlayerGenomeLegacy()));
+			else
+				pResult = pCC->CreateString(strPatternSubst("0x%08x", pPlayer->GetPlayerGenome()->GetUNID()));
 			break;
 
 		case FN_PLY_GET_ITEM_STAT:

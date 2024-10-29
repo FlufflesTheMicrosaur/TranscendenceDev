@@ -434,6 +434,11 @@ ALERROR CGameFile::LoadGameHeader (SGameHeader *retHeader)
 		utlMemCopy(sHeader.GetPointer(), (char *)retHeader, sizeof(SGameHeader10));
 		}
 
+	else if (sHeader.GetLength() == sizeof(SGameHeader11))
+		{
+		utlMemCopy(sHeader.GetPointer(), (char*)retHeader, sizeof(SGameHeader11));
+		}
+
 	//	Read current version
 
 	else
@@ -1221,10 +1226,27 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 		bUpdateHeader = true;
 		}
 
-	if (Univ.GetPlayerGenome() != m_Header.dwGenome)
+	//	For backwards compatibility, use legacy UNID where API version <54.
+	//  Sometimes we do not have an adventure. This
+	//	can happen when we're using TransData on an old TDB.
+	if (Univ.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| Univ.GetCurrentAdventureDesc().GetAPIVersion() < 54)
 		{
-		m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome();
-		bUpdateHeader = true;
+		if (Univ.GetPlayerGenomeLegacy() != m_Header.dwGenome)
+			{
+			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenomeLegacy();
+			bUpdateHeader = true;
+			}
+		}
+	else 
+		{
+		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
+			{
+			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome()->GetUNID();
+			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeNameSingular();
+			CopyHeaderString(sGenomeName, m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
+			bUpdateHeader = true;
+			}
 		}
 
 	//	Set the flags. The resurrect flag says that we should increase

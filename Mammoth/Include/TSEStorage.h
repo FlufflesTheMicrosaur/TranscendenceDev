@@ -20,6 +20,7 @@ class CGameFile
 		static constexpr int GAME_HEADER_MAX_SYSTEM_NAME =	128;
 		static constexpr int GAME_ID_MAX =					128;
 		static constexpr int PLAYER_NAME_MAX =				128;
+		static constexpr int PLAYER_GENOME_NAME_MAX =		128;
 		static constexpr int SHIP_IMAGE_SIZE =				96;
 		static constexpr int SHIP_NAME_MAX =				128;
 		static constexpr int USERNAME_MAX =					256;
@@ -36,6 +37,7 @@ class CGameFile
 		ALERROR Create (const CString &sFilename, const CString &sUsername);
 		static CString GenerateFilename (const CString &sName);
 		DWORD GetAdventure (void) const { return m_Header.dwAdventure; }
+		DWORD GetCreateAPI(void) const { return m_Header.dwCreateAPI; }
 
 		static constexpr DWORD FLAG_VERSION_NUMBERS =	0x00000001;
 		static constexpr DWORD FLAG_VERSION_STRING =	0x00000002;
@@ -46,7 +48,9 @@ class CGameFile
 		CString GetFilespec (void) const { return (IsOpen() ? m_pFile->GetFilename() : NULL_STR); }
 		CString GetGameID (void) { return CString(m_Header.szGameID); }
 		DWORD GetLastSavedOn (void) const { return m_dwLastSavedOn; }
-		GenomeTypes GetPlayerGenome (void) const { return (GenomeTypes)m_Header.dwGenome; }
+		GenomeTypes GetPlayerGenomeLegacy (void) const { return (GenomeTypes)m_Header.dwGenome; }
+		CString GetPlayerGenomeName (void) const { return CString(m_Header.szGenomeName); }
+		DWORD GetPlayerGenomeUNID (void) const { return m_Header.dwGenome; }
 		CString GetPlayerName (void) const;
 		DWORD GetPlayerShip (void) const { return m_Header.dwPlayerShip; }
 		CString GetPlayerShipClassName (void) const;
@@ -125,6 +129,9 @@ class CGameFile
 			//	New in SGameHeader 11
 			DWORD dwShipImage = INVALID_ENTRY;	//	Location of ship image
 			char szShipClassName[SHIP_NAME_MAX] = "";
+
+			//  New in SGameHeader 12
+			char szGenomeName[PLAYER_GENOME_NAME_MAX] = "";
 			};
 
 		struct SSystemData

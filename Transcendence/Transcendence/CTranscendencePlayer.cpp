@@ -13,7 +13,17 @@ CTranscendencePlayer::CTranscendencePlayer (void) : m_pPlayer(NULL)
 	{
 	}
 
-GenomeTypes CTranscendencePlayer::GetGenome (void) const
+GenomeTypes CTranscendencePlayer::GetGenomeLegacy (void) const
+
+//	GetGenome
+//
+//	Returns the player genome
+
+	{
+	return m_pPlayer->GetPlayerGenomeLegacy();
+	}
+
+CGenomeType *CTranscendencePlayer::GetGenome(void) const
 
 //	GetGenome
 //

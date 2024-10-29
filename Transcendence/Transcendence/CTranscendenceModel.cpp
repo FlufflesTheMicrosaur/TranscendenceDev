@@ -1970,7 +1970,12 @@ void CTranscendenceModel::RecordFinalScore (const CString &sEpitaph, const CStri
 	m_GameRecord.SetExtensions(Extensions);
 
 	m_GameRecord.SetPlayerName(m_pPlayer->GetPlayerName());
-	m_GameRecord.SetPlayerGenome(m_pPlayer->GetPlayerGenome());
+
+	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		m_GameRecord.SetPlayerGenomeLegacy(m_pPlayer->GetPlayerGenomeLegacy());
+	else
+		m_GameRecord.SetPlayerGenome(m_pPlayer->GetPlayerGenome());
 
 	m_GameRecord.SetShipClass(pPlayerShip ? pPlayerShip->GetType()->GetUNID() : 0);
 	m_GameRecord.SetSystem(pPlayerShip ? pPlayerShip->GetSystem() : NULL);
@@ -2611,7 +2616,11 @@ ALERROR CTranscendenceModel::StartNewGame (const CString &sUsername, const SNewG
 
 	m_pPlayer->Init(g_pTrans);
 	m_pPlayer->SetName(NewGame.sPlayerName);
-	m_pPlayer->SetGenome(NewGame.iPlayerGenome);
+	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		m_pPlayer->SetGenomeLegacy(NewGame.iPlayerGenome);
+	else
+		m_pPlayer->SetGenome(NewGame.pPlayerGenome);
 	m_pPlayer->SetStartingShipClass(NewGame.dwPlayerShip);
 
 	//	Inside of InitAdventure we may get called back to set the crawl image

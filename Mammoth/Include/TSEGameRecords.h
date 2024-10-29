@@ -41,7 +41,8 @@ class CGameRecord
 		CString GetEndGameEpitaph (DWORD dwFlags = 0) const;
 		const CString &GetEndGameReason (void) const { return m_sEndGameReason; }
 		const CString &GetGameID (void) const { return m_sGameID; }
-		GenomeTypes GetPlayerGenome (void) const { return m_iGenome; }
+		GenomeTypes GetPlayerGenomeLegacy (void) const { return m_iGenome; }
+		CGenomeType *GetPlayerGenome (void) const { return m_pGenome; }
 		const CString &GetPlayerName (void) const { return m_sName; }
 		CString GetPlayTimeString (void) const { return m_Duration.Format(NULL_STR); }
 		int GetResurrectCount (void) const { return m_iResurrectCount; }
@@ -60,7 +61,8 @@ class CGameRecord
 		void SetEndGameReason (const CString &sReason) { m_sEndGameReason = sReason; }
 		void SetExtensions (const TArray<DWORD> &Extensions) { m_Extensions = Extensions; }
 		void SetGameID (const CString &sGameID) { m_sGameID = sGameID; }
-		void SetPlayerGenome (GenomeTypes iGenome) { m_iGenome = iGenome; }
+		void SetPlayerGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
+		void SetPlayerGenome (CGenomeType *pGenome) { m_pGenome = pGenome; }
 		void SetPlayerName (const CString &sName) { m_sName = sName; }
 		void SetPlayTime (const CTimeSpan &Time) { m_Duration = Time; }
 		void SetRegistered (bool bRegistered = true) { m_bRegisteredGame = bRegistered; }
@@ -79,7 +81,8 @@ class CGameRecord
 		TArray<DWORD> m_Extensions;				//	UNID of included extensions
 
 		CString m_sName;						//	Character name
-		GenomeTypes m_iGenome;					//	Character genome
+		GenomeTypes m_iGenome;					//	Legacy Character genome (Pre-API 54)
+		CGenomeType *m_pGenome;					//	Character genome
 
 		DWORD m_dwShipClass;					//	Ship class UNID
 		CString m_sShipClass;					//	Ship class

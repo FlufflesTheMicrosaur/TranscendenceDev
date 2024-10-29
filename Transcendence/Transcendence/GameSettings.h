@@ -213,7 +213,8 @@ class CGameSettings
 			{
 			//	Game play options
 			playerName,						//	Default player name
-			playerGenome,					//	Default player genome ("humanMale" or "humanFemale")
+			playerGenome,					//	Default legacy player genome ("humanMale" or "humanFemale")
+			playerGenomeType,				//	Player GenomeType UNID
 			playerShipClass,				//	Default player ship class
 			lastAdventure,					//	Last adventure created
 			lastDifficulty,					//	Last difficulty level played
@@ -263,8 +264,8 @@ class CGameSettings
 			colorIFFNeutral,				//	Color of neutral assets on minimap
 			colorIFFEnemy,					//	Color of enemy assets on minimap
 			colorIFFAngry,					//	Color of angered assets on minimap
-			colorIFFEscort,				//	Color of player's non-owned escorts on minimap
-			colorIFFProjectile,			//	Color of weapon projectiles on mimimap
+			colorIFFEscort,					//	Color of player's non-owned escorts on minimap
+			colorIFFProjectile,				//	Color of weapon projectiles on mimimap
 
 			//	Debug options
 			debugMode,						//	Program in debug mode

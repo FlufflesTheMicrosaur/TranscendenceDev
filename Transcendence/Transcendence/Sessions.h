@@ -532,7 +532,8 @@ class CNewGameSession : public IHISession
 		void CreateShipClass (const CShipClass &Class, int x, int y, int cxWidth);
 		void CreateShipClassButton (const CString &sID, int x, int y, const CG32bitImage &Image, bool bEnabled);
 		void SetDifficulty (CDifficultyOptions::ELevel iLevel);
-		void SetPlayerGenome (GenomeTypes iGenome);
+		void SetPlayerGenomeLegacy (GenomeTypes iGenome);
+		void SetPlayerGenome(CGenomeType *pGenome);
 		void SetPlayerName (const CString &sName);
 		void SetShipClass (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassDesc (const CString &sDesc, int x, int y, int cxWidth);
@@ -547,6 +548,8 @@ class CNewGameSession : public IHISession
 
 		TSortMap<CString, CShipClass *> m_ShipClasses;
 		int m_iCurShipClass = 0;
+		TSortMap<CString, CGenomeType *> m_GenomeTypes;
+		int m_iCurGenome = 0;
 
 		CAniVScroller *m_pRoot = NULL;
 

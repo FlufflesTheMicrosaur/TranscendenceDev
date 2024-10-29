@@ -24,6 +24,7 @@
 #define ID_SECTION_PLAYER_GENOME				CONSTLIT("sectionPlayerGenome")
 #define ID_SECTION_PLAYER_NAME					CONSTLIT("sectionPlayerName")
 #define ID_PLAYER_GENOME						CONSTLIT("idPlayerGenome")
+#define ID_PLAYER_GENOME_IMAGE					CONSTLIT("idPlayerGenomeImage")
 #define ID_PLAYER_NAME							CONSTLIT("idPlayerName")
 #define ID_PLAYER_NAME_FIELD					CONSTLIT("idPlayerNameField")
 #define ID_SETTINGS								CONSTLIT("idSettings")
@@ -34,6 +35,7 @@
 
 #define ERR_NO_ADVENTURE						CONSTLIT("No adventure defined")
 #define ERR_NO_SHIP_CLASSES						CONSTLIT("Unable to find starting ship classes that match adventure criteria");
+#define ERR_NO_GENOMES							CONSTLIT("Unable to find starting genomes that match adventure criteria");
 
 #define EVENT_ON_CLICK							CONSTLIT("onClick")
 
@@ -55,9 +57,11 @@
 #define STYLE_IMAGE								CONSTLIT("image")
 
 #define STR_DIFFICULTY							CONSTLIT("difficulty")
-#define STR_GENOME								CONSTLIT("gender")
+#define STR_GENOME								CONSTLIT("genome")
 #define STR_NAME								CONSTLIT("name")
 
+const int GENOME_IMAGE_HEIGHT =					32;
+const int GENOME_IMAGE_WIDTH =					32;
 const int ICON_HEIGHT =							48;
 const int ICON_WIDTH =							48;
 const int ITEM_INFO_PADDING_VERT =				16;
@@ -170,12 +174,25 @@ void CNewGameSession::CmdChangeGenome (void)
 //	Change genome
 
 	{
-	if (m_Settings.iPlayerGenome == genomeHumanMale)
-		m_Settings.iPlayerGenome = genomeHumanFemale;
-	else
-		m_Settings.iPlayerGenome = genomeHumanMale;
 
-	SetPlayerGenome(m_Settings.iPlayerGenome);
+	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		{
+		if (m_Settings.iPlayerGenome == genomeHumanMale)
+			m_Settings.iPlayerGenome = genomeHumanFemale;
+		else
+			m_Settings.iPlayerGenome = genomeHumanMale;
+
+		SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
+		}
+	else
+		{
+		m_iCurGenome++;
+		//loop back around if we reached the end
+		if (m_iCurGenome == m_GenomeTypes.GetCount())
+			m_iCurGenome = 0;
+		SetPlayerGenome(m_GenomeTypes[m_iCurGenome]);
+		}
 	}
 
 void CNewGameSession::CmdEditName (void)
@@ -260,6 +277,7 @@ void CNewGameSession::CmdOK (void)
 	SNewGameSettings NewGame;
 	NewGame.sPlayerName = m_Settings.sPlayerName;
 	NewGame.iPlayerGenome = m_Settings.iPlayerGenome;
+	NewGame.pPlayerGenome = m_Settings.pPlayerGenome;
 	NewGame.dwPlayerShip = m_ShipClasses[m_iCurShipClass]->GetUNID();
 	NewGame.bDefaultPlayerName = m_Settings.bDefaultPlayerName;
 	NewGame.iDifficulty = m_Settings.iDifficulty;
@@ -421,14 +439,27 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 	m_yShipClass = MAJOR_PADDING_TOP;
 	m_cxShipClass = RectWidth(rcCenter);
 
-	//	Generate a list of ship classes
+	//  Get Adventure
+	CAdventureDesc& Adventure = m_Universe.GetCurrentAdventureDesc();
 
-	CAdventureDesc &Adventure = m_Universe.GetCurrentAdventureDesc();
 	if (Adventure.IsNull())
-		{
+	{
 		*retsError = ERR_NO_ADVENTURE;
 		return ERR_FAIL;
+	}
+
+	//  Generate a list of Genomes
+
+	if (error = Adventure.GetStartingGenomeTypes(&m_GenomeTypes, retsError))
+		return error;
+
+	if (m_GenomeTypes.GetCount() == 0)
+		{
+		*retsError = ERR_NO_GENOMES;
+		return ERR_FAIL;
 		}
+
+	//	Generate a list of ship classes
 
 	if (error = Adventure.GetStartingShipClasses(&m_ShipClasses, retsError))
 		return error;
@@ -513,7 +544,13 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 			yBar, 
 			cxColumn, 
 			alignRight);
-	SetPlayerGenome(m_Settings.iPlayerGenome);
+	int dbg_APIBase = m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion();
+	int dbg_APIAdv = m_Universe.GetCurrentAdventureDesc().GetAPIVersion();
+	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
+		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
+	else
+		SetPlayerGenome(m_Settings.pPlayerGenome ? m_Settings.pPlayerGenome : m_GenomeTypes[0]);
 
 	//	Create the ship class
 
@@ -646,7 +683,7 @@ void CNewGameSession::SetDifficulty (CDifficultyOptions::ELevel iLevel)
 		}
 	}
 
-void CNewGameSession::SetPlayerGenome (GenomeTypes iGenome)
+void CNewGameSession::SetPlayerGenomeLegacy (GenomeTypes iGenome)
 
 //	SetPlayerGenome
 //
@@ -661,6 +698,68 @@ void CNewGameSession::SetPlayerGenome (GenomeTypes iGenome)
 		m_PlayerGenome.SetImage(VI.GetImage(imageSmallHumanFemale));
 
 	m_PlayerGenome.SetText(strTitleCapitalize(GetGenomeName(iGenome)));
+	}
+
+void CNewGameSession::SetPlayerGenome(CGenomeType *pGenome)
+
+//	SetPlayerGenome
+//
+//	Sets the current player genome
+
+	{
+	// Handle switching the image
+	CG32bitImage *pGenomeImg = (!pGenome->GetImage().IsEmpty() ? &pGenome->GetImage().GetImage(CONSTLIT("New Game")) : NULL);
+	//delete the element here, but we need to set a new id like ID_SHIP_CLASS_IMAGE has
+
+	// Add new image (if availalbe)
+
+	const CG32bitImage* pImageToUse = NULL;
+	bool bFree = false;
+
+	if (pGenomeImg && !pGenomeImg->IsEmpty())
+		{
+			//	If this image is not the right size, then create a resized version
+			//	that is.
+
+		if (pGenomeImg->GetWidth() != GENOME_IMAGE_WIDTH || pGenomeImg->GetHeight() != GENOME_IMAGE_HEIGHT)
+			{
+			int cxWidth = pGenomeImg->GetWidth();
+			int cyHeight = pGenomeImg->GetHeight();
+			int cxNewWidth = GENOME_IMAGE_WIDTH;
+			int cyNewHeight = cxNewWidth * cyHeight / cxWidth;
+			if (cyNewHeight > GENOME_IMAGE_HEIGHT)
+				{
+				cyNewHeight = GENOME_IMAGE_HEIGHT;
+				cxNewWidth = cyNewHeight * cxWidth / cyHeight;
+				}
+
+			CG32bitImage* pNewImage = new CG32bitImage;
+			pNewImage->CreateFromImageTransformed(*pGenomeImg, 0, 0, cxWidth, cyHeight, (Metric)cxNewWidth / cxWidth, (Metric)cyNewHeight / cyHeight, 0.0);
+
+			pImageToUse = pNewImage;
+			bFree = true;
+			}
+		else
+			{
+			pImageToUse = pGenomeImg;
+			bFree = false;
+			}
+		}
+	else
+		{
+		//If we dont have an image, then put a placeholder
+		const CVisualPalette& VI = m_HI.GetVisuals();
+		pImageToUse = &VI.GetImage(imageSmallOKIcon);
+		}
+
+	m_PlayerGenome.SetImage(*pImageToUse);
+	// Set the name
+
+	m_PlayerGenome.SetText(strTitleCapitalize(pGenome->GetGenomeNameSingular()));
+
+	// Finally, actually switch the currently selected genome to the new one
+
+	m_Settings.pPlayerGenome = pGenome;
 	}
 
 void CNewGameSession::SetPlayerName (const CString &sName)

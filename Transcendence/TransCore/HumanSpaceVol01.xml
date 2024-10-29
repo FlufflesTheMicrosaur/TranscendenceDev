@@ -2575,6 +2575,52 @@
 
 	<!ENTITY rsHereticMissionTile			"0x00100860">
 
+	<!-- 0880-08AF GENOMES -->
+
+	<!ENTITY rsGenomes						"0x00100880">
+	<!ENTITY gnOxygeniaIX					"0x00100881">
+	<!ENTITY gnHuman						"0x00100882">
+	<!ENTITY gnHumanFemale					"0x00100883">
+	<!ENTITY gnHumanMale					"0x00100884">
+	<!ENTITY gnHumanAugment					"0x00100885">
+	<!ENTITY gnHumanAugmentFemale			"0x00100886">
+	<!ENTITY gnHumanAugmentMale				"0x00100887">
+	<!ENTITY gnNeohuman						"0x00100888">
+	<!ENTITY gnSyrtis						"0x00100889">
+	<!ENTITY gnSyrtisFemale					"0x0010088A">
+	<!ENTITY gnSyrtisMale					"0x0010088B">
+	<!ENTITY gnAres							"0x0010088C">
+	<!ENTITY gnAresFemale					"0x0010088D">
+	<!ENTITY gnAresMale						"0x0010088E">
+	<!ENTITY gnRinger						"0x0010088F">
+	<!ENTITY gnRingerFemale					"0x00100890">
+	<!ENTITY gnRingerMale					"0x00100891">
+	<!ENTITY gnTeraton						"0x00100892">
+	<!ENTITY gnTeratonFemale				"0x00100893">
+	<!ENTITY gnTeratonMale					"0x00100894">
+	<!ENTITY gnTeratonFabricator			"0x00100895">
+	<!ENTITY gnDwargMaster					"0x00100896">
+	<!ENTITY gnDwargMasterFemale			"0x00100897">
+	<!ENTITY gnDwargMasterMale				"0x00100898">
+	<!ENTITY gnArioi						"0x00100899">
+	<!ENTITY gnArioiFemale					"0x0010089A">
+	<!ENTITY gnArioiMale					"0x0010089B">
+	<!ENTITY gnZoanthrope					"0x0010089C">
+	<!ENTITY gnFerian						"0x0010089D">
+	<!ENTITY gnFerianFemale					"0x0010089E">
+	<!ENTITY gnFerianMale					"0x0010089F">
+	<!ENTITY gnDwarg						"0x001008A0">
+	<!ENTITY gnDwargFemale					"0x001008A1">
+	<!ENTITY gnDwargMale					"0x001008A2">
+	<!ENTITY gnSimple						"0x001008A3">
+	<!ENTITY gnMicrosaur					"0x001008A4">
+	<!ENTITY gnOxygeniaIXInorganic			"0x001008A5">
+	<!ENTITY gnUploadedHuman				"0x001008A6">
+	<!ENTITY gnCDN							"0x001008A7">
+	<!ENTITY gnLuminous						"0x001008A8">
+
+	<!ENTITY gnDefaultText					"0x001008AF"> <!-- move this to core types lib-->
+
 	<!-- 1000-FFFF RESERVED: DO NOT USE -->
 	]>
 	
@@ -2815,6 +2861,7 @@
 	<Module filename="StdSovereigns.xml"/>
 	<Module filename="StdTypes.xml"/>
 	<Module filename="UndergroundStructures.xml"/>
+	<Module filename="StdGenomes.xml"/>
 	
 	<!-- Pilgrim -->
 

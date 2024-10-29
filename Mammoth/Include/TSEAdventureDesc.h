@@ -66,10 +66,12 @@ class CAdventureDesc : public CDesignType
 		const CString &GetStartingNodeID (void) const { return m_sStartingNodeID; }
 		const CString &GetStartingPos (void) const { return m_sStartingPos; }
 		ALERROR GetStartingShipClasses (TSortMap<CString, CShipClass *> *retClasses, CString *retsError);
+		ALERROR GetStartingGenomeTypes (TSortMap<CString, CGenomeType *> *retClasses, CString *retsError);
 		const CString &GetWelcomeMessage (void) const { return m_sWelcomeMessage; }
 		bool IsCurrentAdventure (void) const { return (m_fIsCurrentAdventure ? true : false); }
 		bool IsInDefaultResource (void) const { return (m_fInDefaultResource ? true : false); }
 		bool IsValidStartingClass (CShipClass *pClass);
+		bool IsValidStartingGenome (CGenomeType* pGenome);
 		void SetCurrentAdventure (bool bCurrent = true) { m_fIsCurrentAdventure = bCurrent; }
 
 		//	CDesignType overrides
@@ -92,6 +94,7 @@ class CAdventureDesc : public CDesignType
 		DWORD m_dwBackgroundUNID = 0;				//	Background image to use for choice screen
 		CString m_sWelcomeMessage;				//	Equivalent of "Welcome to Transcendence!"
 
+		CDesignTypeCriteria m_StartingGenomes;	//	Starting genome criteria
 		CDesignTypeCriteria m_StartingShips;	//	Starting ship criteria
 		DWORD m_dwStartingMap = 0;				//	Default system map to load
 		CString m_sStartingNodeID;				//	NodeID where we start

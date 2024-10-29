@@ -995,7 +995,7 @@ CTopologyNode *CUniverse::GetFirstTopologyNode (void)
 	return FindTopologyNode(sNodeID);
 	}
 
-GenomeTypes CUniverse::GetPlayerGenome (void) const
+GenomeTypes CUniverse::GetPlayerGenomeLegacy (void) const
 
 //	GetPlayerGenome
 //
@@ -1004,6 +1004,19 @@ GenomeTypes CUniverse::GetPlayerGenome (void) const
 	{
 	if (m_pPlayer == NULL)
 		return genomeUnknown;
+
+	return m_pPlayer->GetGenomeLegacy();
+	}
+
+CGenomeType *CUniverse::GetPlayerGenome(void) const
+
+//	GetPlayerGenome
+//
+//	Returns the player's genome
+
+	{
+	if (m_pPlayer == NULL)
+		return m_pDefaultGenome;
 
 	return m_pPlayer->GetGenome();
 	}
