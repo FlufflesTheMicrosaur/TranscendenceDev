@@ -512,7 +512,7 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"i*",	0,	},
 
 		{	"plyGetGenome",					fnPlyGet,			FN_PLY_GENOME,
-			"(plyGetGenome player) -> 'humanMale | 'humanFemale",
+			"(plyGetGenome player) -> API>54: UNID (int) of player GenomeType, API<54: 'humanMale | 'humanFemale\n\n",
 			"i",	0,	},
 
 		{	"plyGetItemStat",					fnPlyGet,			FN_PLY_GET_ITEM_STAT,
@@ -1102,11 +1102,10 @@ ICCItem *fnPlyGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			}
 
 		case FN_PLY_GENOME:
-			if ((g_pUniverse->GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-				|| g_pUniverse->GetCurrentAdventureDesc().GetAPIVersion() < 54))
+			if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() < 54)
 				pResult = pCC->CreateString(GetGenomeID(pPlayer->GetPlayerGenomeLegacy()));
 			else
-				pResult = pCC->CreateString(strPatternSubst("0x%08x", pPlayer->GetPlayerGenome()->GetUNID()));
+				pResult = pCC->CreateInteger(pPlayer->GetPlayerGenome()->GetUNID());
 			break;
 
 		case FN_PLY_GET_ITEM_STAT:

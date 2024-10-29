@@ -400,6 +400,7 @@ class CUniverse
 		void GenerateGameStats (const CString &sEndGameReason, CGameStats &Stats);
 		const CAccessibilitySettings &GetAccessibilitySettings (void) const { return m_AccessabilitySettings; }
 		CAccessibilitySettings &GetAccessibilitySettings (void) { return m_AccessabilitySettings; }
+		DWORD GetAdventureOrBaseAPIVersionSafe(void);
 		void GetAllAdventures (TArray<CExtension *> *retList) { CString sError; m_Extensions.ComputeAvailableAdventures((m_bDebugMode ? CExtensionCollection::FLAG_DEBUG_MODE : 0), retList, &sError); }
 		const CDamageAdjDesc *GetArmorDamageAdj (int iLevel) const;
 		CAscendedObjectList &GetAscendedObjects (void) { return m_AscendedObjects; }

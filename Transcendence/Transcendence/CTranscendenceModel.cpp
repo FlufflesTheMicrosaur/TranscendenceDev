@@ -1971,8 +1971,7 @@ void CTranscendenceModel::RecordFinalScore (const CString &sEpitaph, const CStri
 
 	m_GameRecord.SetPlayerName(m_pPlayer->GetPlayerName());
 
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		m_GameRecord.SetPlayerGenomeLegacy(m_pPlayer->GetPlayerGenomeLegacy());
 	else
 		m_GameRecord.SetPlayerGenome(m_pPlayer->GetPlayerGenome());
@@ -2616,8 +2615,7 @@ ALERROR CTranscendenceModel::StartNewGame (const CString &sUsername, const SNewG
 
 	m_pPlayer->Init(g_pTrans);
 	m_pPlayer->SetName(NewGame.sPlayerName);
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		m_pPlayer->SetGenomeLegacy(NewGame.iPlayerGenome);
 	else
 		m_pPlayer->SetGenome(NewGame.pPlayerGenome);

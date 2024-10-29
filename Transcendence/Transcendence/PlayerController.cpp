@@ -2405,8 +2405,7 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 	Ctx.pStream->Read(dwLoad);
 
 	CUniverse *pUniv = &Ctx.GetUniverse();
-	if ((pUniv->GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| pUniv->GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (pUniv->GetAdventureOrBaseAPIVersionSafe() < 54)
 		m_iGenome = (GenomeTypes)dwLoad;
 	else
 		{
@@ -3434,8 +3433,7 @@ void CPlayerShipController::WriteToStream (IWriteStream *pStream)
 	GetClass().WriteToStream(pStream);
 
 	
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		pStream->Write((DWORD)m_iGenome);
 	else
 	{

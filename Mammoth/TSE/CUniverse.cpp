@@ -822,6 +822,14 @@ void CUniverse::GenerateGameStats (const CString &sEndGameReason, CGameStats &St
 	DEBUG_CATCH
 	}
 
+DWORD CUniverse::GetAdventureOrBaseAPIVersionSafe(void)
+{
+	//We might not have an adventure, ex, some cases when in transdata working with old saves
+	if (m_Design.GetAdventureUNID() == 0)
+		return m_Extensions.GetBase()->GetAPIVersion();
+	return m_Design.GetAdventureDesc().GetAPIVersion();
+}
+
 const CDamageAdjDesc *CUniverse::GetArmorDamageAdj (int iLevel) const
 
 //	GetArmorDamageAdj

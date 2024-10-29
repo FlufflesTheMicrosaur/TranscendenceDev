@@ -159,7 +159,23 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 			else if (strEquals(sVar, CONSTLIT("name")))
 				sVar = g_pUniverse->GetPlayerName();
 
-			//	Is this a gendered word?
+			//  Is this a genome word or gendered word in an API 54+ adventure?
+			//  (Player legacy genome vs. GenomeType depends on Adv/Base API version, not
+			//  the extension version, therefor we should always attempt getting the word
+			//  from the GenomeType first even in an older pre-API-54 extension)
+
+			else if ((g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= 54)
+				&& g_pUniverse->GetPlayerGenome()->GetLanguageBlock().HasEntry(sVar))
+				{
+				CString sVarCopy = sVar;
+				g_pUniverse->GetPlayerGenome()->GetLanguageBlock().TranslateText(
+					*g_pUniverse->GetPlayerGenome(),
+					sVarCopy,
+					CLanguageDataBlock::SParams(),
+					&sVar);
+				}
+
+			//	Is this a gendered word? (this implementation remains for API < 54 support)
 
 			else if (pGenderedWord = GENDER_WORD_TABLE.GetAt(sVar))
 				sVar = ComposeGenderedWordHelper(*g_pUniverse, sVar, VarInfo.sParam, (bHasData ? pArgs : NULL));
@@ -378,8 +394,7 @@ CString CLanguage::ComposeGenderedWordHelper (CUniverse &Universe, const CString
 	else
 		{
 
-		if ((Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-			|| Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+		if (Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 			return ComposeGenderedWord(sWord, Universe.GetPlayerGenomeLegacy());
 		else
 			{

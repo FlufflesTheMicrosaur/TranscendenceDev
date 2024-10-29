@@ -420,8 +420,7 @@ void CPlayerGameStats::GenerateGameStats (CGameStats &Stats, CSpaceObject *pPlay
 	//	Base stats
 
 
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		Stats.Insert(CONSTLIT("Gender"), strCapitalize(GetGenomeName(m_Universe.GetPlayerGenomeLegacy())));
 	else
 		Stats.Insert(CONSTLIT("Genome"), strCapitalize(m_Universe.GetPlayerGenome()->GetGenomeNameSingular()));

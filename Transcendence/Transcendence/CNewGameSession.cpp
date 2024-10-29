@@ -175,8 +175,7 @@ void CNewGameSession::CmdChangeGenome (void)
 
 	{
 
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		{
 		if (m_Settings.iPlayerGenome == genomeHumanMale)
 			m_Settings.iPlayerGenome = genomeHumanFemale;
@@ -544,10 +543,7 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 			yBar, 
 			cxColumn, 
 			alignRight);
-	int dbg_APIBase = m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion();
-	int dbg_APIAdv = m_Universe.GetCurrentAdventureDesc().GetAPIVersion();
-	if ((m_Universe.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| m_Universe.GetCurrentAdventureDesc().GetAPIVersion() < 54))
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
 		SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
 	else
 		SetPlayerGenome(m_Settings.pPlayerGenome ? m_Settings.pPlayerGenome : m_GenomeTypes[0]);

@@ -1229,8 +1229,7 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 	//	For backwards compatibility, use legacy UNID where API version <54.
 	//  Sometimes we do not have an adventure. This
 	//	can happen when we're using TransData on an old TDB.
-	if (Univ.GetExtensionCollection().GetBase()->GetAPIVersion() < 54
-		|| Univ.GetCurrentAdventureDesc().GetAPIVersion() < 54)
+	if (Univ.GetAdventureOrBaseAPIVersionSafe() < 54)
 		{
 		if (Univ.GetPlayerGenomeLegacy() != m_Header.dwGenome)
 			{
