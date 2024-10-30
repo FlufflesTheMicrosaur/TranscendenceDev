@@ -292,12 +292,15 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 //	sField is the FIELD of the character that we want.
 //
 //	We support the following kinds of fields:
+//  *   If API 54 and FIELD is a word in the CGenomeType's CLanguageDataBlock,
+//		then we lookup the corresponding text from the genome field of the
+//		character
 //
-//	*	If FIELD is a gendered word, then we lookup the gender of the character
-//		and return the appropriate word.
+//	*	Else if API<54 and FIELD is a gendered word, then we lookup the gender
+//		of the character and return the appropriate word.
 //
-//	*	If FIELD is fullName, friendlyName, or formalName, we lookup that field
-//		in the character info.
+//	*	Else if FIELD is fullName, friendlyName, or formalName, we lookup that
+//		field in the character info.
 //
 //	*	Otherwise, we assume FIELD is a language ID in the source type for the
 //		character (sourceType field in character info).
@@ -314,6 +317,15 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 	CString sCharID = pCharInfo->GetStringAt(CONSTLIT("id"));
 	if (sCharID.IsBlank())
 		return strPatternSubst(CONSTLIT("[character %s invalid: no ID]"), sCharacter);
+
+	//  Check if this is an API 54+ character and see if its in the LanguageData
+	CGenomeType* pCharGenome = Universe.FindGenomeType(pCharInfo->GetElement(CONSTLIT("genome"))->GetIntegerValue());
+	if (pCharGenome != NULL && pCharGenome->HasLanguageEntry(sField))
+		{
+			CString sRet;
+			pCharGenome->TranslateText(sField, pData, &sRet);
+			return sRet;
+		}
 
 	//	See if we need to translate a gendered word
 
