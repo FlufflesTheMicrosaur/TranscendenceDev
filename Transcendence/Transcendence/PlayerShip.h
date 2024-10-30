@@ -174,7 +174,7 @@ class CPlayerShipController : public IShipController
 		void SetCharacterClass (CGenericType *pClass) { m_pCharacterClass = pClass; }
 		void SetGameSession (CGameSession *pSession);
 		void SetGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
-		void SetGenome (CGenomeType* pGenome) { m_pGenome = pGenome; }
+		void SetGenome (CGenomeType *pGenome) { m_pGenome = pGenome; m_dwGenome = pGenome->GetUNID(); }
 		void SetMapHUD (bool bActive) { m_bMapHUD = bActive; }
 		void SetMouseAimAngle (int iAngle) { m_ManeuverController.CmdMouseAim(iAngle); }
 		void SetName (const CString &sName) { m_sName = sName; }

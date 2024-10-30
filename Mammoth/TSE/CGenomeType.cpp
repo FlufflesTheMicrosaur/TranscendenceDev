@@ -7,12 +7,40 @@
 
 #define ADJECTIVE_ATTRIB						CONSTLIT("adjective")
 #define ID_ATTRIB								CONSTLIT("id")
+#define MENU_NAME_ATTRIB						CONSTLIT("menuName")
 #define NAME_ATTRIB								CONSTLIT("name")
 #define PLURAL_ATTRIB							CONSTLIT("plural")
 #define SHORT_NAME_ATTRIB						CONSTLIT("shortName")
 
 
-CString CGenomeType::GetNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
+CString CGenomeType::GetDataField(const CString& sField) const
+
+// GetDataField
+//
+// Get a data field if it is known, otherwise try the base DesignType FindDataField
+
+	{
+	if (sField == ADJECTIVE_ATTRIB)
+		return m_sGenomeAdjective;
+	else if (sField == ID_ATTRIB)
+		return m_sSID;
+	else if (sField == MENU_NAME_ATTRIB)
+		return m_sGenomeMenuName;
+	else if (sField == NAME_ATTRIB)
+		return m_sGenomeName;
+	else if (sField == PLURAL_ATTRIB)
+		return m_bPluralForm ? CString("true") : CString("false");
+	else if (sField == SHORT_NAME_ATTRIB)
+		return m_sGenomeShortName;
+	else
+		{
+		CString sValue;
+		FindDataField(sField, &sValue);
+		return sValue;
+		}
+	}
+
+CString CGenomeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
 
 //	GetNamePattern
 //
@@ -32,21 +60,6 @@ CString CGenomeType::GetNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) co
 			return m_sGenomeName;
 	}
 
-bool CGenomeType::FindDataField(const CString& sField, CString* retsValue) const
-
-//	FindDataField
-//
-//	Get a data field
-
-	{
-	if (strEquals(sField, NAME_ATTRIB))
-		*retsValue = m_sGenomeSingular;
-	else
-		return CDesignType::FindDataField(sField, retsValue);
-
-	return true;
-	}
-
 ALERROR CGenomeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
 
 //	OnCreateFromXML
@@ -64,21 +77,25 @@ ALERROR CGenomeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
 		if (m_sGenomeName.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid genome name"));
 
-		m_sGenomeSingular = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, false, true);
-		if (m_sGenomeSingular.IsBlank())
+		m_sGenomeNameSingular = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, false, true);
+		if (m_sGenomeNameSingular.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid singular form of genome name"));
 
-		m_sGenomePlural = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, true, true);
-		if (m_sGenomePlural.IsBlank())
+		m_sGenomeNamePlural = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, true, true);
+		if (m_sGenomeNamePlural.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid plural form of genome name"));
 
 		m_sGenomeAdjective = pDesc->GetAttribute(ADJECTIVE_ATTRIB);
 		if (m_sGenomeAdjective.IsBlank())
-			m_sGenomeShortName = m_sGenomeSingular;
+			m_sGenomeShortName = m_sGenomeNameSingular;
 
 		m_sGenomeShortName = pDesc->GetAttribute(SHORT_NAME_ATTRIB);
 		if (m_sGenomeShortName.IsBlank())
 			m_sGenomeShortName = m_sGenomeName;
+
+		m_sGenomeMenuName = pDesc->GetAttribute(MENU_NAME_ATTRIB);
+		if (m_sGenomeMenuName.IsBlank())
+			m_sGenomeMenuName = m_sGenomeNameSingular;
 
 		m_bPluralForm = pDesc->GetAttributeBool(PLURAL_ATTRIB);
 

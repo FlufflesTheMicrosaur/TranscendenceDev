@@ -3808,6 +3808,16 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"   'namePattern\n"
 			"   'obsoleteVersion  Type is obsolete at this API version\n\n"
 
+			"property (genome):\n\n"
+
+			"	'adjective		Adjective for the genome\n"
+			"	'id				ID string of the genome\n"
+			"	'menuName		UI display name for the genome\n"
+			"	'name			Dialogue name for the genome\n"
+			"	'plural			'true | 'false\n"
+			"	'shortName		Dialogue short name for the genome\n"
+			"\n"
+
 			"property (sovereign):\n\n"
 
 			"   'name\n"

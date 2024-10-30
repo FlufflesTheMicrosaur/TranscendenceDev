@@ -1242,7 +1242,7 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
 			{
 			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome()->GetUNID();
-			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeNameSingular();
+			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeMenuName();
 			CopyHeaderString(sGenomeName, m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
 			bUpdateHeader = true;
 			}

@@ -52,6 +52,7 @@ ICCItem *fnScrItem (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData);
 #define FN_PLY_INC_ITEM_STAT		24
 #define FN_PLY_GET_SYSTEM_STAT		25
 #define FN_PLY_INC_SYSTEM_STAT		26
+#define FN_PLY_CHANGE_GENOME		27
 
 ICCItem *fnPlyGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData);
 ICCItem *fnPlyGetOld (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData);
@@ -514,6 +515,11 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 		{	"plyGetGenome",					fnPlyGet,			FN_PLY_GENOME,
 			"(plyGetGenome player) -> API>54: UNID (int) of player GenomeType, API<54: 'humanMale | 'humanFemale\n\n",
 			"i",	0,	},
+
+		{	"plyChangeGenome",				fnPlySet,		FN_PLY_CHANGE_GENOME,
+			"(plyChangeGenome player newGenomeUNID) -> True/Nil\n\n"
+				,
+			"ii",	PPFLAG_SIDEEFFECTS, },
 
 		{	"plyGetItemStat",					fnPlyGet,			FN_PLY_GET_ITEM_STAT,
 			"(plyGetItemStat player stat criteria|type) -> value\n\n"
@@ -1278,6 +1284,16 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 
 	switch (dwData)
 		{
+		case FN_PLY_CHANGE_GENOME:
+			{
+			CGenomeType* pNewGenome = g_pUniverse->FindGenomeType(pArgs->GetElement(1)->GetIntegerValue());
+			if (pNewGenome == NULL)
+				return pCC->CreateError(CONSTLIT("UNID must be for a GenomeType"), pArgs->GetElement(1));
+			pPlayer->SetGenome(pNewGenome);
+			pResult = pCC->CreateTrue();
+			break;
+			}
+
 		case FN_PLY_CHANGE_SHIPS:
 			{
 			CSpaceObject *pObj = CreateObjFromItem(pArgs->GetElement(1));

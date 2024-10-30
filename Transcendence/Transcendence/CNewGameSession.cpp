@@ -751,7 +751,7 @@ void CNewGameSession::SetPlayerGenome(CGenomeType *pGenome)
 	m_PlayerGenome.SetImage(*pImageToUse);
 	// Set the name
 
-	m_PlayerGenome.SetText(strTitleCapitalize(pGenome->GetGenomeNameSingular()));
+	m_PlayerGenome.SetText(strTitleCapitalize(pGenome->GetGenomeMenuName()));
 
 	// Finally, actually switch the currently selected genome to the new one
 

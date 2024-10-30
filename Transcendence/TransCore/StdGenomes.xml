@@ -45,6 +45,7 @@
 	<GenomeType unid="&gnOxygeniaIX;"
 		inherit="&gnDefaultText;"
 		id="oxygenia_ix"
+		menuName="Oxygenia-IX"
 		name="oxygenia-IX"
 		attributes="oxygenia_ix, genderDefault">
 		<Image unid="&rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
@@ -63,6 +64,7 @@
 	<GenomeType unid="&gnHuman;"
 		inherit="&gnOxygeniaIX;"
 		id="oxygenia_ix.human"
+		menuName="Human"
 		name="human(s)"
 		adjective="human"
 		attributes="oxygenia_ix, mammal, human, genderDefault, 00200000_PlayerGenome">
@@ -92,8 +94,9 @@
 
 	<GenomeType unid="&gnHumanMale;"
 		inherit="&gnHuman;"
-		id="oxygenia_ix.human.male"
-		name="human male(s)"
+		id="oxygenia_ix.human.masc"
+		menuName="Human (Masculine)"
+		name="human(s)"
 		adjective="human"
 		attributes="oxygenia_ix, mammal, human, genderMasculine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
@@ -115,8 +118,9 @@
 
 	<GenomeType unid="&gnHumanFemale;"
 		inherit="&gnHuman;"
-		id="oxygenia_ix.human.female"
-		name="human female(s)"
+		id="oxygenia_ix.human.fem"
+		menuName="Human (Feminine)"
+		name="human(s)"
 		adjective="human"
 		attributes="oxygenia_ix, mammal, human, genderFeminine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
@@ -140,6 +144,7 @@
 	<GenomeType unid="&gnMicrosaur;"
 		inherit="&gnOxygeniaIX;"
 		id="oxygenia_ix.microsaur"
+		menuName="Microsaur"
 		name="microsaur"
 		adjective="microsaurian"
 		attributes="oxygenia_ix, reptilian">

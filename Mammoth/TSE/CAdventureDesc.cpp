@@ -191,7 +191,7 @@ ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CGenomeType*>* 
 		CGenomeType* pGenome = GetUniverse().GetGenomeType(i);
 		if (IsValidStartingGenome(pGenome))
 		{
-			retClasses->Insert(pGenome->GetGenomeNameSingular(), pGenome);
+			retClasses->Insert(pGenome->GetSID(), pGenome);
 		}
 	}
 	return ALERROR();

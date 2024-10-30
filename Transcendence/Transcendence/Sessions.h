@@ -533,7 +533,7 @@ class CNewGameSession : public IHISession
 		void CreateShipClassButton (const CString &sID, int x, int y, const CG32bitImage &Image, bool bEnabled);
 		void SetDifficulty (CDifficultyOptions::ELevel iLevel);
 		void SetPlayerGenomeLegacy (GenomeTypes iGenome);
-		void SetPlayerGenome(CGenomeType *pGenome);
+		void SetPlayerGenome (CGenomeType *pGenome);
 		void SetPlayerName (const CString &sName);
 		void SetShipClass (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassDesc (const CString &sDesc, int x, int y, int cxWidth);
