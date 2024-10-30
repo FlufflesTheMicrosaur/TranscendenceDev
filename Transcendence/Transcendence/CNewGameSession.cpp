@@ -190,7 +190,8 @@ void CNewGameSession::CmdChangeGenome (void)
 		//loop back around if we reached the end
 		if (m_iCurGenome == m_GenomeTypes.GetCount())
 			m_iCurGenome = 0;
-		SetPlayerGenome(m_GenomeTypes[m_iCurGenome]);
+		m_Settings.pPlayerGenome = m_GenomeTypes[m_iCurGenome];
+		SetPlayerGenome(m_Settings.pPlayerGenome);
 		}
 	}
 

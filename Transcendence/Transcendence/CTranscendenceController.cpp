@@ -867,6 +867,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		SNewGameSettings Defaults;
 		Defaults.sPlayerName = m_Settings.GetString(CGameSettings::playerName);
 		Defaults.iPlayerGenome = ParseGenomeID(m_Settings.GetString(CGameSettings::playerGenome));
+		Defaults.pPlayerGenome = g_pUniverse->FindGenomeType(m_Settings.GetInteger(CGameSettings::playerGenomeType));
 		Defaults.dwPlayerShip = (DWORD)m_Settings.GetInteger(CGameSettings::playerShipClass);
 
 		//	If the player name is NULL then we come up with a better idea
@@ -885,7 +886,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 		Defaults.sPlayerName = CUniverse::ValidatePlayerName(Defaults.sPlayerName);
 
-		//	Validate genome
+		//	Validate legacy genome
 
 		if (Defaults.iPlayerGenome == genomeUnknown)
 			Defaults.iPlayerGenome = (mathRandom(1, 2) == 1 ? genomeHumanFemale : genomeHumanMale);
@@ -952,7 +953,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		if (!pNewGame->bDefaultPlayerName)
 			m_Settings.SetString(CGameSettings::playerName, pNewGame->sPlayerName);
 		if (!pNewGame->pPlayerGenome == NULL) //compatibility for legacy APIs
-			m_Settings.SetString(CGameSettings::playerGenomeType, strPatternSubst("0x%08x", pNewGame->pPlayerGenome->GetUNID()));
+			m_Settings.SetInteger(CGameSettings::playerGenomeType, pNewGame->pPlayerGenome->GetUNID());
 		m_Settings.SetString(CGameSettings::playerGenome, GetGenomeID(pNewGame->iPlayerGenome));
 		m_Settings.SetInteger(CGameSettings::playerShipClass, (int)pNewGame->dwPlayerShip);
 		m_Settings.SetInteger(CGameSettings::lastAdventure, (int)m_Model.GetUniverse().GetCurrentAdventureDesc().GetExtensionUNID());
