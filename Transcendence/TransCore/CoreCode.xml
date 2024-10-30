@@ -658,6 +658,15 @@
 				
 			; String functions -------------------------------------------------
 
+			; This is an obsolete function for extensions built for API 53-
+			; It supports the legacy player genome system for gendered
+			; words outside of the 9 listed in the built-in engine tables
+			;
+			; Instead, composable strings using %TextID% replacement from the
+			; GenomeType Language blocks should be used.
+			; Player Ex. (fmtCompose "%sir%")
+			; Character Ex. (fmtCompose "%sir@char%" {char: rpgCharacterStruct})
+
 			(setq strG (lambda (genome humanMaleWord humanFemaleWord)
 				(switch
 					(eq genome 'humanFemale)

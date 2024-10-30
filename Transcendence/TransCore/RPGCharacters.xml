@@ -673,18 +673,42 @@
 			;		character ID. Each field is a struct containing information
 			;		about the character.
 			;
+			;		Note: in API 54, we introduce GenomeType, deprecating the
+			;		old non-unified implementations of player and rpgCharacter
+			;		genomes and genders. Then previously unused 'genome field
+			;		of the rpgCharacter struct is now used to store the UNID of
+			;		the character's GenomeType. Since GenomeTypes can store
+			;		much more complex Language data blocks than the legacy API
+			;		53- system, it is now used preferentially by fmtCompose
+			;		calls when trying to retrieve matching words, ignoring the
+			;		legacy gender field unless no matching words can be found in
+			;		the inheritance tree. This should never happen, unless you
+			;		are using a custom genome that does not have an inheritance
+			;		tree based on gnDefaultText.
+			;		If you are building an extension for an adventure that uses
+			;		API 53 or lower, the genome field is instead an ignored
+			;		field, and the gender field can be any of:
+			;			* 'genderUnspecified
+			;			* 'genderMale
+			;			* 'genderFemale
+			;			* 'genderNeuter
+			;
 			;		For example:
 			;
-			;		{
+			;			{
+			;				;API 54+:
 			;			lukeSkywalker: {
 			;				id: 'lukeSkywalker
 			;				fullName: "Luke Skywalker"
 			;				friendlyName: "Luke"
 			;				formalName: "Skywalker"
-			;				genome: 'human
-			;				gender: 'genderMale
+			;				genome: gnHumanMasculine; 	;This should have the ampersand
+			;											;but it was excluded due to
+			;											;the UNID itself not being 
+			;											;accessible within the rpgLibrary
 			;				notes: "Luke is a farmboy who dreams of being a pilot."
 			;				}
+			;				;API 53-:
 			;			princessLeia: {
 			;				id: 'princesLeia
 			;				fullName: "Leia Organa"
