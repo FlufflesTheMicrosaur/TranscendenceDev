@@ -131,7 +131,7 @@
 			<Text id="boy">girl</Text>
 			<Text id="brother">sister</Text>
 			<Text id="man">woman</Text>
-			<Text id="his">hers</Text>
+			<Text id="his">her</Text>
 			<Text id="hers">hers</Text>
 			<Text id="him">her</Text>
 			<Text id="he">her</Text>
@@ -212,7 +212,7 @@
 			<Text id="boy">girl</Text>
 			<Text id="brother">sister</Text>
 			<Text id="man">woman</Text>
-			<Text id="his">hers</Text>
+			<Text id="his">her</Text>
 			<Text id="hers">hers</Text>
 			<Text id="him">her</Text>
 			<Text id="he">her</Text>
