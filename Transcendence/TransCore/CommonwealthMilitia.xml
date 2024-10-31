@@ -108,7 +108,7 @@
 					)
 			</DynamicGlobal>
 			<DynamicGlobal id="rankNoun">
-				(typTranslate gType (cat "rank." (typ@ gType 'rankID)) { gender:(plyGetGenome gPlayer) })
+				(typTranslate gType (cat "rank." (typ@ gType 'rankID)) { genome:(plyGetGenome gPlayer) })
 			</DynamicGlobal>
 			<DynamicGlobal id="rankFailureCount">
 				(count (msnFind "r +commonwealthMilitia; -commonwealthVolunteer; +property:isFailure;"))
@@ -261,7 +261,7 @@
 										title: (typTranslate gType 'labelNextLevel {
 											nextLevelName: 
 												(fmtNoun
-													(typTranslate gType (cat "rank." (@ nextRankDesc 'id)) { gender:(plyGetGenome gPlayer) })
+													(typTranslate gType (cat "rank." (@ nextRankDesc 'id)) { genome:(plyGetGenome gPlayer) })
 													1
 													'titleCapitalize
 													)

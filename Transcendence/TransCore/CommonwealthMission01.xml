@@ -408,7 +408,7 @@
 
 			<Text id="Intro">
 				(msnTranslate gSource 'textIntro {
-					gender: (@ (msnGetData gSource 'stationMasterInfo) 'gender)
+					genome: (@ (msnGetData gSource 'stationMasterInfo) 'genome)
 					})
 			</Text>
 
@@ -435,9 +435,9 @@
 			</Text>
 			<Text id="textIntro">
 
-				The station master stands at %his:gender% console. Managers and 
-				supervisors swarm around %him:gender% dealing with various crises.
-				%He:gender%	turns %his:gender% attention towards you:
+				The station master stands at %his:genome% console. Managers and 
+				supervisors swarm around %him:genome% dealing with various crises.
+				%He:gender%	turns %his:genome% attention towards you:
 
 				"We could use your help, %brother%. You've got a ship with a 
 				good punch and we got something that needs punching. We'll pay 

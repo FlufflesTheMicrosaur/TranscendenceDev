@@ -47,7 +47,7 @@
 			</DynamicGlobal>
 
 			<DynamicGlobal id="levelNoun">
-				(typTranslate gType 'nounRankPattern { rank:(typ@ gType 'level) gender:(plyGetGenome gPlayer) })
+				(typTranslate gType 'nounRankPattern { rank:(typ@ gType 'level) genome:(plyGetGenome gPlayer) })
 			</DynamicGlobal>
 
 			<DynamicGlobal id="levelTier">
@@ -148,7 +148,7 @@
 								(if nextLevel
 									{
 										title: (typTranslate gType 'labelProgress {
-											nextLevel: (fmtNoun (typTranslate gType 'nounRankPattern { rank:(@ nextLevel 'nextLevel) gender:(plyGetGenome gPlayer) }) 1 'titleCapitalize)
+											nextLevel: (fmtNoun (typTranslate gType 'nounRankPattern { rank:(@ nextLevel 'nextLevel) genome:(plyGetGenome gPlayer) }) 1 'titleCapitalize)
 											})
 										desc: (typTranslate gType 'rtfValue { 
 											value: (cat (@ nextLevel 'progress) "%")

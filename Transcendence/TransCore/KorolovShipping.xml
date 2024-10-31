@@ -2017,8 +2017,7 @@
 						fullName: "Theodore Ash"
 						formalName: "AD Ash"
 						titledName: "Assistant Director Ash"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					burke: {
@@ -2026,8 +2025,7 @@
 						fullName: "Saladin Burke"
 						formalName: "AD Burke"
 						titledName: "Assistant Director Burke"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					czerniawski: {
@@ -2035,8 +2033,7 @@
 						fullName: "Lori Czerniawski"
 						formalName: "AD Czerniawski"
 						titledName: "Assistant Director Czerniawski"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 
 					gordievsky: {
@@ -2044,8 +2041,7 @@
 						fullName: "Petyr Gordievsky"
 						formalName: "AD Gordievsky"
 						titledName: "Assistant Director Gordievsky"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					jones: {
@@ -2053,8 +2049,7 @@
 						fullName: "Selena Miranda Jones"
 						formalName: "AD Jones"
 						titledName: "Assistant Director Jones"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 
 					leung: {
@@ -2062,8 +2057,7 @@
 						fullName: "Lien Hua Leung"
 						formalName: "AD Leung"
 						titledName: "Assistant Director Leung"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 
 					price: {
@@ -2071,8 +2065,7 @@
 						fullName: "Arden Price"
 						formalName: "AD Price"
 						titledName: "Assistant Director Price"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					penkovsky: {
@@ -2080,8 +2073,7 @@
 						fullName: "Gideon Penkovsky"
 						formalName: "AD Penkovsky"
 						titledName: "Assistant Director Penkovsky"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					reagan: {
@@ -2089,8 +2081,7 @@
 						fullName: "Sarah Elizabeth Reagan"
 						formalName: "AD Reagan"
 						titledName: "Assistant Director Reagan"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 
 					sheppard: {
@@ -2098,8 +2089,7 @@
 						fullName: "Matthew Sheppard"
 						formalName: "AD Sheppard"
 						titledName: "Assistant Director Sheppard"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					sorge: {
@@ -2107,8 +2097,7 @@
 						fullName: "Wolfgang Sorge"
 						formalName: "AD Sorge"
 						titledName: "Assistant Director Sorge"
-						genome: 'human
-						gender: 'genderMale
+						genome: &gnHumanMasculine;
 						}
 
 					valerii: {
@@ -2116,8 +2105,7 @@
 						fullName: "Jordan Valerii"
 						formalName: "AD Valerii"
 						titledName: "Assistant Director Valerii"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 
 					default: {
@@ -2125,8 +2113,7 @@
 						fullName: "Joe Johnson"
 						formalName: "AD Johnson"
 						titledName: "Assistant Director Johnson"
-						genome: 'human
-						gender: 'genderFemale
+						genome: &gnHumanFeminine;
 						}
 					}
 			</Data>

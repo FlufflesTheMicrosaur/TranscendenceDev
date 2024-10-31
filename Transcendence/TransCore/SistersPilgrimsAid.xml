@@ -251,7 +251,7 @@
 					
 						powerType: thePower
 						rank: rank
-						rankNoun: (typTranslate &unidPilgrimClass; 'nounRankPattern { rank:rank gender:(plyGetGenome gPlayer) })
+						rankNoun: (typTranslate &unidPilgrimClass; 'nounRankPattern { rank:rank genome:(plyGetGenome gPlayer) })
 						status: status
 						}
 						)

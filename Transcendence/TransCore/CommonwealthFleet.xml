@@ -217,7 +217,7 @@ PLAYER DATA
 					)
 			</DynamicGlobal>
 			<DynamicGlobal id="rankNoun">
-				(typTranslate gType (cat "rank." (typ@ gType 'rankID)) { gender:(plyGetGenome gPlayer) })
+				(typTranslate gType (cat "rank." (typ@ gType 'rankID)) { genome:(plyGetGenome gPlayer) })
 			</DynamicGlobal>
 		</Properties>
 
