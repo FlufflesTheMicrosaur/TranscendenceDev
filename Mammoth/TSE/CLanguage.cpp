@@ -173,11 +173,16 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 			else if ((g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= 54)
 				&& g_pUniverse->GetPlayerGenome()->HasLanguageEntry(sVar))
 				{
+				//	do we need to use the player's genome or a provided genome
 				CString sVarCopy = sVar;
-				g_pUniverse->GetPlayerGenome()->TranslateText(
-					sVarCopy,
-					pArgs,
-					&sVar);
+				ICCItem* pGenomeUNID;
+				CGenomeType* pGenome;
+				if (bHasData && (pGenomeUNID = pArgs->GetElement(CONSTLIT("genome"))) && !pGenomeUNID->IsNil())
+					pGenome = g_pUniverse->FindGenomeType(pGenomeUNID->GetIntegerValue());
+				else
+					pGenome = g_pUniverse->GetPlayerGenome();
+				if (pGenome != NULL)
+					pGenome->TranslateText(sVarCopy, pArgs, &sVar);
 				}
 
 			//	Is this a gendered word? (this implementation remains for API < 54 support)
