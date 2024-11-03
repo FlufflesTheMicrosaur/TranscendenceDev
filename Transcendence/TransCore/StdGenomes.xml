@@ -8,6 +8,7 @@
 	<GenomeType unid="&gnDefaultText;"
 		id="genome_default_text"
 		name="(DEFAULT TEXT GENOMETYPE)"
+		applyLanguage="&unidGenderedLanguageAny;"
 		attributes="genderDefault">
 		<Image unid="&rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
 		<Language>
@@ -29,16 +30,6 @@
 			<Text id="mouth">mouth</Text>
 			<Text id="eyes">eyes</Text>
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">offspring</Text>
-			<Text id="brother">sibling</Text>
-			<Text id="man">being</Text>
-			<Text id="his">their</Text>
-			<Text id="hers">their</Text>
-			<Text id="him">them</Text>
-			<Text id="he">they</Text>
-			<Text id="son">offspring</Text>
-			<Text id="sir">sir</Text>
 		</Language>
 	</GenomeType>
 
@@ -55,7 +46,6 @@
 			<!-- ... more here but this is an example -->
 			<!-- Default variant-specific language -->
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
 		</Language>
 	</GenomeType>
 
@@ -79,16 +69,6 @@
 			<Text id="visualTaxon">mammal</Text>
 			<Text id="visualTaxon.Adj">mammalian</Text>
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">child</Text>
-			<Text id="brother">sibling</Text>
-			<Text id="man">being</Text>
-			<Text id="his">their</Text>
-			<Text id="hers">their</Text>
-			<Text id="him">them</Text>
-			<Text id="he">they</Text>
-			<Text id="son">child</Text>
-			<Text id="sir">sir</Text>
 		</Language>
 	</GenomeType>
 
@@ -98,21 +78,12 @@
 		menuName="Human (Masculine)"
 		name="human(s)"
 		adjective="human"
+		applyLanguage="&unidGenderedLanguageMasculine;"
 		attributes="oxygenia_ix, mammal, human, genderMasculine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
 		<Language>
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">boy</Text>
-			<Text id="brother">brother</Text>
-			<Text id="man">man</Text>
-			<Text id="his">his</Text>
-			<Text id="hers">his</Text>
-			<Text id="him">him</Text>
-			<Text id="he">he</Text>
-			<Text id="son">son</Text>
-			<Text id="sir">sir</Text>
 		</Language>
 	</GenomeType>
 
@@ -122,21 +93,12 @@
 		menuName="Human (Feminine)"
 		name="human(s)"
 		adjective="human"
+		applyLanguage="&unidGenderedLanguageFeminine;"
 		attributes="oxygenia_ix, mammal, human, genderFeminine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
 		<Language>
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">girl</Text>
-			<Text id="brother">sister</Text>
-			<Text id="man">woman</Text>
-			<Text id="his">her</Text>
-			<Text id="hers">hers</Text>
-			<Text id="him">her</Text>
-			<Text id="he">her</Text>
-			<Text id="son">daughter</Text>
-			<Text id="sir">ma'am</Text>
 		</Language>
 	</GenomeType>
 
@@ -160,16 +122,6 @@
 			<Text id="visualTaxon">mammal</Text>
 			<Text id="visualTaxon.Adj">mammalian</Text>
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">child</Text>
-			<Text id="brother">sibling</Text>
-			<Text id="man">being</Text>
-			<Text id="his">their</Text>
-			<Text id="hers">their</Text>
-			<Text id="him">them</Text>
-			<Text id="he">they</Text>
-			<Text id="son">child</Text>
-			<Text id="sir">sir</Text>
 		</Language>
 	</GenomeType>
 
@@ -179,21 +131,12 @@
 		menuName="Augmented Human (Masculine)"
 		name="human(s)"
 		adjective="human"
+		applyLanguage="&unidGenderedLanguageMasculine;"
 		attributes="oxygenia_ix, mammal, human, geneticallyEngineered, augmentedHuman, genderMasculine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
 		<Language>
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">boy</Text>
-			<Text id="brother">brother</Text>
-			<Text id="man">man</Text>
-			<Text id="his">his</Text>
-			<Text id="hers">his</Text>
-			<Text id="him">him</Text>
-			<Text id="he">he</Text>
-			<Text id="son">son</Text>
-			<Text id="sir">sir</Text>
 		</Language>
 	</GenomeType>
 
@@ -203,21 +146,12 @@
 		menuName="Augmented Human (Feminine)"
 		name="human(s)"
 		adjective="human"
+		applyLanguage="&unidGenderedLanguageFeminine;"
 		attributes="oxygenia_ix, mammal, human, geneticallyEngineered, augmentedHuman, genderFeminine, 00200000_PlayerGenome">
 		<Image unid="&rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
 		<Language>
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">girl</Text>
-			<Text id="brother">sister</Text>
-			<Text id="man">woman</Text>
-			<Text id="his">her</Text>
-			<Text id="hers">hers</Text>
-			<Text id="him">her</Text>
-			<Text id="he">her</Text>
-			<Text id="son">daughter</Text>
-			<Text id="sir">ma'am</Text>
 		</Language>
 	</GenomeType>
 
@@ -251,16 +185,6 @@
 			<Text id="nose">snout</Text>
 			<Text id="rear">tail</Text>
 			<!-- ... more here but this is an example -->
-			<!-- Replacement for old gendered words lookup table -->
-			<Text id="boy">hatchling</Text>
-			<Text id="brother">sibling</Text>
-			<Text id="man">microsaur</Text>
-			<Text id="his">their</Text>
-			<Text id="hers">their</Text>
-			<Text id="him">them</Text>
-			<Text id="he">they</Text>
-			<Text id="son">hatchling</Text>
-			<Text id="sir">Supreme Overlord</Text>
 		</Language>
 	</GenomeType>
 	

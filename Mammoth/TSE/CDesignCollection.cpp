@@ -1813,6 +1813,17 @@ ALERROR CDesignCollection::ResolveType (SDesignLoadCtx &Ctx, CDesignType &Type, 
 			return error;
 		}
 
+	//  Resolve appliedLanguage. NOTE: We might recurse inside of ResolveApplyLanguageType
+	//  because we need to make sure the applicator is resolved.
+
+	DWORD dwApplyLanguageFrom;
+	if (dwApplyLanguageFrom = pNewType->GetApplyLanguageFromUNID()
+		&& pNewType->GetApplyLanguageFrom() == NULL)
+		{
+		if (ALERROR error = ResolveAppliedLanguageType(Ctx, pNewType, TypesUsed, &pNewType))
+			return error;
+		}
+
 	//	Resolve overrides
 
 	for (int i = 0; i < m_OverrideTypes.GetCount(); i++)
@@ -1903,6 +1914,49 @@ ALERROR CDesignCollection::ResolveTypeOverride (SDesignLoadCtx &Ctx, CDesignType
 	return NOERROR;
 	}
 
+ALERROR CDesignCollection::ResolveAppliedLanguageType(SDesignLoadCtx& Ctx, CDesignType* pType, const TSortMap<DWORD, bool>& TypesUsed, CDesignType** retpNewType)
+//  ResolveAppliedLanguageType
+//
+//  Resolves a type that applies a language to another type
+//  We set up the m_pApplyLanguageFrom pointer
+	{
+	ALERROR error;
+
+	DWORD dwAppliedUNID = pType->GetApplyLanguageFromUNID();
+
+	//  Start by setting the inherit to ourselves to indicate that we are in
+	//  the middle of resolving to avoid infinite recusion
+
+	pType->SetLanguageAppliedFrom(pType);
+
+	//  Look for the type that we apply from.
+
+	CDesignType* pApplied = m_AllTypes.FindByUNID(dwAppliedUNID);
+	if (pApplied == NULL)
+		return pType->ComposeLoadError(Ctx, strPatternSubst(CONSTLIT("Unknown applyLanguage type: %0x8x"), dwAppliedUNID));
+
+	//  If our applicator applies from themselves, there is an inheritance loop
+
+	if (pApplied->GetApplyLanguageFrom() == pApplied)
+		return pType->ComposeLoadError(Ctx, CONSTLIT("Cannot applyLanguage on self."));
+
+	//  Make sure our applicator is resolved
+
+	if (error = ResolveType(Ctx, *pApplied, TypesUsed, &pApplied))
+		return error;
+
+	//  If our applicator is missing a language data block, an error was made
+
+	if (!pApplied->HasLanguageBlock())
+		return pType->ComposeLoadError(Ctx, strPatternSubst(CONSTLIT("applyLanguage type: %0x8x is missing a <Language> element to apply"), dwAppliedUNID));
+
+	//  Finalize it
+
+	pType->SetLanguageAppliedFrom(pApplied);
+
+	return NOERROR;
+	}
+
 ALERROR CDesignCollection::ResolveInheritingType (SDesignLoadCtx &Ctx, CDesignType *pType, const TSortMap<DWORD, bool> &TypesUsed, CDesignType **retpNewType)
 
 //	ResolveInheritingType
@@ -1948,7 +2002,7 @@ ALERROR CDesignCollection::ResolveInheritingType (SDesignLoadCtx &Ctx, CDesignTy
 		return NOERROR;
 		}
 
-	//	If the ancestor is a differen type, then this is an error.
+	//	If the ancestor is a different type, then this is an error.
 
 	if (pAncestor->GetType() != pType->GetType())
 		return pType->ComposeLoadError(Ctx, CONSTLIT("Cannot inherit from a different type."));

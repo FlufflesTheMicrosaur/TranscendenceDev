@@ -127,4 +127,93 @@
 		</Language>
 	</Type>
 
+	<!-- API 54 replacement for the in-engine gendered language table-->
+
+	<Type UNID="&unidGenderedLanguageAny;">
+		<Language>
+		<!--
+			Abbreviations
+			.colloq = colloquial
+			.lit = literal
+			.inf = informal
+			.frm = formal
+		-->
+			<Text id="boy">child</Text>
+			<Text id="brother">partner</Text> <!-- this exists to support legacy text using 'brother' in colloquial form -->
+			<Text id="brother.colloq">partner</Text>
+			<Text id="brother.lit">sibling</Text>
+			<Text id="parent">parent</Text>
+			<Text id="partner.spouse">spouse</Text>
+			<Text id="partner.engaged.inf">date</Text>
+			<Text id="partner.engaged.frm">partner</Text>
+			<Text id="man">person</Text>
+			<Text id="his">their</Text>
+			<Text id="hers">their</Text>
+			<Text id="him">them</Text>
+			<Text id="he">they</Text>
+			<Text id="son">child</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</Type>
+
+	<Type UNID="&unidGenderedLanguageFeminine;">
+		<Language>
+			<Text id="boy">girl</Text>
+			<Text id="brother">sister</Text>
+			<Text id="brother.colloq">sister</Text>
+			<Text id="brother.lit">sister</Text>
+			<Text id="parent">mother</Text>
+			<Text id="partner.spouse">wife</Text>
+			<Text id="partner.engaged.inf">girlfriend</Text>
+			<Text id="partner.engaged.frm">fiancée</Text>
+			<Text id="man">woman</Text>
+			<Text id="his">her</Text>
+			<Text id="hers">hers</Text>
+			<Text id="him">her</Text>
+			<Text id="he">her</Text>
+			<Text id="son">daughter</Text>
+			<Text id="sir">ma'am</Text>
+		</Language>
+	</Type>
+
+	<Type UNID="&unidGenderedLanguageMasculine;">
+		<Language>
+			<Text id="boy">boy</Text>
+			<Text id="brother">brother</Text>
+			<Text id="brother.colloq">brother</Text>
+			<Text id="brother.lit">brother</Text>
+			<Text id="parent">father</Text>
+			<Text id="partner.spouse">husband</Text>
+			<Text id="partner.engaged.inf">boyfriend</Text>
+			<Text id="partner.engaged.frm">fiancé</Text>
+			<Text id="man">man</Text>
+			<Text id="his">his</Text>
+			<Text id="hers">his</Text>
+			<Text id="him">him</Text>
+			<Text id="he">he</Text>
+			<Text id="son">son</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</Type>
+
+	<Type UNID="&unidGenderedLanguageNeuter;">
+		<Language>
+			<Text id="boy">child</Text>
+			<Text id="brother">partner</Text>
+			<Text id="brother.colloq">partner</Text>
+			<Text id="brother.lit">sibling</Text>
+			<Text id="parent">parent</Text>
+			<Text id="partner.spouse">spouse</Text>
+			<Text id="partner.engaged.inf">date</Text>
+			<Text id="partner.engaged.frm">partner</Text>
+			<Text id="man">creature</Text>
+			<Text id="his">its</Text>
+			<Text id="hers">its</Text>
+			<Text id="him">it</Text>
+			<Text id="he">it</Text>
+			<Text id="son">child</Text>
+			<Text id="sir">sir</Text>
+		</Language>
+	</Type>
+
 </TranscendenceModule>

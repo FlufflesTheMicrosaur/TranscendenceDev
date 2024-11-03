@@ -50,6 +50,7 @@
 #define TEMPLATE_TYPE_TAG						CONSTLIT("TemplateType")
 #define TYPE_TAG								CONSTLIT("Type")
 
+#define APPLY_LANGUAGE_ATTRIB					CONSTLIT("applyLanguage")
 #define ATTRIBUTES_ATTRIB						CONSTLIT("attributes")
 #define EFFECT_ATTRIB							CONSTLIT("effect")
 #define EXCLUDES_ATTRIB							CONSTLIT("excludes")
@@ -223,6 +224,9 @@ void CDesignType::AddTypesUsed (TSortMap<DWORD, bool> *retTypesUsed)
 	{
 	if (m_dwInheritFrom)
 		retTypesUsed->SetAt(m_dwInheritFrom, true);
+
+	if (m_dwApplyLanguageFrom)
+		retTypesUsed->SetAt(m_dwApplyLanguageFrom, true);
 
 	OnAddTypesUsed(retTypesUsed);
 	}
@@ -2588,6 +2592,9 @@ bool CDesignType::HasLanguageBlock (void) const
 	if (m_pExtra && !m_pExtra->Language.IsEmpty())
 		return true;
 
+	if (m_pApplyLanguageFrom && m_pApplyLanguageFrom->HasLanguageBlock())
+		return true;
+
 	if (m_pInheritFrom && m_pInheritFrom->HasLanguageBlock())
 		return true;
 
@@ -2604,6 +2611,9 @@ bool CDesignType::HasLanguageEntry (const CString &sID) const
 
 	{
 	if (m_pExtra && m_pExtra->Language.HasEntry(sID))
+		return true;
+
+	if (m_pApplyLanguageFrom && m_pApplyLanguageFrom->HasLanguageEntry(sID))
 		return true;
 
 	if (m_pInheritFrom && m_pInheritFrom->HasLanguageEntry(sID))
@@ -2857,6 +2867,16 @@ ALERROR CDesignType::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, bool 
 		}
 
 	m_pInheritFrom = NULL;
+
+	//  Apply Langauge
+
+	if (error = ::LoadUNID(Ctx, pDesc->GetAttribute(APPLY_LANGUAGE_ATTRIB), &m_dwApplyLanguageFrom))
+		{
+		Ctx.pType = NULL;
+		return error;
+		}
+
+	m_pApplyLanguageFrom = NULL;
 
 	//	API requirements
 
@@ -3230,6 +3250,9 @@ bool CDesignType::Translate (const CDesignType &Type, const CString &sID, const 
 	if (m_pExtra && m_pExtra->Language.Translate(Type, sID, Params, retResult))
 		return true;
 
+	if (m_pApplyLanguageFrom && m_pApplyLanguageFrom->Translate(Type, sID, Params, retResult))
+		return true;
+
 	if (m_pInheritFrom && m_pInheritFrom->Translate(Type, sID, Params, retResult))
 		return true;
 
@@ -3282,6 +3305,9 @@ bool CDesignType::TranslateText (const CDesignType &Type, const CString &sID, co
 
 	{
 	if (m_pExtra && m_pExtra->Language.TranslateText(Type, sID, Params, retsText))
+		return true;
+
+	if (m_pApplyLanguageFrom && m_pApplyLanguageFrom->TranslateText(Type, sID, Params, retsText))
 		return true;
 
 	if (m_pInheritFrom && m_pInheritFrom->TranslateText(Type, sID, Params, retsText))

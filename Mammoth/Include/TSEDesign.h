@@ -352,6 +352,8 @@ class CDesignType
 		CString GetEntityName (void) const;
 		ICCItem *GetEventHandler (const CString &sEvent) const;
 		void GetEventHandlers (const CEventHandler **retHandlers, TSortMap<CString, SEventHandlerDesc> *retInheritedHandlers);
+		CDesignType* GetApplyLanguageFrom(void) const { return m_pApplyLanguageFrom; }
+		DWORD GetApplyLanguageFromUNID(void) const { return m_dwApplyLanguageFrom; }
 		CExtension *GetExtension (void) const { return m_pExtension; }
 		ICCItemPtr GetGlobalData (const CString &sAttrib) const;
 		CDesignType *GetInheritFrom (void) const { return m_pInheritFrom; }
@@ -394,6 +396,7 @@ class CDesignType
 		bool IsOptional (void) const { return (m_dwObsoleteVersion > 0) || (m_dwMinVersion > 0) || (m_pExtra && (m_pExtra->Excludes.GetCount() > 0 || m_pExtra->Extends.GetCount() > 0)); }
 		void MarkImages (void) { OnMarkImages(); }
 		void ReportEventError (const CString &sEvent, const ICCItem *pError) const;
+		void SetLanguageAppliedFrom(CDesignType* pType) { m_pApplyLanguageFrom = pType; }
 		void SetGlobalData (const CString &sAttrib, const ICCItem *pData) { SetExtra()->GlobalData.SetData(sAttrib, pData); }
 		void SetHierarchyResolved (bool bValue = true) { m_bHierarchyResolved = bValue; }
 		void SetInheritFrom (CDesignType *pType) { m_pInheritFrom = pType; }
@@ -503,6 +506,9 @@ class CDesignType
 
 		DWORD m_dwInheritFrom = 0;						//	Inherit from this type
 		CDesignType *m_pInheritFrom = NULL;				//	Inherit from this type
+
+		DWORD m_dwApplyLanguageFrom = 0;				//	Apply language from this type without additional inheritance
+		CDesignType *m_pApplyLanguageFrom = NULL;		//	Apply language from this type without additional inheritance
 
 		CString m_sAttributes;							//	Type attributes
 		CEventHandler m_Events;							//	Event handlers
@@ -1474,6 +1480,7 @@ class CDesignCollection
 		bool InitAdventure (SDesignLoadCtx &Ctx);
 		bool InitEconomyTypes (SDesignLoadCtx &Ctx);
 		bool OverrideEncounterDesc (SDesignLoadCtx &Ctx, const CXMLElement &OverridesXML);
+		ALERROR ResolveAppliedLanguageType(SDesignLoadCtx& Ctx, CDesignType* pType, const TSortMap<DWORD, bool>& TypesUsed, CDesignType** retpNewType = NULL);
 		ALERROR ResolveInheritingType (SDesignLoadCtx &Ctx, CDesignType *pType, const TSortMap<DWORD, bool> &TypesUsed, CDesignType **retpNewType = NULL);
 		ALERROR ResolveTypeHierarchy (SDesignLoadCtx &Ctx, const TSortMap<DWORD, bool> &TypesUsed);
 		ALERROR ResolveType (SDesignLoadCtx &Ctx, CDesignType &Type, const TSortMap<DWORD, bool> &TypesUsed, CDesignType **retpNewType = NULL);

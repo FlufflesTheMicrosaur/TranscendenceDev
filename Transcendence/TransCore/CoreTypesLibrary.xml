@@ -156,6 +156,10 @@
 	<!ENTITY efNullEffect				"0x00030003">
 	<!ENTITY unidEngineText				"0x00030004">
 	<!ENTITY rsCoreIconBar				"0x00030005">
+	<!ENTITY unidGenderedLanguageAny	"0x00030006">
+	<!ENTITY unidGenderedLanguageFeminine	"0x00030007">
+	<!ENTITY unidGenderedLanguageMasculine	"0x00030008">
+	<!ENTITY unidGenderedLanguageNeuter	"0x00030009">
 	
 	<!-- 0020-002F PROJECTILE EFFECTS -->
 	
