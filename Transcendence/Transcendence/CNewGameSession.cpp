@@ -57,7 +57,7 @@
 #define STYLE_IMAGE								CONSTLIT("image")
 
 #define STR_DIFFICULTY							CONSTLIT("difficulty")
-#define STR_GENOME								CONSTLIT("genome")
+#define STR_GENOME								CONSTLIT("player type")
 #define STR_NAME								CONSTLIT("name")
 
 const int GENOME_IMAGE_HEIGHT =					32;
