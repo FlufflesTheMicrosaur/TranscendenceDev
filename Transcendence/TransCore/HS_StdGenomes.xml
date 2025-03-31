@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TranscendenceModule>
+
+	<Image UNID="&HS_rsGenomes;"		bitmap="Resources\sotp_genomes.png"  loadOnUse="true"/>
+	<!-- OXYGENIA IX (earth-based biological) -->
+
+	<GenomeType unid="&CORE_gnDefaultText;"
+		id="genome_default_text"
+		name="(DEFAULT TEXT GENOMETYPE)"
+		applyLanguage="&CORE_unidGenderedLanguageAny;"
+		attributes="genderDefault">
+		<Image unid="&HS_rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Lifeform</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">evolved</Text>
+			<Text id="visualTaxon">organic</Text>
+			<Text id="visualTaxon.Adj">organic</Text>
+			<Text id="skin">skin</Text>
+			<Text id="legs">leg(s)</Text>
+			<Text id="arms">arm(s)</Text>
+			<Text id="feet">foot(feet)</Text>
+			<Text id="hands">hand(s)</Text>
+			<Text id="rear">butt</Text>
+			<Text id="nose">nose</Text>
+			<Text id="mouth">mouth</Text>
+			<Text id="eyes">eyes</Text>
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&HS_gnOxygeniaIX;"
+		inherit="&CORE_gnDefaultText;"
+		id="oxygenia_ix"
+		menuName="Oxygenia-IX"
+		name="oxygenia-IX"
+		attributes="oxygenia_ix, genderDefault">
+		<Image unid="&HS_rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<!-- Baseline humans -->
+
+	<GenomeType unid="&HS_gnHuman;"
+		inherit="&HS_gnOxygeniaIX;"
+		id="oxygenia_ix.human"
+		menuName="Human"
+		name="human(s)"
+		adjective="human"
+		attributes="oxygenia_ix, mammal, human, genderDefault, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">evolved</Text>
+			<Text id="visualTaxon">mammal</Text>
+			<Text id="visualTaxon.Adj">mammalian</Text>
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&HS_gnHumanMasculine;"
+		inherit="&HS_gnHuman;"
+		id="oxygenia_ix.human.masc"
+		menuName="Human (Masculine)"
+		name="human(s)"
+		adjective="human"
+		applyLanguage="&CORE_unidGenderedLanguageMasculine;"
+		attributes="oxygenia_ix, mammal, human, genderMasculine, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&HS_gnHumanFeminine;"
+		inherit="&HS_gnHuman;"
+		id="oxygenia_ix.human.fem"
+		menuName="Human (Feminine)"
+		name="human(s)"
+		adjective="human"
+		applyLanguage="&CORE_unidGenderedLanguageFeminine;"
+		attributes="oxygenia_ix, mammal, human, genderFeminine, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<!-- Augmented humans -->
+
+	<GenomeType unid="&HS_gnHumanAugment;"
+		inherit="&HS_gnHuman;"
+		id="oxygenia_ix.human.augmented"
+		menuName="Augmented Human"
+		name="human(s)"
+		adjective="human"
+		attributes="oxygenia_ix, mammal, human, geneticallyEngineered, augmentedHuman, genderDefault, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">genetically engineered</Text>
+			<Text id="visualTaxon">mammal</Text>
+			<Text id="visualTaxon.Adj">mammalian</Text>
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&HS_gnHumanAugmentMasculine;"
+		inherit="&HS_gnHuman;"
+		id="oxygenia_ix.human.augmented.masc"
+		menuName="Augmented Human (Masculine)"
+		name="human(s)"
+		adjective="human"
+		applyLanguage="&CORE_unidGenderedLanguageMasculine;"
+		attributes="oxygenia_ix, mammal, human, geneticallyEngineered, augmentedHuman, genderMasculine, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="64" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<GenomeType unid="&HS_gnHumanAugmentFeminine;"
+		inherit="&HS_gnHuman;"
+		id="oxygenia_ix.human.augmented.fem"
+		menuName="Augmented Human (Feminine)"
+		name="human(s)"
+		adjective="human"
+		applyLanguage="&CORE_unidGenderedLanguageFeminine;"
+		attributes="oxygenia_ix, mammal, human, geneticallyEngineered, augmentedHuman, genderFeminine, 00200000_PlayerGenome">
+		<Image unid="&HS_rsGenomes;"  imageX="64" imageY="128" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+
+	<!-- Neohumans -->
+
+	<!-- Simples -->
+
+	<!-- Zoanthropes -->
+
+	<!-- Microsaurs -->
+
+	<GenomeType unid="&HS_gnMicrosaur;"
+		inherit="&HS_gnOxygeniaIX;"
+		id="oxygenia_ix.microsaur"
+		menuName="Microsaur"
+		name="microsaur"
+		adjective="microsaurian"
+		attributes="oxygenia_ix, reptilian, saurian, microsaur, genderDefault">
+		<Image unid="&HS_rsGenomes;"  imageX="768" imageY="0" imageWidth="64" imageHeight="64"/>
+		<Language>
+			<!-- Genome specific language -->
+			<Text id="domain">Oxygenia IX</Text>
+			<!-- ... more here but this is an example -->
+			<!-- Default variant-specific language -->
+			<Text id="biological">biological</Text>
+			<Text id="evolved">genetically engineered</Text>
+			<Text id="visualTaxon">saurian</Text>
+			<Text id="visualTaxon.Adj">saurian</Text>
+			<Text id="skin">scales</Text>
+			<Text id="hands">claws</Text>
+			<Text id="nose">snout</Text>
+			<Text id="rear">tail</Text>
+			<!-- ... more here but this is an example -->
+		</Language>
+	</GenomeType>
+	
+	<!-- Inorganic -->
+
+</TranscendenceModule>
