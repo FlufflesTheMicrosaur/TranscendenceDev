@@ -7124,7 +7124,7 @@ ICCItem *fnObjGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 				FragCtx.vPos = vHitPos;
 				FragCtx.vVel = pObj->GetVel();
 				FragCtx.vSourcePos = vHitPos;
-				FragCtx.vSourceVec = FragCtx.vVel;
+				FragCtx.vSourceVel = FragCtx.vVel;
 				FragCtx.iDirection = VectorToPolar(vHitPos - pObj->GetPos());
 				FragCtx.iSourceDirection = FragCtx.iDirection;
 
@@ -8759,16 +8759,15 @@ ICCItem *fnObjSet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			{
 			CDamageSource DamageSource(NULL, removedFromSystem);
 			if (pArgs->GetCount() > 1)
+				DamageSource = GetDamageSourceArg(*pCC, pArgs->GetElement(1));
+			else
 				{
-				if (pCtx->GetAPIVersion() <= 53)
-					DamageSource = GetDamageSourceArg(*pCC, pArgs->GetElement(1));
-				else
+				if (pCtx->GetAPIVersion() >= 54)
 					{
 					CString sError = CONSTLIT("Calling (objDestroy obj) has been deprecated in API 54+. Use (objRemove obj) instead.");
 					return pCC->CreateError(sError, pArgs->GetElement(1));
 					}
 				}
-
 			pObj->Destroy(DamageSource.GetCause(), DamageSource);
 			return pCC->CreateTrue();
 			}
@@ -13060,7 +13059,7 @@ ICCItem *fnSystemCreate (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			Ctx.vPos = vPos;
 			Ctx.vVel = PolarToVector(iDir, rSpeed);
 			Ctx.vSourcePos = pSource ? pSource->GetPos() : vPos;
-			Ctx.vSourceVec = pSource ? pSource->GetVel() : Ctx.vVel;
+			Ctx.vSourceVel = pSource ? pSource->GetVel() : NullVector;
 			Ctx.iDirection = iDir;
 			Ctx.iSourceDirection = pSource ? pSource->GetRotation() : iDir;
 			Ctx.pTarget = pTarget;
