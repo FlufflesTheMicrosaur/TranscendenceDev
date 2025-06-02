@@ -1016,7 +1016,7 @@ GenomeTypes CUniverse::GetPlayerGenomeLegacy (void) const
 	return m_pPlayer->GetGenomeLegacy();
 	}
 
-CGenomeType *CUniverse::GetPlayerGenome(void) const
+CCharacterAttributeType *CUniverse::GetPlayerGenome(void) const
 
 //	GetPlayerGenome
 //

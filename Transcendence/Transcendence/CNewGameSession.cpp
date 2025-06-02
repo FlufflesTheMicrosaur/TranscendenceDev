@@ -494,38 +494,39 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 	m_pRoot->SetPropertyMetric(PROP_FADE_EDGE_HEIGHT, 0.0);
 	m_pRoot->SetPropertyMetric(PROP_PADDING_BOTTOM, (Metric)MAJOR_PADDING_BOTTOM);
 
-	//	Create the player name
+	//	Use a 3 column layout if we are playing a legacy adventure
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
+		{
+		int cxBar = RectWidth(rcCenter);
+		int cyBar = cyBackground;
+		int xBar = 0;
+		int yBar = RectHeight(rcCenter) - cyBar + (cyBar - SMALL_BUTTON_HEIGHT) / 2;
+		int cxColumn = cxBar / 3;
 
-	int cxBar = RectWidth(rcCenter);
-	int cyBar = cyBackground;
-	int xBar = 0;
-	int yBar = RectHeight(rcCenter) - cyBar + (cyBar - SMALL_BUTTON_HEIGHT) / 2;
-	int cxColumn = cxBar / 3;
-
-	m_PlayerName.Create(*m_pRoot,
+		m_PlayerName.Create(*m_pRoot,
 			CMD_EDIT_NAME,
 			STR_NAME,
 			xBar,
 			yBar,
 			cxColumn,
 			alignLeft);
-	SetPlayerName(m_Settings.sPlayerName);
+		SetPlayerName(m_Settings.sPlayerName);
 
-	//	Create the difficulty option
+		//	Create the difficulty option
 
-	int xDifficulty = xBar + (cxBar / 2) + (SMALL_BUTTON_WIDTH / 2);
-	m_Difficulty.Create(*m_pRoot, 
+		int xDifficulty = xBar + (cxBar / 2) + (SMALL_BUTTON_WIDTH / 2);
+		m_Difficulty.Create(*m_pRoot, 
 			CMD_CHANGE_DIFFICULTY, 
 			STR_DIFFICULTY, 
 			xDifficulty - cxColumn, 
 			yBar, 
 			cxColumn, 
 			alignRight);
-	m_Difficulty.SetEnabled(!m_Settings.bDifficultyLocked);
+		m_Difficulty.SetEnabled(!m_Settings.bDifficultyLocked);
 
-	int yBaseline = yBar + VI.GetFont(fontMediumBold).GetHeight() + VI.GetFont(fontSubTitle).GetAscent();
-	int yTextDesc = yBaseline - VI.GetFont(fontMedium).GetAscent() - VI.GetFont(fontMedium).GetHeight();
-	m_DifficultyDesc.Create(*m_pRoot,
+		int yBaseline = yBar + VI.GetFont(fontMediumBold).GetHeight() + VI.GetFont(fontSubTitle).GetAscent();
+		int yTextDesc = yBaseline - VI.GetFont(fontMedium).GetAscent() - VI.GetFont(fontMedium).GetHeight();
+		m_DifficultyDesc.Create(*m_pRoot,
 			ID_DIFFICULTY_DESC,
 			NULL_STR,
 			xDifficulty + MAJOR_PADDING_HORZ / 2,
@@ -533,21 +534,85 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 			cxColumn / 2,
 			alignLeft);
 
-	SetDifficulty(m_Settings.iDifficulty);
+		SetDifficulty(m_Settings.iDifficulty);
 
-	//	Create the player genome
+		//	Create the player genome
 
-	m_PlayerGenome.Create(*m_pRoot, 
+		m_PlayerGenome.Create(*m_pRoot, 
 			CMD_CHANGE_GENOME, 
 			STR_GENOME, 
 			xBar + cxBar - cxColumn, 
 			yBar, 
 			cxColumn, 
 			alignRight);
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
-		SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
+			SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
+		}
+	//	Use a 4 column layout if we are playing an API 54 adventure
 	else
+		{
+		int cxBar = RectWidth(rcCenter);
+		int cyBar = cyBackground;
+		int xBar = 0;
+		int yBar = RectHeight(rcCenter) - cyBar + (cyBar - SMALL_BUTTON_HEIGHT) / 2;
+		int cxColumn = cxBar / 4;
+
+		m_PlayerName.Create(*m_pRoot,
+			CMD_EDIT_NAME,
+			STR_NAME,
+			xBar,
+			yBar,
+			cxColumn,
+			alignLeft);
+		SetPlayerName(m_Settings.sPlayerName);
+
+		//	Create the difficulty option
+
+		int xDifficulty = xBar + (cxBar / 2) + (SMALL_BUTTON_WIDTH / 2);
+		m_Difficulty.Create(*m_pRoot, 
+			CMD_CHANGE_DIFFICULTY, 
+			STR_DIFFICULTY, 
+			xDifficulty - cxColumn, 
+			yBar, 
+			cxColumn, 
+			alignRight);
+		m_Difficulty.SetEnabled(!m_Settings.bDifficultyLocked);
+
+		int yBaseline = yBar + VI.GetFont(fontMediumBold).GetHeight() + VI.GetFont(fontSubTitle).GetAscent();
+		int yTextDesc = yBaseline - VI.GetFont(fontMedium).GetAscent() - VI.GetFont(fontMedium).GetHeight();
+		m_DifficultyDesc.Create(*m_pRoot,
+			ID_DIFFICULTY_DESC,
+			NULL_STR,
+			xDifficulty + MAJOR_PADDING_HORZ / 2,
+			yTextDesc,
+			cxColumn / 2,
+			alignLeft);
+
+		SetDifficulty(m_Settings.iDifficulty);
+
+		//	Create the player gender
+
+		m_PlayerGenome.Create(*m_pRoot, 
+			CMD_CHANGE_GENOME, 
+			STR_GENOME, 
+			xBar + cxBar - cxColumn, 
+			yBar, 
+			cxColumn, 
+			alignRight);
 		SetPlayerGenome(m_Settings.pPlayerGenome ? m_Settings.pPlayerGenome : m_GenomeTypes[0]);
+
+		//	Create the player genome
+
+		m_PlayerGenome.Create(*m_pRoot, 
+			CMD_CHANGE_GENOME, 
+			STR_GENOME, 
+			xBar + cxBar - cxColumn, 
+			yBar, 
+			cxColumn, 
+			alignRight);
+			SetPlayerGenome(m_Settings.pPlayerGenome ? m_Settings.pPlayerGenome : m_GenomeTypes[0]);
+		}
+
+	//	Create the player name
 
 	//	Create the ship class
 
@@ -697,7 +762,7 @@ void CNewGameSession::SetPlayerGenomeLegacy (GenomeTypes iGenome)
 	m_PlayerGenome.SetText(strTitleCapitalize(GetGenomeName(iGenome)));
 	}
 
-void CNewGameSession::SetPlayerGenome(CGenomeType *pGenome)
+void CNewGameSession::SetPlayerGenome(CCharacterAttributeType *pGenome)
 
 //	SetPlayerGenome
 //

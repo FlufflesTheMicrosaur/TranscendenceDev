@@ -502,7 +502,7 @@ class CUniverse
 		CEffectCreator *FindEffectTypeBound (SDesignLoadCtx &Ctx, DWORD dwUNID) { return CEffectCreator::AsType(m_Design.FindEntryBound(Ctx, dwUNID)); }
 		CShipTable *FindEncounterTable (DWORD dwUNID) { return CShipTable::AsType(m_Design.FindEntry(dwUNID)); }
 		bool FindExtension (DWORD dwUNID, DWORD dwRelease, CExtension **retpExtension = NULL) { return m_Extensions.FindBestExtension(dwUNID, dwRelease, (InDebugMode() ? CExtensionCollection::FLAG_DEBUG_MODE : 0), retpExtension); }
-		CGenomeType* FindGenomeType(DWORD dwUNID) { return CGenomeType::AsType(m_Design.FindEntry(dwUNID)); }
+		CCharacterAttributeType *FindCharacterAttributeType(DWORD dwUNID) { return CCharacterAttributeType::AsType(m_Design.FindEntry(dwUNID)); }
 		CGenericType *FindGenericType (DWORD dwUNID) { return CGenericType::AsType(m_Design.FindEntry(dwUNID)); }
 		CItemTable *FindItemTable (DWORD dwUNID) { return CItemTable::AsType(m_Design.FindEntry(dwUNID)); }
 		CItemType *FindItemType (DWORD dwUNID) { return CItemType::AsType(m_Design.FindEntry(dwUNID)); }
@@ -538,7 +538,7 @@ class CUniverse
 		IPlayerController &GetPlayer (void) { return (m_pPlayer ? *m_pPlayer : m_DefaultPlayer); }
 		const IPlayerController &GetPlayer (void) const { return (m_pPlayer ? *m_pPlayer : m_DefaultPlayer); }
 		GenomeTypes GetPlayerGenomeLegacy (void) const;
-		CGenomeType *GetPlayerGenome (void) const;
+		CCharacterAttributeType *GetPlayerGenome (void) const;
 		CString GetPlayerName (void) const;
 		CSpaceObject *GetPlayerShip (void) const { return m_pPlayerShip; }
 		const CSovereign *GetPlayerSovereign (void) const;
@@ -559,8 +559,8 @@ class CUniverse
 		int GetDesignTypeCount (void) { return m_Design.GetCount(); }
 		const CExtension *GetExtensionDesc (int iIndex) { return m_Design.GetExtension(iIndex); }
 		int GetExtensionDescCount (void) { return m_Design.GetExtensionCount(); }
-		CGenomeType* GetGenomeType(int iIndex) const { return (CGenomeType*)m_Design.GetEntry(designGenomeType, iIndex); }
-		int GetGenomeTypeCount(void) { return m_Design.GetCount(designGenomeType); }
+		CCharacterAttributeType* GetGenomeType(int iIndex) const { return (CCharacterAttributeType*)m_Design.GetEntry(designCharacterAttributeType, iIndex); }
+		int GetGenomeTypeCount(void) { return m_Design.GetCount(designCharacterAttributeType); }
 		CItemType *GetItemType (int iIndex) { return (CItemType *)m_Design.GetEntry(designItemType, iIndex); }
 		int GetItemTypeCount (void) { return m_Design.GetCount(designItemType); }
 		CPower *GetPower (int iIndex) { return (CPower *)m_Design.GetEntry(designPower, iIndex); }
@@ -694,6 +694,6 @@ class CUniverse
 		int m_iLogImageLoad = 0;				//	If >0 we disable image load logging
 
 		static IPlayerController m_DefaultPlayer;
-		CGenomeType *m_pDefaultGenome = new CGenomeType();
+		CCharacterAttributeType *m_pDefaultGenome = new CCharacterAttributeType();
 	};
 

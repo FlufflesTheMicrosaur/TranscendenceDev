@@ -524,6 +524,8 @@ class CNewGameSession : public IHISession
 		void CmdCancel (void);
 		void CmdChangeDifficulty (void);
 		void CmdChangeGenome (void);
+		void CmdChangeGender (void);
+		void CmdChangePlayerClass (void);
 		void CmdEditName (void);
 		void CmdEditNameCancel (void);
 		void CmdNextShipClass (void);
@@ -533,7 +535,9 @@ class CNewGameSession : public IHISession
 		void CreateShipClassButton (const CString &sID, int x, int y, const CG32bitImage &Image, bool bEnabled);
 		void SetDifficulty (CDifficultyOptions::ELevel iLevel);
 		void SetPlayerGenomeLegacy (GenomeTypes iGenome);
-		void SetPlayerGenome (CGenomeType *pGenome);
+		void SetPlayerGenome (CCharacterAttributeType *pGenome);
+		void SetPlayerGender (CDesignType *pGender);
+		void SetPlayerClass (CDesignType *pPlayerClass);
 		void SetPlayerName (const CString &sName);
 		void SetShipClass (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassDesc (const CString &sDesc, int x, int y, int cxWidth);
@@ -548,13 +552,19 @@ class CNewGameSession : public IHISession
 
 		TSortMap<CString, CShipClass *> m_ShipClasses;
 		int m_iCurShipClass = 0;
-		TSortMap<CString, CGenomeType *> m_GenomeTypes;
+		TSortMap<CString, CCharacterAttributeType *> m_GenomeTypes;
 		int m_iCurGenome = 0;
+		TSortMap<CString, CDesignType *> m_GenderTypes;
+		int m_iCurGender = 0;
+		TSortMap<CString, CDesignType *> m_PlayerClassTypes;
+		int m_iCurClass = 0;
 
 		CAniVScroller *m_pRoot = NULL;
 
 		CSmallOptionButtonAnimator m_PlayerName;
 		CSmallOptionButtonAnimator m_PlayerGenome;
+		CSmallOptionButtonAnimator m_PlayerClass;
+		CSmallOptionButtonAnimator m_PlayerGender;
 		CSmallOptionButtonAnimator m_Difficulty;
 		CTextAreaAnimator m_DifficultyDesc;
 

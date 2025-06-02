@@ -1,13 +1,13 @@
 #pragma once
 #include <TSELanguage.h>
 
-class CGenomeType : public CDesignType
+class CCharacterAttributeType : public CDesignType
 	{
 
 	public:
-		//	CGenomeType
+		//	CCharacterAttributeType
 
-		CGenomeType(void) { }
+		CCharacterAttributeType(void) { }
 
 		inline const CString& GetGenomeNamePlural(void) const { return m_sGenomeNamePlural; }
 		inline const CString& GetGenomeNameSingular(void) const { return m_sGenomeNameSingular; }
@@ -20,11 +20,11 @@ class CGenomeType : public CDesignType
 		virtual const CCompositeImageDesc& GetTypeImage(void) const override { return m_ImageDesc; }
 
 		//	CDesignType overrides
-		static CGenomeType* AsType(CDesignType* pType) { return ((pType && pType->GetType() == designGenomeType) ? (CGenomeType*)pType : NULL); }
-		static const CGenomeType* AsType(const CDesignType* pType) { return ((pType && pType->GetType() == designGenomeType) ? (const CGenomeType*)pType : NULL); }
+		static CCharacterAttributeType* AsType(CDesignType* pType) { return ((pType && pType->GetType() == designCharacterAttributeType) ? (CCharacterAttributeType*)pType : NULL); }
+		static const CCharacterAttributeType* AsType(const CDesignType* pType) { return ((pType && pType->GetType() == designCharacterAttributeType) ? (const CCharacterAttributeType*)pType : NULL); }
 		CString GetDataField(const CString& sField) const;
 		virtual CString GetGenomeNamePattern(DWORD dwNounFormFlags = 0, DWORD* retdwFlags = NULL) const;
-		virtual DesignTypes GetType(void) const override { return designGenomeType; }
+		virtual DesignTypes GetType(void) const override { return designCharacterAttributeType; }
 
 	protected:
 		//	CDesignType overrides

@@ -13,7 +13,7 @@
 #define SHORT_NAME_ATTRIB						CONSTLIT("shortName")
 
 
-CString CGenomeType::GetDataField(const CString& sField) const
+CString CCharacterAttributeType::GetDataField(const CString& sField) const
 
 // GetDataField
 //
@@ -40,7 +40,7 @@ CString CGenomeType::GetDataField(const CString& sField) const
 		}
 	}
 
-CString CGenomeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
+CString CCharacterAttributeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
 
 //	GetNamePattern
 //
@@ -60,7 +60,7 @@ CString CGenomeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWORD* retdwFla
 			return m_sGenomeName;
 	}
 
-ALERROR CGenomeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
+ALERROR CCharacterAttributeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
 
 //	OnCreateFromXML
 //
@@ -115,7 +115,7 @@ ALERROR CGenomeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
 		return NOERROR;
 	}
 
-ALERROR CGenomeType::OnBindDesign(SDesignLoadCtx& Ctx)
+ALERROR CCharacterAttributeType::OnBindDesign(SDesignLoadCtx& Ctx)
 
 //	OnBindDesign
 //

@@ -66,12 +66,14 @@ class CAdventureDesc : public CDesignType
 		const CString &GetStartingNodeID (void) const { return m_sStartingNodeID; }
 		const CString &GetStartingPos (void) const { return m_sStartingPos; }
 		ALERROR GetStartingShipClasses (TSortMap<CString, CShipClass *> *retClasses, CString *retsError);
-		ALERROR GetStartingGenomeTypes (TSortMap<CString, CGenomeType *> *retClasses, CString *retsError);
+		ALERROR GetStartingGenomeTypes (TSortMap<CString, CCharacterAttributeType *> *retClasses, CString *retsError);
+		ALERROR GetStartingGenderTypes (TSortMap<CString, CCharacterAttributeType *> *retClasses, CString *retsError);
+		ALERROR GetStartingPlayerClassTypes (TSortMap<CString, CCharacterAttributeType *> *retClasses, CString *retsError);
 		const CString &GetWelcomeMessage (void) const { return m_sWelcomeMessage; }
 		bool IsCurrentAdventure (void) const { return (m_fIsCurrentAdventure ? true : false); }
 		bool IsInDefaultResource (void) const { return (m_fInDefaultResource ? true : false); }
 		bool IsValidStartingClass (CShipClass *pClass);
-		bool IsValidStartingGenome (CGenomeType* pGenome);
+		bool IsValidStartingGenome (CCharacterAttributeType* pGenome);
 		void SetCurrentAdventure (bool bCurrent = true) { m_fIsCurrentAdventure = bCurrent; }
 
 		//	CDesignType overrides

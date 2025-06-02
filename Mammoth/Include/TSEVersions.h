@@ -441,8 +441,8 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //	40: 1.9 Beta 4
 //		Added design type in dwFlags or CDesignType.
 //
-//	41: 1.9.2 Raptor 1
-//		Added CGenomeType, deprecated old GenomeTypes to API <54
+//	41: 1.9.4 Preview
+//		Added CCharacterAttributeType, deprecated old GenomeTypes to API <54
 
 
 //	SYSTEM VERSION HISTORY -----------------------------------------------------
@@ -1090,5 +1090,7 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //  212: 1.9.1
 //		(George you are missing the change made here)
 // 
-//	213: 1.9.2 Raptor 1
-//		Added new m_pGenome to player controller to use API 54/Univ 41 CGenomeType. GenomeTypes impl renamed to '*Legacy'
+//	213: 1.9.4 Preview
+//		Added new m_pGenome to player controller to use API 54/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
+//		Added new m_pGender to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
+//		Added new m_pPlayerClass to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.

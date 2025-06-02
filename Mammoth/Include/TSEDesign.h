@@ -18,7 +18,7 @@ class CEconomyType;
 class CEffect;
 class CGameStats;
 class CGenericType;
-class CGenomeType;
+class CCharacterAttributeType;
 class CItem;
 class CItemCtx;
 class CItemEncounterDefinitions;
@@ -119,7 +119,7 @@ enum DesignTypes
 	designGenericType =					22,
 	designImageComposite =				23,
 	designSound =						24,
-	designGenomeType =					25,
+	designCharacterAttributeType =		25,
 
 	designCount	=						26, 
 
@@ -147,7 +147,7 @@ enum DesignTypes
 	charStationType =					't',
 	charMusic =							'u',
 	charSovereign =						'v',
-	charGenomeType =					'w',
+	charCharacterAttributeType =		'w',
 	charGenericType =					'x',
 
 	charSystemType =					'y',
@@ -844,7 +844,7 @@ class CGenericType : public CDesignType
 #include "TSEPower.h"
 #include "TSESpaceEnvironment.h"
 #include "TSEMissionType.h"
-#include "TSEGenomeType.h"
+#include "TSECharacterAttributeType.h"
 
 //	Adventures -----------------------------------------------------------------
 
