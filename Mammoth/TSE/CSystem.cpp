@@ -1500,7 +1500,6 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 
 						//	Handle the new absolute offset mode
 
-						int iRandomGlobalOffset = pFragDesc->Direction.Roll();
 						int iFragArcOffset = pFragDesc->iFragArcOffsetAndMode & CWeaponFireDesc::FLAG_FRAG_ARC_DATA_BITS;
 						int iFragmentAngleOffset = pFragDesc->FragmentArc.Roll();
 						Angles[i] = AngleMod(iFragmentAngleOffset + iFragArcOffset + iCenterAngle);
@@ -1523,7 +1522,7 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 						Angles[i] = AngleMod(mathRandom(iMinAngle, iMaxAngle));
 						}
 
-					//  Handle exact 
+					//  Remove nonhitting (back-facing) fragments if we have an internal hit
 
 					int iAngleForwardnessOffset = AngleMod(Angles[i] - Ctx.iDirection);
 					if (bInternalHit && iAngleForwardnessOffset > 90 && iAngleForwardnessOffset < 270)
