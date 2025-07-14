@@ -5,13 +5,13 @@
 
 #pragma once
 
-constexpr DWORD API_VERSION =							54;
+constexpr DWORD API_VERSION =							55;
 constexpr DWORD UNIVERSE_SAVE_VERSION =					41;
-constexpr DWORD SYSTEM_SAVE_VERSION =					213;
+constexpr DWORD SYSTEM_SAVE_VERSION =					214;
 
 //	Uncomment out the following define when building a stable release
 
-#define TRANSCENDENCE_STABLE_RELEASE
+//#define TRANSCENDENCE_STABLE_RELEASE
 
 //	API VERSION HISTORY ---------------------------------------------------
 //
@@ -283,7 +283,7 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //					fragmentation trigger. For the intended legacy behavior, use
 //					fragmentMinRadius - this value still had a small amount of smart
 //					adjustment however.
-//				Default: 0.5
+//				Default: 0.0 (disabled)
 //			proximityDistanceFail=[float] (units: ls)
 //				The projectile will not fragment if within this distance. Automatically
 //				sets disableImpactFragmentation to True. Raises an error if it greater
@@ -1090,7 +1090,13 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //  212: 1.9.1
 //		(George you are missing the change made here)
 // 
-//	213: 1.9.4 Preview
+//	212: 1.9 ??
+//		????
+//
+//	213: 2.0 Alpha 2
+//		Change DiceRange to use -1 for not set
+//
+//	214: 1.9.4 Preview
 //		Added new m_pGenome to player controller to use API 54/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
 //		Added new m_pGender to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
 //		Added new m_pPlayerClass to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.
