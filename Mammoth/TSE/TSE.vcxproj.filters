@@ -401,7 +401,7 @@
     <ClInclude Include="..\Include\TSEAchievements.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\TSEGenomeType.h">
+    <ClInclude Include="..\Include\TSECharacterAttributeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1655,7 +1655,7 @@
       <Filter>Source Files\Achievements</Filter>
     </ClCompile>
     <ClCompile Include="CCharacterAttributeType.cpp">
-      <Filter>Source Files\DesignTypes</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
