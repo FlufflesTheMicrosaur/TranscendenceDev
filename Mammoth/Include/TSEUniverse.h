@@ -539,6 +539,8 @@ class CUniverse
 		const IPlayerController &GetPlayer (void) const { return (m_pPlayer ? *m_pPlayer : m_DefaultPlayer); }
 		GenomeTypes GetPlayerGenomeLegacy (void) const;
 		CCharacterAttributeType *GetPlayerGenome (void) const;
+		CCharacterAttributeType *GetPlayerGender (void) const;
+		CCharacterAttributeType *GetPlayerCharacterClass (void) const;
 		CString GetPlayerName (void) const;
 		CSpaceObject *GetPlayerShip (void) const { return m_pPlayerShip; }
 		const CSovereign *GetPlayerSovereign (void) const;
@@ -559,8 +561,8 @@ class CUniverse
 		int GetDesignTypeCount (void) { return m_Design.GetCount(); }
 		const CExtension *GetExtensionDesc (int iIndex) { return m_Design.GetExtension(iIndex); }
 		int GetExtensionDescCount (void) { return m_Design.GetExtensionCount(); }
-		CCharacterAttributeType* GetGenomeType(int iIndex) const { return (CCharacterAttributeType*)m_Design.GetEntry(designCharacterAttributeType, iIndex); }
-		int GetGenomeTypeCount(void) { return m_Design.GetCount(designCharacterAttributeType); }
+		CCharacterAttributeType* GetCharacterAttributeType(int iIndex) const { return (CCharacterAttributeType*)m_Design.GetEntry(designCharacterAttributeType, iIndex); }
+		int GetCharacterAttributeTypeCount(void) { return m_Design.GetCount(designCharacterAttributeType); }
 		CItemType *GetItemType (int iIndex) { return (CItemType *)m_Design.GetEntry(designItemType, iIndex); }
 		int GetItemTypeCount (void) { return m_Design.GetCount(designItemType); }
 		CPower *GetPower (int iIndex) { return (CPower *)m_Design.GetEntry(designPower, iIndex); }
@@ -698,5 +700,7 @@ class CUniverse
 
 		static IPlayerController m_DefaultPlayer;
 		CCharacterAttributeType *m_pDefaultGenome = new CCharacterAttributeType();
+		CCharacterAttributeType *m_pDefaultGender = new CCharacterAttributeType();
+		CCharacterAttributeType *m_pDefaultCharacterClass = new CCharacterAttributeType();
 	};
 

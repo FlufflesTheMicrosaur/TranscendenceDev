@@ -165,27 +165,88 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 			else if (strEquals(sVar, CONSTLIT("genomes")))
 				sVar = g_pUniverse->GetPlayerGenome()->GetGenomeNamePlural();
 
-			//  Is this a genome word or gendered word in an API 54+ adventure?
-			//  (Player legacy genome vs. GenomeType depends on Adv/Base API version, not
-			//  the extension version, therefor we should always attempt getting the word
-			//  from the GenomeType first even in an older pre-API-54 extension)
+			//  Is this a genome word or gendered word in an API 55+ adventure?
+			//  (Player legacy genome vs. CharacterAttributeType depends on Adv/Base API version,
+			//  not the extension version, therefor we should always attempt getting the word
+			//  from the relevant CharacterAttributeTypes first)
 
-			else if ((g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= 54)
-				&& g_pUniverse->GetPlayerGenome()->HasLanguageEntry(sVar))
+			else if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= 55)
 				{
-				//	do we need to use the player's genome or a provided genome
+				//	do we need to use the player's or a provided character attribute type
 				CString sVarCopy = sVar;
-				ICCItem* pGenomeUNID;
-				CGenomeType* pGenome;
-				if (bHasData && (pGenomeUNID = pArgs->GetElement(CONSTLIT("genome"))) && !pGenomeUNID->IsNil())
-					pGenome = g_pUniverse->FindGenomeType(pGenomeUNID->GetIntegerValue());
-				else
-					pGenome = g_pUniverse->GetPlayerGenome();
-				if (pGenome != NULL)
-					pGenome->TranslateText(sVarCopy, pArgs, &sVar);
+				ICCItem* pCharacterAttributeUNID;
+				CCharacterAttributeType* pCharacterAttribute;
+				bool bFoundTranslatableType = false;
+
+				//	Try using stored data
+				if (bHasData && (pCharacterAttributeUNID = pArgs->GetElement(CONSTLIT("characterClass"))) && !pCharacterAttributeUNID->IsNil())
+					{
+					pCharacterAttribute = g_pUniverse->FindCharacterAttributeType(pCharacterAttributeUNID->GetIntegerValue());
+
+					if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+						bFoundTranslatableType = true;
+
+					else if (bHasData && (pCharacterAttributeUNID = pArgs->GetElement(CONSTLIT("gender"))) && !pCharacterAttributeUNID->IsNil())
+						{
+							pCharacterAttribute = g_pUniverse->FindCharacterAttributeType(pCharacterAttributeUNID->GetIntegerValue());
+
+							if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+								bFoundTranslatableType = true;
+							else if (bHasData && (pCharacterAttributeUNID = pArgs->GetElement(CONSTLIT("genome"))) && !pCharacterAttributeUNID->IsNil())
+								{
+								pCharacterAttribute = g_pUniverse->FindCharacterAttributeType(pCharacterAttributeUNID->GetIntegerValue());
+
+								if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+									bFoundTranslatableType = true;
+								}
+						}
+					}
+
+				//	Try if this is a word defined in the player's character class
+
+				if (!bFoundTranslatableType)
+					{
+					pCharacterAttribute = g_pUniverse->GetPlayerCharacterClass();
+
+					if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+						bFoundTranslatableType = true;
+					else
+						{
+
+						//	Try if this is a word defined in the player's gender
+
+						pCharacterAttribute = g_pUniverse->GetPlayerGender();
+
+						if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+							bFoundTranslatableType = true;
+						else
+							{
+							//	Try if this is a word defined in the player's genome
+
+							pCharacterAttribute = g_pUniverse->GetPlayerGenome();
+
+							if (pCharacterAttribute != NULL && pCharacterAttribute->HasLanguageEntry(sVar))
+								bFoundTranslatableType = true;
+
+							//	Use the old gendered word system as a fallback
+							else if (pGenderedWord = GENDER_WORD_TABLE.GetAt(sVar))
+								sVar = ComposeGenderedWordHelper(*g_pUniverse, sVar, VarInfo.sParam, (bHasData ? pArgs : NULL));
+							}
+
+						}
+					}
+
+				if (bFoundTranslatableType)
+					pCharacterAttribute->TranslateText(sVarCopy, pArgs, &sVar);
+
+				//	try the legacy system as a fallback
+
+				else if (pGenderedWord = GENDER_WORD_TABLE.GetAt(sVar))
+					sVar = ComposeGenderedWordHelper(*g_pUniverse, sVar, VarInfo.sParam, (bHasData ? pArgs : NULL));
+
 				}
 
-			//	Is this a gendered word? (this implementation remains for API < 54 support)
+			//	Is this a gendered word? (this implementation remains for API < 55 support and legacy saves)
 
 			else if (pGenderedWord = GENDER_WORD_TABLE.GetAt(sVar))
 				sVar = ComposeGenderedWordHelper(*g_pUniverse, sVar, VarInfo.sParam, (bHasData ? pArgs : NULL));
@@ -297,7 +358,7 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 //	sField is the FIELD of the character that we want.
 //
 //	We support the following kinds of fields:
-//  *   If API 54 and FIELD is a word in the CGenomeType's CLanguageDataBlock,
+//  *   If API 54 and FIELD is a word in the CCharacterAttributeType's CLanguageDataBlock,
 //		then we lookup the corresponding text from the genome field of the
 //		character
 //
@@ -324,7 +385,7 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 		return strPatternSubst(CONSTLIT("[character %s invalid: no ID]"), sCharacter);
 
 	//  Check if this is an API 54+ character and see if its in the LanguageData
-	CGenomeType* pCharGenome = Universe.FindGenomeType(pCharInfo->GetElement(CONSTLIT("genome"))->GetIntegerValue());
+	CCharacterAttributeType* pCharGenome = Universe.FindCharacterAttributeType(pCharInfo->GetElement(CONSTLIT("genome"))->GetIntegerValue());
 	if (pCharGenome != NULL && pCharGenome->HasLanguageEntry(sField))
 		{
 			CString sRet;

@@ -144,7 +144,10 @@ class CPlayerShipController : public IShipController
 		CString GetItemStat (const CString &sStat, ICCItem *pItemCriteria) const { return m_Stats.GetItemStat(sStat, pItemCriteria); }
 		CString GetKeyEventStat (const CString &sStat, const CString &sNodeID, const CDesignTypeCriteria &Crit) const { return m_Stats.GetKeyEventStat(sStat, sNodeID, Crit); }
 		GenomeTypes GetPlayerGenomeLegacy (void) const { return m_iGenome; }
-		CGenomeType *GetPlayerGenome (void) { return m_pGenome; }
+		CCharacterAttributeType *GetPlayerGenome (void) { return m_pGenome; }
+		CCharacterAttributeType *GetPlayerGender (void) { return m_pGender; }
+		CCharacterAttributeType *GetCharacterClass (void) { return m_pCharacterClass; }
+		CGenericType *GetCharacterClassLegacy (void) { return m_pCharacterClassLegacy; }
 		CString GetPlayerName (void) const { return m_sName; }
 		const CString &GetRedirectMessage (void) const { return m_sRedirectMessage; }
 		int GetResurrectCount (void) const { return ::strToInt(m_Stats.GetStatString(CONSTLIT("resurrectCount")), 0); }
@@ -171,10 +174,12 @@ class CPlayerShipController : public IShipController
 		void ReadyNextWeapon (int iDir = 1);
 		void ReadyNextMissile (int iDir = 1);
 		void RedirectDisplayMessage (bool bRedirect);
-		void SetCharacterClass (CGenericType *pClass) { m_pCharacterClass = pClass; }
+		void SetCharacterClass (CCharacterAttributeType* pClass) { m_pCharacterClass = pClass; }
+		void SetCharacterClassLegacy (CGenericType *pClass) { m_pCharacterClassLegacy = pClass; }
 		void SetGameSession (CGameSession *pSession);
 		void SetGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
-		void SetGenome (CGenomeType *pGenome) { m_pGenome = pGenome; m_dwGenome = pGenome->GetUNID(); }
+		void SetGenome (CCharacterAttributeType *pGenome) { m_pGenome = pGenome; }
+		void SetGender (CCharacterAttributeType* pGender) { m_pGender = pGender; }
 		void SetMapHUD (bool bActive) { m_bMapHUD = bActive; }
 		void SetMouseAimAngle (int iAngle) { m_ManeuverController.CmdMouseAim(iAngle); }
 		void SetName (const CString &sName) { m_sName = sName; }
@@ -329,12 +334,15 @@ class CPlayerShipController : public IShipController
 		CUIMessageController m_UIMsgs;				//	Status of various UI messages, such as hints
 
 		CString m_sName;							//	Player name
-		CGenomeType* m_pGenome = NULL;				//	Player genome
-		DWORD m_dwGenome = 0;						//  Player genome UNID
-		GenomeTypes m_iGenome = genomeUnknown;		//	Legacy player genome (Pre-API 54)
+		CCharacterAttributeType* m_pGenome = NULL;	//	Player genome
+		CCharacterAttributeType* m_pGender = NULL;	//	Player gender
+		CCharacterAttributeType* m_pCharacterClass = NULL;	//	Player class
+		DWORD m_dwGender = 0;						//  Player gender UNID
+		DWORD m_dwCharacterClass = 0;						//  Player class UNID
+		GenomeTypes m_iGenome = genomeUnknown;		//	Legacy player genome (Pre-API 55)
 		DWORD m_dwStartingShipClass = 0;			//	Starting ship class
 		CString m_sStartingSystem;					//	Starting system
-		CGenericType *m_pCharacterClass = NULL;		//	Character class
+		CGenericType *m_pCharacterClassLegacy = NULL;		//	Legacy Character class (Pre-API 55)
 
 		bool m_bUnderAttack = false;				//	TRUE if we're currently under attack
 		bool m_bHasSquadron = false;				//	If TRUE, we have at least one ship in our squadron

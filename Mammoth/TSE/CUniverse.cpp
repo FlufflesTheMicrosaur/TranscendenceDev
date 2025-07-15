@@ -1029,6 +1029,32 @@ CCharacterAttributeType *CUniverse::GetPlayerGenome(void) const
 	return m_pPlayer->GetGenome();
 	}
 
+CCharacterAttributeType *CUniverse::GetPlayerGender(void) const
+
+//	GetPlayerGender
+//
+//	Returns the player's genome
+
+	{
+	if (m_pPlayer == NULL)
+		return m_pDefaultGender;
+
+	return m_pPlayer->GetGender();
+	}
+
+CCharacterAttributeType *CUniverse::GetPlayerCharacterClass(void) const
+
+//	GetPlayerGenome
+//
+//	Returns the player's genome
+
+	{
+	if (m_pPlayer == NULL)
+		return m_pDefaultCharacterClass;
+
+	return m_pPlayer->GetCharacterClass();
+	}
+
 CString CUniverse::GetPlayerName (void) const
 
 //	GetPlayerName

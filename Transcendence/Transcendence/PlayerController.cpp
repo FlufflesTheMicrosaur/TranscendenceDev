@@ -573,7 +573,12 @@ ICCItem *CPlayerShipController::FindProperty (const CString &sProperty)
 
 	{
 	if (strEquals(sProperty, PROPERTY_CHARACTER_CLASS))
-		return (m_pCharacterClass ? CCodeChain::CreateInteger(m_pCharacterClass->GetUNID()) : CCodeChain::CreateNil());
+		{
+		if (m_pCharacterClass)
+			return CCodeChain::CreateInteger(m_pCharacterClass->GetUNID());
+		else
+			return (m_pCharacterClassLegacy ? CCodeChain::CreateInteger(m_pCharacterClassLegacy->GetUNID()) : CCodeChain::CreateNil());
+		}
 	else if (strEquals(sProperty, PROPERTY_STARTING_SYSTEM))
 		return CCodeChain::CreateString(m_sStartingSystem);
 	else
@@ -2382,10 +2387,11 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 //
 //	Reads data from stream
 //
-//	DWORD		m_iGenome (API < 54) / m_dwGenome (API 54+)
+//	DWORD		m_iGenome (API < 55) / m_pGenome (API 55+)
+//	DWORD		m_pGender (API 55+/Save 214+)
 //	DWORD		m_dwStartingShipClass
 //	CString		m_sStartingSystem
-//	DWORD		m_dwCharacterClass
+//	DWORD		m_pCharacterClassLegacy / m_pCharacterClass (API 55+/Save 214+)
 //	DWORD		m_pShip (CSpaceObject ref)
 //	DWORD		m_pStation (CSpaceObject ref)
 //	DWORD		m_pTarget (CSpaceObject ref)
@@ -2405,12 +2411,18 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 	Ctx.pStream->Read(dwLoad);
 
 	CUniverse *pUniv = &Ctx.GetUniverse();
-	if (pUniv->GetAdventureOrBaseAPIVersionSafe() < 54)
+	if (dwLoad < GenomeTypes::genomeCount)
+		{
 		m_iGenome = (GenomeTypes)dwLoad;
+
+		if (Ctx.dwVersion >= 214)
+			Ctx.pStream->Read(dwLoad);
+		}
 	else
 		{
-		m_dwGenome = dwLoad;
-		m_pGenome = pUniv->FindGenomeType(m_dwGenome);
+		m_pGenome = pUniv->FindCharacterAttributeType(dwLoad);
+		Ctx.pStream->Read(dwLoad);
+		m_pGender = pUniv->FindCharacterAttributeType(dwLoad);
 		}
 
 	Ctx.pStream->Read(m_dwStartingShipClass);
@@ -2427,16 +2439,21 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 			m_sStartingSystem = m_Universe.GetCurrentAdventureDesc().GetStartingNodeID();
 		}
 
-	if (Ctx.dwVersion >= 141)
+	Ctx.pStream->Read(dwLoad);
+	if (Ctx.dwVersion >= 214)
 		{
-		Ctx.pStream->Read(dwLoad);
-		m_pCharacterClass = m_Universe.FindGenericType(dwLoad);
+		if (m_pGender)
+			m_pCharacterClass = m_Universe.FindCharacterAttributeType(dwLoad);
+		else
+			m_pCharacterClassLegacy = m_Universe.FindGenericType(dwLoad);
 		}
+	else if (Ctx.dwVersion >= 141)
+		m_pCharacterClassLegacy = m_Universe.FindGenericType(dwLoad);
 	else
 		{
-		m_pCharacterClass = pShip->GetClass()->GetCharacterClass();
-		if (m_pCharacterClass == NULL)
-			m_pCharacterClass = m_Universe.FindGenericType(UNID_PILGRIM_CHARACTER_CLASS);
+		m_pCharacterClassLegacy = pShip->GetClass()->GetCharacterClass();
+		if (m_pCharacterClassLegacy == NULL)
+			m_pCharacterClassLegacy = m_Universe.FindGenericType(UNID_PILGRIM_CHARACTER_CLASS);
 		}
 
 	CSystem::ReadObjRefFromStream(Ctx, (CSpaceObject **)&m_pShip);
@@ -3410,10 +3427,11 @@ void CPlayerShipController::WriteToStream (IWriteStream *pStream)
 //
 //	Write data to stream
 //
-//	DWORD		m_iGenome (API < 54) / m_dwGenome (API 54+)
+//	DWORD		m_iGenome (API < 55) / m_pGenome (API 55+)
+//  DWORD		m_pGender
 //	DWORD		m_dwStartingShipClass
 //	CString		m_sStartingSystem
-//	DWORD		m_dwCharacterClass
+//	DWORD		m_pCharacterClassLegacy (if m_pGenome is NULL) / m_pCharacterClass (API 55+)
 //	DWORD		m_pShip (CSpaceObject ref)
 //	DWORD		m_pStation (CSpaceObject ref)
 //	DWORD		m_pTarget (CSpaceObject ref)
@@ -3433,19 +3451,31 @@ void CPlayerShipController::WriteToStream (IWriteStream *pStream)
 	GetClass().WriteToStream(pStream);
 
 	
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
-		pStream->Write((DWORD)m_iGenome);
+	if (m_pGenome)
+		{
+		dwSave = m_pGenome->GetUNID();
+		pStream->Write(dwSave);
+		dwSave = m_pGender->GetUNID();
+		pStream->Write(dwSave);
+		}
 	else
-	{
-		if (!m_dwGenome)
-			m_dwGenome = m_pGenome->GetUNID();
-		pStream->Write(m_dwGenome);
-	}
+		{
+		pStream->Write((DWORD)m_iGenome);
+		pStream->Write(0);	//Put a 0 for m_pGender
+		}
 	pStream->Write(m_dwStartingShipClass);
 	m_sStartingSystem.WriteToStream(pStream);
 
-	dwSave = (m_pCharacterClass ? m_pCharacterClass->GetUNID() : 0);
-	pStream->Write(dwSave);
+	if (m_pGenome)
+		{
+		dwSave = (m_pCharacterClass ? m_pCharacterClass->GetUNID() : 0);
+		pStream->Write(dwSave);
+		}
+	else
+		{
+		dwSave = (m_pCharacterClassLegacy ? m_pCharacterClassLegacy->GetUNID() : 0);
+		pStream->Write(dwSave);
+		}
 
 	m_pShip->WriteObjRefToStream(m_pShip, pStream);
 	m_pShip->WriteObjRefToStream(m_pStation, pStream);

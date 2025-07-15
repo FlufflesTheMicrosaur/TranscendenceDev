@@ -1971,10 +1971,14 @@ void CTranscendenceModel::RecordFinalScore (const CString &sEpitaph, const CStri
 
 	m_GameRecord.SetPlayerName(m_pPlayer->GetPlayerName());
 
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
-		m_GameRecord.SetPlayerGenomeLegacy(m_pPlayer->GetPlayerGenomeLegacy());
-	else
+	if (m_pPlayer->GetPlayerGenome())
+		{
 		m_GameRecord.SetPlayerGenome(m_pPlayer->GetPlayerGenome());
+		m_GameRecord.SetPlayerGender(m_pPlayer->GetPlayerGender());
+		m_GameRecord.SetPlayerClass(m_pPlayer->GetCharacterClass());
+		}
+	else
+		m_GameRecord.SetPlayerGenomeLegacy(m_pPlayer->GetPlayerGenomeLegacy());
 
 	m_GameRecord.SetShipClass(pPlayerShip ? pPlayerShip->GetType()->GetUNID() : 0);
 	m_GameRecord.SetSystem(pPlayerShip ? pPlayerShip->GetSystem() : NULL);
@@ -2615,10 +2619,13 @@ ALERROR CTranscendenceModel::StartNewGame (const CString &sUsername, const SNewG
 
 	m_pPlayer->Init(g_pTrans);
 	m_pPlayer->SetName(NewGame.sPlayerName);
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
-		m_pPlayer->SetGenomeLegacy(NewGame.iPlayerGenome);
-	else
+	if (NewGame.pPlayerGenome)
+		{
 		m_pPlayer->SetGenome(NewGame.pPlayerGenome);
+		m_pPlayer->SetGender(NewGame.pPlayerGender);
+		}
+	else
+		m_pPlayer->SetGenomeLegacy(NewGame.iPlayerGenome);
 	m_pPlayer->SetStartingShipClass(NewGame.dwPlayerShip);
 
 	//	Inside of InitAdventure we may get called back to set the crawl image
@@ -2779,7 +2786,15 @@ ALERROR CTranscendenceModel::StartNewGameBackground (const SNewGameSettings &New
 	//	Associate with the controller
 
 	m_pPlayer->SetShip(pPlayerShip);
-	m_pPlayer->SetCharacterClass(pPlayerShip->GetClass()->GetCharacterClass());
+	
+	//	Set character class
+
+	if (NewGame.pPlayerClass)
+		m_pPlayer->SetCharacterClass(NewGame.pPlayerClass);
+	else
+		m_pPlayer->SetCharacterClassLegacy(pPlayerShip->GetClass()->GetCharacterClass());
+
+
 
 	//	All items on the ship are automatically 
 	//	known to the player

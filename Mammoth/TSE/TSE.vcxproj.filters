@@ -1654,7 +1654,7 @@
     <ClCompile Include="CAchievementRecord.cpp">
       <Filter>Source Files\Achievements</Filter>
     </ClCompile>
-    <ClCompile Include="CGenomeType.cpp">
+    <ClCompile Include="CCharacterAttributeType.cpp">
       <Filter>Source Files\DesignTypes</Filter>
     </ClCompile>
   </ItemGroup>

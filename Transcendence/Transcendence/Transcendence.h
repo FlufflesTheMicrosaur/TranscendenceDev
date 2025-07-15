@@ -102,8 +102,10 @@ struct SFontTable
 struct SNewGameSettings
 	{
 	CString sPlayerName;						//	Character name
-	GenomeTypes iPlayerGenome = genomeUnknown;	//	Legacy Genome (pre-API 54)
-	CCharacterAttributeType *pPlayerGenome = NULL;			//	Genome
+	GenomeTypes iPlayerGenome = genomeUnknown;	//	Legacy Genome (pre-API 55)
+	CCharacterAttributeType *pPlayerGenome = NULL;			//	Genome API 55+, Null in older versions
+	CCharacterAttributeType *pPlayerGender = NULL;			//	Gender API 55+, Null in older versions
+	CCharacterAttributeType *pPlayerClass = NULL;			//	Class  API 55+, Null in older versions
 	CDifficultyOptions::ELevel iDifficulty = CDifficultyOptions::ELevel::Unknown;
 	DWORD dwPlayerShip = 0;						//	Starting ship class
 

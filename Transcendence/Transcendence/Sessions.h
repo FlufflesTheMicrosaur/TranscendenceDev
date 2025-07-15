@@ -520,6 +520,13 @@ class CNewGameSession : public IHISession
 		virtual void OnUpdate (bool bTopMost) override;
 
 	private:
+		enum ENewGameSesssionView
+			{
+			viewNotSet,
+			viewGameSettings,
+			viewShipSelector,
+			viewCharacterSettings,
+			};
 		void AddClassInfo (const CShipClass &Class, const CDeviceDescList &Devices, const CItem &Item, int x, int y, int cxWidth, DWORD dwOptions, int *retcyHeight, IAnimatron **retpAni);
 		void CmdCancel (void);
 		void CmdChangeDifficulty (void);
@@ -536,14 +543,18 @@ class CNewGameSession : public IHISession
 		void SetDifficulty (CDifficultyOptions::ELevel iLevel);
 		void SetPlayerGenomeLegacy (GenomeTypes iGenome);
 		void SetPlayerGenome (CCharacterAttributeType *pGenome);
-		void SetPlayerGender (CDesignType *pGender);
-		void SetPlayerClass (CDesignType *pPlayerClass);
+		void SetPlayerGender (CCharacterAttributeType *pGender);
+		void SetPlayerClass (CCharacterAttributeType *pPlayerClass);
 		void SetPlayerName (const CString &sName);
 		void SetShipClass (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassDesc (const CString &sDesc, int x, int y, int cxWidth);
 		void SetShipClassDetails (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassImage (const CShipClass &Class, int x, int y, int cxWidth);
 		void SetShipClassName (const CString &sName, int x, int y, int cxWidth);
+		void SetView (ENewGameSesssionView iView);
+		void ViewGameSettings (void);
+		void ViewShipSelector (void);
+		void ViewCharacterSettings (void);
 
 		CCloudService &m_Service;
 		CUniverse &m_Universe;

@@ -179,16 +179,16 @@ ALERROR CAdventureDesc::GetStartingShipClasses (TSortMap<CString, CShipClass *> 
 	return NOERROR;
 	}
 
-ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CGenomeType*>* retClasses, CString* retsError)
+ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CCharacterAttributeType*>* retClasses, CString* retsError)
 {
 	int i;
-	int dbg_NumGenomes = GetUniverse().GetGenomeTypeCount();
+	int dbg_NumGenomes = GetUniverse().GetCharacterAttributeTypeCount();
 	//	Make a list
 
 	retClasses->DeleteAll();
-	for (i = 0; i < GetUniverse().GetGenomeTypeCount(); i++)
+	for (i = 0; i < GetUniverse().GetCharacterAttributeTypeCount(); i++)
 	{
-		CGenomeType* pGenome = GetUniverse().GetGenomeType(i);
+		CCharacterAttributeType* pGenome = GetUniverse().GetCharacterAttributeType(i);
 		if (IsValidStartingGenome(pGenome))
 		{
 			retClasses->Insert(pGenome->GetSID(), pGenome);
@@ -215,7 +215,7 @@ bool CAdventureDesc::IsValidStartingClass (CShipClass *pClass)
 	return (pClass->IsIncludedInAllAdventures() || pClass->MatchesCriteria(m_StartingShips));
 	}
 
-bool CAdventureDesc::IsValidStartingGenome(CGenomeType* pGenome)
+bool CAdventureDesc::IsValidStartingGenome(CCharacterAttributeType* pGenome)
 {
 	return (pGenome->MatchesCriteria(m_StartingGenomes));
 }

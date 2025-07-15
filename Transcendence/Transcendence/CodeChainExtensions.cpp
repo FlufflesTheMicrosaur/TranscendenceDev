@@ -53,6 +53,9 @@ ICCItem *fnScrItem (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData);
 #define FN_PLY_GET_SYSTEM_STAT		25
 #define FN_PLY_INC_SYSTEM_STAT		26
 #define FN_PLY_CHANGE_GENOME		27
+#define FN_PLY_CHANGE_GENDER		28
+#define FN_PLY_CHANGE_CLASS			29
+#define FN_PLY_CHANGE_NAME			30
 
 ICCItem *fnPlyGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData);
 ICCItem *fnPlyGetOld (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData);
@@ -520,6 +523,21 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"(plyChangeGenome player newGenomeUNID) -> True/Nil\n\n"
 				,
 			"ii",	PPFLAG_SIDEEFFECTS, },
+
+		{	"plyChangeGender",				fnPlySet,		FN_PLY_CHANGE_GENDER,
+			"(plyChangeGender player newGenderUNID) -> True/Nil\n\n"
+			,
+			"ii",	PPFLAG_SIDEEFFECTS, },
+
+		{	"plyChangeClass",				fnPlySet,		FN_PLY_CHANGE_CLASS,
+			"(plyChangeClass player newCharacterClassUNID) -> True/Nil\n\n"
+			,
+			"ii",	PPFLAG_SIDEEFFECTS, },
+
+		{	"plyChangeName",				fnPlySet,		FN_PLY_CHANGE_NAME,
+			"(plyChangeName player newName) -> True/Nil\n\n"
+			,
+			"is",	PPFLAG_SIDEEFFECTS, },
 
 		{	"plyGetItemStat",					fnPlyGet,			FN_PLY_GET_ITEM_STAT,
 			"(plyGetItemStat player stat criteria|type) -> value\n\n"
@@ -1286,10 +1304,44 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 		{
 		case FN_PLY_CHANGE_GENOME:
 			{
-			CGenomeType* pNewGenome = g_pUniverse->FindGenomeType(pArgs->GetElement(1)->GetIntegerValue());
+			if (pCtx->GetAPIVersion() < 55)
+				return pCC->CreateError(CONSTLIT("Character genome cannot be changed by extensions below API 55"));
+			CCharacterAttributeType* pNewGenome = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
 			if (pNewGenome == NULL)
-				return pCC->CreateError(CONSTLIT("UNID must be for a GenomeType"), pArgs->GetElement(1));
+				return pCC->CreateError(CONSTLIT("UNID must be for a CharacterAttributeType"), pArgs->GetElement(1));
 			pPlayer->SetGenome(pNewGenome);
+			pResult = pCC->CreateTrue();
+			break;
+			}
+
+		case FN_PLY_CHANGE_GENDER:
+			{
+			if (pCtx->GetAPIVersion() < 55)
+				return pCC->CreateError(CONSTLIT("Character gender cannot be changed by extensions below API 55"));
+			CCharacterAttributeType* pNewGender = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
+			if (pNewGender == NULL)
+				return pCC->CreateError(CONSTLIT("UNID must be for a CharacterAttributeType"), pArgs->GetElement(1));
+			pPlayer->SetGender(pNewGender);
+			pResult = pCC->CreateTrue();
+			break;
+			}
+
+		case FN_PLY_CHANGE_CLASS:
+			{
+			if (pCtx->GetAPIVersion() < 55)
+				return pCC->CreateError(CONSTLIT("Character class cannot be changed by extensions below API 55"));
+			CCharacterAttributeType* pNewClass = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
+			if (pNewClass == NULL)
+				return pCC->CreateError(CONSTLIT("UNID must be for a CharacterAttributeType"), pArgs->GetElement(1));
+			pPlayer->SetCharacterClass(pNewClass);
+			pResult = pCC->CreateTrue();
+			break;
+			}
+
+		case FN_PLY_CHANGE_NAME:
+			{
+			CString sNewName = pArgs->GetElement(1)->GetStringValue();
+			pPlayer->SetName(sNewName);
 			pResult = pCC->CreateTrue();
 			break;
 			}

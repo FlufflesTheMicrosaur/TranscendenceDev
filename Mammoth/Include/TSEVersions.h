@@ -876,7 +876,7 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					214;
 //		m_iNextDetonation in CMissile
 //
 //	141: 1.7 Beta 5
-//		m_pCharacterClass in CPlayerShipController
+//		m_pCharacterClassLegacy in CPlayerShipController
 //
 //	142: 1.7 Beta 5
 //		sLevelFrequency in CTradingDesc
@@ -1097,6 +1097,6 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					214;
 //		Change DiceRange to use -1 for not set
 //
 //	214: 1.9.4 Preview
-//		Added new m_pGenome to player controller to use API 54/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
-//		Added new m_pGender to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
-//		Added new m_pPlayerClass to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.
+//		Added new m_pGenome to player controller to use API 55/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
+//		Added new m_pGender to player controller to use API 55/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
+//		Added new m_pPlayerClass to player controller to use API 55/Univ 41 CCharacterAttributeType. Legacy implementation uses GenericType defined by starting playership, set to m_pPlayerClassLegacy.

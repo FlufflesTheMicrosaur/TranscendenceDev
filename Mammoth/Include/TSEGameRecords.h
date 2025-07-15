@@ -83,8 +83,10 @@ class CGameRecord
 		TArray<DWORD> m_Extensions;				//	UNID of included extensions
 
 		CString m_sName;						//	Character name
-		GenomeTypes m_iGenome;					//	Legacy Character genome (Pre-API 54)
+		GenomeTypes m_iGenome;					//	Legacy Character genome (Pre-API 55)
 		CCharacterAttributeType *m_pGenome;					//	Character genome
+		CCharacterAttributeType *m_pGender;
+		CCharacterAttributeType *m_pPlayerClass;
 
 		DWORD m_dwShipClass;					//	Ship class UNID
 		CString m_sShipClass;					//	Ship class

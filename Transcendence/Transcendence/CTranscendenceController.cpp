@@ -868,7 +868,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		SNewGameSettings Defaults;
 		Defaults.sPlayerName = m_Settings.GetString(CGameSettings::playerName);
 		Defaults.iPlayerGenome = ParseGenomeID(m_Settings.GetString(CGameSettings::playerGenome));
-		Defaults.pPlayerGenome = g_pUniverse->FindGenomeType(m_Settings.GetInteger(CGameSettings::playerGenomeType));
+		Defaults.pPlayerGenome = g_pUniverse->FindCharacterAttributeType(m_Settings.GetInteger(CGameSettings::playerGenomeType));
 		Defaults.dwPlayerShip = (DWORD)m_Settings.GetInteger(CGameSettings::playerShipClass);
 
 		//	If the player name is NULL then we come up with a better idea

@@ -214,6 +214,8 @@ class IPlayerController
         virtual CPlayerGameStats *GetGameStats (void) const { return NULL; }
 		virtual GenomeTypes GetGenomeLegacy (void) const { return genomeUnknown; }
 		virtual CCharacterAttributeType* GetGenome(void) const { return NULL; }
+		virtual CCharacterAttributeType* GetGender(void) const { return NULL; }
+		virtual CCharacterAttributeType* GetCharacterClass(void) const { return NULL; }
 		virtual CString GetName (void) const { return NULL_STR; }
 		virtual bool GetPropertyInteger (const CString &sProperty, int *retiValue) { return false; }
 		virtual bool GetPropertyItemList (const CString &sProperty, CItemList *retItemList) { return false; }
