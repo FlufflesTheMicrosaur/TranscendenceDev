@@ -1226,24 +1226,30 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 		bUpdateHeader = true;
 		}
 
-	//	For backwards compatibility, use legacy UNID where API version <54.
+	//	For backwards compatibility, use legacy id where API version <55.
 	//  Sometimes we do not have an adventure. This
 	//	can happen when we're using TransData on an old TDB.
-	if (Univ.GetAdventureOrBaseAPIVersionSafe() < 54)
+	//	Also account for cases when an old save is used in API 55
+	//	but does not have a new genome type
+	if (Univ.GetAdventureOrBaseAPIVersionSafe() >= 55 && Univ.GetPlayerGenome())
 		{
-		if (Univ.GetPlayerGenomeLegacy() != m_Header.dwGenome)
+		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
 			{
-			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenomeLegacy();
+			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome()->GetUNID();
+			CString sGenderName = Univ.GetPlayerGender()->GetGenomeMenuName();
+			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeMenuName();
+			if (sGenderName) //	Handle non-nammed genders for non-gendered beings
+				CopyHeaderString(strPatternSubst(CONSTLIT("%s %s"), sGenderName, sGenomeName), m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
+			else
+				CopyHeaderString(sGenomeName, m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
 			bUpdateHeader = true;
 			}
 		}
 	else 
 		{
-		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
+		if (Univ.GetPlayerGenomeLegacy() != m_Header.dwGenome)
 			{
-			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome()->GetUNID();
-			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeMenuName();
-			CopyHeaderString(sGenomeName, m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
+			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenomeLegacy();
 			bUpdateHeader = true;
 			}
 		}
