@@ -160,10 +160,10 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 				sVar = g_pUniverse->GetPlayerName();
 
 			else if (strEquals(sVar, CONSTLIT("genome")))
-				sVar = g_pUniverse->GetPlayerGenome()->GetGenomeNameSingular();
+				sVar = g_pUniverse->GetPlayerGenome()->GetNameSingular();
 
 			else if (strEquals(sVar, CONSTLIT("genomes")))
-				sVar = g_pUniverse->GetPlayerGenome()->GetGenomeNamePlural();
+				sVar = g_pUniverse->GetPlayerGenome()->GetNamePlural();
 
 			//  Is this a genome word or gendered word in an API 55+ adventure?
 			//  (Player legacy genome vs. CharacterAttributeType depends on Adv/Base API version,

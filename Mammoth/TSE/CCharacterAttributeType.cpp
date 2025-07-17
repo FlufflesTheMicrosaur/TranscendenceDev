@@ -21,17 +21,17 @@ CString CCharacterAttributeType::GetDataField(const CString& sField) const
 
 	{
 	if (sField == ADJECTIVE_ATTRIB)
-		return m_sGenomeAdjective;
+		return m_sAdjective;
 	else if (sField == ID_ATTRIB)
 		return m_sSID;
 	else if (sField == MENU_NAME_ATTRIB)
-		return m_sGenomeMenuName;
+		return m_sMenuName;
 	else if (sField == NAME_ATTRIB)
-		return m_sGenomeName;
+		return m_sName;
 	else if (sField == PLURAL_ATTRIB)
 		return m_bPluralForm ? CString("true") : CString("false");
 	else if (sField == SHORT_NAME_ATTRIB)
-		return m_sGenomeShortName;
+		return m_sShortName;
 	else
 		{
 		CString sValue;
@@ -40,7 +40,7 @@ CString CCharacterAttributeType::GetDataField(const CString& sField) const
 		}
 	}
 
-CString CCharacterAttributeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
+CString CCharacterAttributeType::GetNamePattern(DWORD dwNounFormFlags, DWORD* retdwFlags) const
 
 //	GetNamePattern
 //
@@ -53,11 +53,11 @@ CString CCharacterAttributeType::GetGenomeNamePattern(DWORD dwNounFormFlags, DWO
 			*retdwFlags = 0;
 
 		if (dwNounFormFlags & nounShort)
-			return m_sGenomeShortName;
+			return m_sShortName;
 		else if (dwNounFormFlags & nounAdjective)
-			return m_sGenomeAdjective;
+			return m_sAdjective;
 		else
-			return m_sGenomeName;
+			return m_sName;
 	}
 
 ALERROR CCharacterAttributeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElement* pDesc)
@@ -73,29 +73,29 @@ ALERROR CCharacterAttributeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElemen
 
 		//	Parse the genome name
 
-		m_sGenomeName = pDesc->GetAttribute(NAME_ATTRIB);
-		if (m_sGenomeName.IsBlank())
+		m_sName = pDesc->GetAttribute(NAME_ATTRIB);
+		if (m_sName.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid genome name"));
 
-		m_sGenomeNameSingular = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, false, true);
-		if (m_sGenomeNameSingular.IsBlank())
+		m_sNameSingular = CLanguage::ParseNounForm(m_sName, NULL_STR, 0, false, true);
+		if (m_sNameSingular.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid singular form of genome name"));
 
-		m_sGenomeNamePlural = CLanguage::ParseNounForm(m_sGenomeName, NULL_STR, 0, true, true);
-		if (m_sGenomeNamePlural.IsBlank())
+		m_sNamePlural = CLanguage::ParseNounForm(m_sName, NULL_STR, 0, true, true);
+		if (m_sNamePlural.IsBlank())
 			return ComposeLoadError(Ctx, CONSTLIT("Invalid plural form of genome name"));
 
-		m_sGenomeAdjective = pDesc->GetAttribute(ADJECTIVE_ATTRIB);
-		if (m_sGenomeAdjective.IsBlank())
-			m_sGenomeShortName = m_sGenomeNameSingular;
+		m_sAdjective = pDesc->GetAttribute(ADJECTIVE_ATTRIB);
+		if (m_sAdjective.IsBlank())
+			m_sShortName = m_sNameSingular;
 
-		m_sGenomeShortName = pDesc->GetAttribute(SHORT_NAME_ATTRIB);
-		if (m_sGenomeShortName.IsBlank())
-			m_sGenomeShortName = m_sGenomeName;
+		m_sShortName = pDesc->GetAttribute(SHORT_NAME_ATTRIB);
+		if (m_sShortName.IsBlank())
+			m_sShortName = m_sName;
 
-		m_sGenomeMenuName = pDesc->GetAttribute(MENU_NAME_ATTRIB);
-		if (m_sGenomeMenuName.IsBlank())
-			m_sGenomeMenuName = m_sGenomeNameSingular;
+		m_sMenuName = pDesc->GetAttribute(MENU_NAME_ATTRIB);
+		if (m_sMenuName.IsBlank())
+			m_sMenuName = m_sNameSingular;
 
 		m_bPluralForm = pDesc->GetAttributeBool(PLURAL_ATTRIB);
 

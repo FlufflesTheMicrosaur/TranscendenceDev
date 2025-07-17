@@ -1236,8 +1236,8 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
 			{
 			m_Header.dwGenome = (DWORD)Univ.GetPlayerGenome()->GetUNID();
-			CString sGenderName = Univ.GetPlayerGender()->GetGenomeMenuName();
-			CString sGenomeName = Univ.GetPlayerGenome()->GetGenomeMenuName();
+			CString sGenderName = Univ.GetPlayerGender()->GetMenuName();
+			CString sGenomeName = Univ.GetPlayerGenome()->GetMenuName();
 			if (sGenderName) //	Handle non-nammed genders for non-gendered beings
 				CopyHeaderString(strPatternSubst(CONSTLIT("%s %s"), sGenderName, sGenomeName), m_Header.szGenomeName, sizeof(m_Header.szGenomeName));
 			else
