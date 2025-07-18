@@ -332,7 +332,13 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					214;
 //				For legacy (objDestroy obj) behavior, use (objRemove obj)
 //			(objRemove obj)
 //				Added, removes the obj from system
-
+//
+//	 55: 2.0a?
+//		<AdventureDesc>
+//			startingGenomeCriteria="criteria"
+//			startingCharacterClassCriteria="criteria"
+//		<CharacterAttribute>:
+constexpr DWORD API_CHARACTER_ATTRIBUTE_TYPE = 55
 
 //	UNIVERSE VERSION HISTORY ---------------------------------------------------
 //

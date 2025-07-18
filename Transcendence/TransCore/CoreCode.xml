@@ -663,7 +663,7 @@
 			; words outside of the 9 listed in the built-in engine tables
 			;
 			; Instead, composable strings using %TextID% replacement from the
-			; GenomeType Language blocks should be used.
+			; CharacterAttributeType Language blocks should be used.
 			; Player Ex. (fmtCompose "%sir%")
 			; Character Ex. (fmtCompose "%sir@char%" {char: rpgCharacterStruct})
 

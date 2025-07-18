@@ -420,10 +420,11 @@ void CPlayerGameStats::GenerateGameStats (CGameStats &Stats, CSpaceObject *pPlay
 	//	Base stats
 
 
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < API_CHARACTER_ATTRIBUTE_TYPE || !m_Universe.GetPlayerGenome())
 		Stats.Insert(CONSTLIT("Gender"), strCapitalize(GetGenomeName(m_Universe.GetPlayerGenomeLegacy())));
 	else
 		Stats.Insert(CONSTLIT("Genome"), strCapitalize(m_Universe.GetPlayerGenome()->GetMenuName()));
+		Stats.Insert(CONSTLIT("Gender"), strCapitalize(m_Universe.GetPlayerGender()->GetMenuName()));
 	
 	Stats.Insert(CONSTLIT("Score"), strFormatInteger(CalcEndGameScore(), -1, FORMAT_THOUSAND_SEPARATOR | FORMAT_UNSIGNED));
 	Stats.Insert(CONSTLIT("Ship class"), pShip->GetNounPhrase(0));

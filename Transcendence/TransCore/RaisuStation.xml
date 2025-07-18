@@ -54,7 +54,7 @@
 			<Constant id="rpgCharacter.stationMaster">
 				{
 					id: 'raisuStationMaster
-					genome: &gnHumanFeminine;
+					genome: &caHumanFeminine;
 					}
 			</Constant>
 

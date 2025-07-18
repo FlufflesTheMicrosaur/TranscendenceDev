@@ -20,7 +20,7 @@
 						fullName: "Jean Able"
 						friendlyName: "Jean"
 						formalName: "Able"
-						genome: &gnHumanFeminine;
+						genome: &caHumanFeminine;
 						notes: "Jean dropped out of medical school but finally found her calling as a station master."
 						}
 
@@ -29,7 +29,7 @@
 						fullName: "Martin Treadwell"
 						friendlyName: "Marty"
 						formalName: "Treadwell"
-						genome: &gnHumanMasculine;
+						genome: &caHumanMasculine;
 						notes: "Martin loves meeting all the people who come to visit his station."
 						}
 					}

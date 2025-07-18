@@ -177,7 +177,7 @@ void CNewGameSession::CmdChangeGenome (void)
 
 	{
 
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < API_CHARACTER_ATTRIBUTE_TYPE || !m_GenomeTypes.GetCount())
 		{
 		if (m_Settings.iPlayerGenome == genomeHumanMale)
 			m_Settings.iPlayerGenome = genomeHumanFemale;
@@ -194,6 +194,73 @@ void CNewGameSession::CmdChangeGenome (void)
 			m_iCurGenome = 0;
 		m_Settings.pPlayerGenome = m_GenomeTypes[m_iCurGenome];
 		SetPlayerGenome(m_Settings.pPlayerGenome);
+		}
+	}
+
+
+void CNewGameSession::CmdChangeGenome (void)
+
+//	CmdChangeGenom
+//
+//	Change genome
+
+	{
+
+	if (!m_GenomeTypes.GetCount())
+		{
+		if (m_Settings.iPlayerGenome == genomeHumanMale)
+			m_Settings.iPlayerGenome = genomeHumanFemale;
+		else
+			m_Settings.iPlayerGenome = genomeHumanMale;
+
+		SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
+		}
+	else
+		{
+		m_iCurGenome++;
+		//loop back around if we reached the end
+		if (m_iCurGenome == m_GenomeTypes.GetCount())
+			m_iCurGenome = 0;
+		m_Settings.pPlayerGenome = m_GenomeTypes[m_iCurGenome];
+		SetPlayerGenome(m_Settings.pPlayerGenome);
+		}
+	}
+
+void CNewGameSession::CmdChangeGender (void)
+
+//	CmdChangeGenom
+//
+//	Change genome
+
+	{
+
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() >= API_CHARACTER_ATTRIBUTE_TYPE && m_GenderTypes.GetCount())
+		{
+		m_iCurGender++;
+		//loop back around if we reached the end
+		if (m_iCurGender == m_GenderTypes.GetCount())
+			m_iCurGender = 0;
+		m_Settings.pPlayerGender = m_GenderTypes[m_iCurGender];
+		SetPlayerGender(m_Settings.pPlayerGender);
+		}
+	}
+
+void CNewGameSession::CmdChangePlayerClass (void)
+
+//	CmdChangeGenom
+//
+//	Change genome
+
+	{
+
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() >= API_CHARACTER_ATTRIBUTE_TYPE && m_PlayerClassTypes.GetCount())
+		{
+		m_iCurPlayerClass++;
+		//loop back around if we reached the end
+		if (m_iCurPlayerClass == m_PlayerClassTypes.GetCount())
+			m_iCurPlayerClass = 0;
+		m_Settings.pPlayerClass = m_PlayerClassTypes[m_iCurGender];
+		SetPlayerClass(m_Settings.pPlayerClass);
 		}
 	}
 
@@ -497,7 +564,7 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 	m_pRoot->SetPropertyMetric(PROP_PADDING_BOTTOM, (Metric)MAJOR_PADDING_BOTTOM);
 
 	//	Use a 3 column layout if we are playing a legacy adventure
-	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
+	if (m_Universe.GetAdventureOrBaseAPIVersionSafe() < API_CHARACTER_ATTRIBUTE_TYPE)
 		{
 		int cxBar = RectWidth(rcCenter);
 		int cyBar = cyBackground;
@@ -549,7 +616,7 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 			alignRight);
 			SetPlayerGenomeLegacy(m_Settings.iPlayerGenome);
 		}
-	//	Use a 4 column layout if we are playing an API 54 adventure
+	//	Use a 4 column layout if we are playing an API 55 adventure
 	else
 		{
 		int cxBar = RectWidth(rcCenter);

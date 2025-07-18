@@ -565,10 +565,10 @@ class CNewGameSession : public IHISession
 		int m_iCurShipClass = 0;
 		TSortMap<CString, CCharacterAttributeType *> m_GenomeTypes;
 		int m_iCurGenome = 0;
-		TSortMap<CString, CDesignType *> m_GenderTypes;
+		TSortMap<CString, CCharacterAttributeType *> m_GenderTypes;
 		int m_iCurGender = 0;
-		TSortMap<CString, CDesignType *> m_PlayerClassTypes;
-		int m_iCurClass = 0;
+		TSortMap<CString, CCharacterAttributeType *> m_PlayerClassTypes;
+		int m_iCurPlayerClass = 0;
 
 		CAniVScroller *m_pRoot = NULL;
 
@@ -578,6 +578,8 @@ class CNewGameSession : public IHISession
 		CSmallOptionButtonAnimator m_PlayerGender;
 		CSmallOptionButtonAnimator m_Difficulty;
 		CTextAreaAnimator m_DifficultyDesc;
+
+		ENewGameSesssionView m_ViewState = viewNotSet;
 
 		int m_xShipClass = 0;
 		int m_yShipClass = 0;

@@ -5,9 +5,9 @@
 	<Image UNID="&rsGenomes;"		bitmap="Resources\sotp_genomes.png"  loadOnUse="true"/>
 	<!-- OXYGENIA IX (earth-based biological) -->
 
-	<GenomeType unid="&gnDefaultText;"
+	<CharacterAttributeType unid="&caDefaultText;"
 		id="genome_default_text"
-		name="(DEFAULT TEXT GENOMETYPE)"
+		name="(DEFAULT TEXT CharacterAttributeType)"
 		applyLanguage="&unidGenderedLanguageAny;"
 		attributes="genderDefault">
 		<Image unid="&rsGenomes;"  imageX="0" imageY="0" imageWidth="64" imageHeight="64"/>
@@ -31,10 +31,10 @@
 			<Text id="eyes">eyes</Text>
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
-	<GenomeType unid="&gnOxygeniaIX;"
-		inherit="&gnDefaultText;"
+	<CharacterAttributeType unid="&caOxygeniaIX;"
+		inherit="&caDefaultText;"
 		id="oxygenia_ix"
 		menuName="Oxygenia-IX"
 		name="oxygenia-IX"
@@ -47,12 +47,12 @@
 			<!-- Default variant-specific language -->
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
 	<!-- Baseline humans -->
 
-	<GenomeType unid="&gnHuman;"
-		inherit="&gnOxygeniaIX;"
+	<CharacterAttributeType unid="&caHuman;"
+		inherit="&caOxygeniaIX;"
 		id="oxygenia_ix.human"
 		menuName="Human"
 		name="human(s)"
@@ -70,10 +70,10 @@
 			<Text id="visualTaxon.Adj">mammalian</Text>
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
-	<GenomeType unid="&gnHumanMasculine;"
-		inherit="&gnHuman;"
+	<CharacterAttributeType unid="&caHumanMasculine;"
+		inherit="&caHuman;"
 		id="oxygenia_ix.human.masc"
 		menuName="Human (Masculine)"
 		name="human(s)"
@@ -85,10 +85,10 @@
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
-	<GenomeType unid="&gnHumanFeminine;"
-		inherit="&gnHuman;"
+	<CharacterAttributeType unid="&caHumanFeminine;"
+		inherit="&caHuman;"
 		id="oxygenia_ix.human.fem"
 		menuName="Human (Feminine)"
 		name="human(s)"
@@ -100,12 +100,12 @@
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
 	<!-- Augmented humans -->
 
-	<GenomeType unid="&gnHumanAugment;"
-		inherit="&gnHuman;"
+	<CharacterAttributeType unid="&caHumanAugment;"
+		inherit="&caHuman;"
 		id="oxygenia_ix.human.augmented"
 		menuName="Augmented Human"
 		name="human(s)"
@@ -123,10 +123,10 @@
 			<Text id="visualTaxon.Adj">mammalian</Text>
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
-	<GenomeType unid="&gnHumanAugmentMasculine;"
-		inherit="&gnHuman;"
+	<CharacterAttributeType unid="&caHumanAugmentMasculine;"
+		inherit="&caHuman;"
 		id="oxygenia_ix.human.augmented.masc"
 		menuName="Augmented Human (Masculine)"
 		name="human(s)"
@@ -138,10 +138,10 @@
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
-	<GenomeType unid="&gnHumanAugmentFeminine;"
-		inherit="&gnHuman;"
+	<CharacterAttributeType unid="&caHumanAugmentFeminine;"
+		inherit="&caHuman;"
 		id="oxygenia_ix.human.augmented.fem"
 		menuName="Augmented Human (Feminine)"
 		name="human(s)"
@@ -153,7 +153,7 @@
 			<!-- Genome specific language -->
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 
 	<!-- Neohumans -->
 
@@ -163,8 +163,8 @@
 
 	<!-- Microsaurs -->
 
-	<GenomeType unid="&gnMicrosaur;"
-		inherit="&gnOxygeniaIX;"
+	<CharacterAttributeType unid="&caMicrosaur;"
+		inherit="&caOxygeniaIX;"
 		id="oxygenia_ix.microsaur"
 		menuName="Microsaur"
 		name="microsaur"
@@ -186,7 +186,7 @@
 			<Text id="rear">tail</Text>
 			<!-- ... more here but this is an example -->
 		</Language>
-	</GenomeType>
+	</CharacterAttributeType>
 	
 	<!-- Inorganic -->
 

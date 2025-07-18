@@ -170,7 +170,7 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 			//  not the extension version, therefor we should always attempt getting the word
 			//  from the relevant CharacterAttributeTypes first)
 
-			else if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= 55)
+			else if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() >= API_CHARACTER_ATTRIBUTE_TYPE)
 				{
 				//	do we need to use the player's or a provided character attribute type
 				CString sVarCopy = sVar;
@@ -477,12 +477,12 @@ CString CLanguage::ComposeGenderedWordHelper (CUniverse &Universe, const CString
 	else
 		{
 
-		if (Universe.GetAdventureOrBaseAPIVersionSafe() < 54)
+		if (Universe.GetAdventureOrBaseAPIVersionSafe() < API_CHARACTER_ATTRIBUTE_TYPE || !Universe.GetPlayerGender())
 			return ComposeGenderedWord(sWord, Universe.GetPlayerGenomeLegacy());
 		else
 			{
 			CString pRes;
-			Universe.GetPlayerGenome()->TranslateText(
+			Universe.GetPlayerGender()->TranslateText(
 				sWord,
 				pData,
 				&pRes);

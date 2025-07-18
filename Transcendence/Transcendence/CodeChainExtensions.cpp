@@ -516,7 +516,7 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"i*",	0,	},
 
 		{	"plyGetGenome",					fnPlyGet,			FN_PLY_GENOME,
-			"(plyGetGenome player) -> API>54: UNID (int) of player GenomeType, API<54: 'humanMale | 'humanFemale\n\n",
+			"(plyGetGenome player) -> API>55: UNID (int) of player GenomeType, API<55: 'humanMale | 'humanFemale\n\n",
 			"i",	0,	},
 
 		{	"plyChangeGenome",				fnPlySet,		FN_PLY_CHANGE_GENOME,
@@ -1126,7 +1126,7 @@ ICCItem *fnPlyGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			}
 
 		case FN_PLY_GENOME:
-			if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() < 54)
+			if (g_pUniverse->GetAdventureOrBaseAPIVersionSafe() < 55 || !pPlayer->GetPlayerGenome())
 				pResult = pCC->CreateString(GetGenomeID(pPlayer->GetPlayerGenomeLegacy()));
 			else
 				pResult = pCC->CreateInteger(pPlayer->GetPlayerGenome()->GetUNID());
@@ -1304,7 +1304,7 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 		{
 		case FN_PLY_CHANGE_GENOME:
 			{
-			if (pCtx->GetAPIVersion() < 55)
+			if (pCtx->GetAPIVersion() < API_CHARACTER_ATTRIBUTE_TYPE)
 				return pCC->CreateError(CONSTLIT("Character genome cannot be changed by extensions below API 55"));
 			CCharacterAttributeType* pNewGenome = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
 			if (pNewGenome == NULL)
@@ -1316,7 +1316,7 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 
 		case FN_PLY_CHANGE_GENDER:
 			{
-			if (pCtx->GetAPIVersion() < 55)
+			if (pCtx->GetAPIVersion() < API_CHARACTER_ATTRIBUTE_TYPE)
 				return pCC->CreateError(CONSTLIT("Character gender cannot be changed by extensions below API 55"));
 			CCharacterAttributeType* pNewGender = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
 			if (pNewGender == NULL)
@@ -1328,7 +1328,7 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 
 		case FN_PLY_CHANGE_CLASS:
 			{
-			if (pCtx->GetAPIVersion() < 55)
+			if (pCtx->GetAPIVersion() < API_CHARACTER_ATTRIBUTE_TYPE)
 				return pCC->CreateError(CONSTLIT("Character class cannot be changed by extensions below API 55"));
 			CCharacterAttributeType* pNewClass = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
 			if (pNewClass == NULL)

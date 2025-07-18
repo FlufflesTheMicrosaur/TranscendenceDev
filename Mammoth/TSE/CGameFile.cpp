@@ -1231,7 +1231,7 @@ ALERROR CGameFile::SaveUniverse (CUniverse &Univ, DWORD dwFlags)
 	//	can happen when we're using TransData on an old TDB.
 	//	Also account for cases when an old save is used in API 55
 	//	but does not have a new genome type
-	if (Univ.GetAdventureOrBaseAPIVersionSafe() >= 55 && Univ.GetPlayerGenome())
+	if (Univ.GetAdventureOrBaseAPIVersionSafe() >= API_CHARACTER_ATTRIBUTE_TYPE && Univ.GetPlayerGenome())
 		{
 		if (Univ.GetPlayerGenome()->GetUNID() != m_Header.dwGenome)
 			{

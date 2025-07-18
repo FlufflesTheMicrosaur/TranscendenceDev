@@ -180,22 +180,52 @@ ALERROR CAdventureDesc::GetStartingShipClasses (TSortMap<CString, CShipClass *> 
 	}
 
 ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CCharacterAttributeType*>* retClasses, CString* retsError)
-{
+	{
 	int i;
 	int dbg_NumGenomes = GetUniverse().GetCharacterAttributeTypeCount();
 	//	Make a list
 
 	retClasses->DeleteAll();
 	for (i = 0; i < GetUniverse().GetCharacterAttributeTypeCount(); i++)
-	{
+		{
 		CCharacterAttributeType* pGenome = GetUniverse().GetCharacterAttributeType(i);
 		if (IsValidStartingGenome(pGenome))
-		{
 			retClasses->Insert(pGenome->GetSID(), pGenome);
 		}
-	}
 	return ALERROR();
-}
+	}
+
+ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CCharacterAttributeType*>* retClasses, CString* retsError)
+	{
+	int i;
+	int dbg_NumGenomes = GetUniverse().GetCharacterAttributeTypeCount();
+	//	Make a list
+
+	retClasses->DeleteAll();
+	for (i = 0; i < GetUniverse().GetCharacterAttributeTypeCount(); i++)
+		{
+		CCharacterAttributeType* pGenome = GetUniverse().GetCharacterAttributeType(i);
+		if (IsValidStartingGenome(pGenome))
+			retClasses->Insert(pGenome->GetSID(), pGenome);
+		}
+	return ALERROR();
+	}
+
+ALERROR CAdventureDesc::GetStartingGenomeTypes(TSortMap<CString, CCharacterAttributeType*>* retClasses, CString* retsError)
+	{
+	int i;
+	int dbg_NumGenomes = GetUniverse().GetCharacterAttributeTypeCount();
+	//	Make a list
+
+	retClasses->DeleteAll();
+	for (i = 0; i < GetUniverse().GetCharacterAttributeTypeCount(); i++)
+		{
+		CCharacterAttributeType* pGenome = GetUniverse().GetCharacterAttributeType(i);
+		if (IsValidStartingGenome(pGenome))
+			retClasses->Insert(pGenome->GetSID(), pGenome);
+		}
+	return ALERROR();
+	}
 
 bool CAdventureDesc::IsValidStartingClass (CShipClass *pClass)
 

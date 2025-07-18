@@ -7,6 +7,16 @@ class CCharacterAttributeType : public CDesignType
 	public:
 		//	CCharacterAttributeType
 
+		enum ECharacterAttributeTypes {
+			attributeTypeUnknown,
+			attributeTypeCharacterClass,
+			attributeTypeGenome,
+			attributeTypeGender,
+			attributeTypeCustom,
+
+			numCharacterAttributeType
+			};
+
 		CCharacterAttributeType(void) { }
 
 		inline const CString& GetNamePlural(void) const { return m_sNamePlural; }
@@ -16,6 +26,7 @@ class CCharacterAttributeType : public CDesignType
 		inline const CString& GetAdjective(void) const { return m_sAdjective; }
 		inline const CString& GetMenuName(void) const { return m_sMenuName; }
 		inline const CString& GetSID(void) const { return m_sSID; }
+		inline const CString& GetAttributeType(void) const { return m_sAttributeType; }
 		const CObjectImageArray& GetImage(bool bActual = false) const { return m_Image; };
 		virtual const CCompositeImageDesc& GetTypeImage(void) const override { return m_ImageDesc; }
 
@@ -41,10 +52,11 @@ class CCharacterAttributeType : public CDesignType
 		CString m_sShortNamePlural;						//	"10 Velociraptors"
 		CString m_sAdjective;							//	"Saurian"
 		CString m_sMenuName;							//	Name for certain UIs where you want to show specific text for variants: "Microsaur (Velociraptor)"
+		CString m_sAttributeType;						//	"genome" (used by a character's CharacterAttributeStack. Must match the appropriate stack layer attribute type.)
 		bool m_bPluralForm = false;						//	"Those Dwarg are together"; "That Dwarg is alone"
 
 		//	Image
 
-		CCompositeImageDesc m_ImageDesc;					//	Image dec of genome icon
-		CObjectImageArray m_Image;							//	Genome icon
+		CCompositeImageDesc m_ImageDesc;				//	Image desc of icon
+		CObjectImageArray m_Image;						//	Icon
 	};

@@ -127,9 +127,9 @@
 		</Language>
 	</Type>
 
-	<!-- API 54 replacement for the in-engine gendered language table-->
+	<!-- API 55 replacement for the in-engine gendered language table-->
 
-	<Type UNID="&unidGenderedLanguageAny;">
+	<CharacterAttributeType UNID="&unidGenderedLanguageAny;">
 		<Language>
 		<!--
 			Abbreviations
@@ -154,9 +154,9 @@
 			<Text id="son">child</Text>
 			<Text id="sir">sir</Text>
 		</Language>
-	</Type>
+	</CharacterAttributeType>
 
-	<Type UNID="&unidGenderedLanguageFeminine;">
+	<CharacterAttributeType UNID="&unidGenderedLanguageFeminine;">
 		<Language>
 			<Text id="boy">girl</Text>
 			<Text id="brother">sister</Text>
@@ -174,9 +174,9 @@
 			<Text id="son">daughter</Text>
 			<Text id="sir">ma'am</Text>
 		</Language>
-	</Type>
+	</CharacterAttributeType>
 
-	<Type UNID="&unidGenderedLanguageMasculine;">
+	<CharacterAttributeType UNID="&unidGenderedLanguageMasculine;">
 		<Language>
 			<Text id="boy">boy</Text>
 			<Text id="brother">brother</Text>
@@ -194,9 +194,9 @@
 			<Text id="son">son</Text>
 			<Text id="sir">sir</Text>
 		</Language>
-	</Type>
+	</CharacterAttributeType>
 
-	<Type UNID="&unidGenderedLanguageNeuter;">
+	<CharacterAttributeType UNID="&unidGenderedLanguageNeuter;">
 		<Language>
 			<Text id="boy">child</Text>
 			<Text id="brother">partner</Text>
@@ -214,6 +214,6 @@
 			<Text id="son">child</Text>
 			<Text id="sir">sir</Text>
 		</Language>
-	</Type>
+	</CharacterAttributeType>
 
 </TranscendenceModule>

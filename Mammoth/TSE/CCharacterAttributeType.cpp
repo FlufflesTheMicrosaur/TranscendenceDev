@@ -11,6 +11,7 @@
 #define NAME_ATTRIB								CONSTLIT("name")
 #define PLURAL_ATTRIB							CONSTLIT("plural")
 #define SHORT_NAME_ATTRIB						CONSTLIT("shortName")
+#define ATTRIBUTE_TYPE_ATTRIB					CONSTLIT("attributeType")
 
 
 CString CCharacterAttributeType::GetDataField(const CString& sField) const
@@ -32,6 +33,8 @@ CString CCharacterAttributeType::GetDataField(const CString& sField) const
 		return m_bPluralForm ? CString("true") : CString("false");
 	else if (sField == SHORT_NAME_ATTRIB)
 		return m_sShortName;
+	else if (sField == ATTRIBUTE_TYPE_ATTRIB)
+		return m_sAttributeType;
 	else
 		{
 		CString sValue;
@@ -79,11 +82,11 @@ ALERROR CCharacterAttributeType::OnCreateFromXML(SDesignLoadCtx& Ctx, CXMLElemen
 
 		m_sNameSingular = CLanguage::ParseNounForm(m_sName, NULL_STR, 0, false, true);
 		if (m_sNameSingular.IsBlank())
-			return ComposeLoadError(Ctx, CONSTLIT("Invalid singular form of genome name"));
+			return ComposeLoadError(Ctx, CONSTLIT("Invalid singular form of character attribute name"));
 
 		m_sNamePlural = CLanguage::ParseNounForm(m_sName, NULL_STR, 0, true, true);
 		if (m_sNamePlural.IsBlank())
-			return ComposeLoadError(Ctx, CONSTLIT("Invalid plural form of genome name"));
+			return ComposeLoadError(Ctx, CONSTLIT("Invalid plural form of character attribute name"));
 
 		m_sAdjective = pDesc->GetAttribute(ADJECTIVE_ATTRIB);
 		if (m_sAdjective.IsBlank())

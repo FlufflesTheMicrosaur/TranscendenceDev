@@ -673,11 +673,11 @@
 			;		character ID. Each field is a struct containing information
 			;		about the character.
 			;
-			;		Note: in API 54, we introduce GenomeType, deprecating the
+			;		Note: in API 54, we introduce CharacterAttributeType, deprecating the
 			;		old non-unified implementations of player and rpgCharacter
 			;		genomes and genders. Then previously unused 'genome field
 			;		of the rpgCharacter struct is now used to store the UNID of
-			;		the character's GenomeType. Since GenomeTypes can store
+			;		the character's CharacterAttributeType. Since CharacterAttributeTypes can store
 			;		much more complex Language data blocks than the legacy API
 			;		53- system, it is now used preferentially by fmtCompose
 			;		calls when trying to retrieve matching words, ignoring the
