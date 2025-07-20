@@ -1,6 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.1.32210.238
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodeChain", "..\Alchemy\CodeChain\CodeChain.vcxproj", "{39983CCD-095B-4B41-854F-4967A254A07C}"
@@ -931,6 +930,14 @@ Global
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|Win32.Build.0 = Release|Win32
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.ActiveCfg = Release|x64
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.Build.0 = Release|x64
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Any CPU.ActiveCfg = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Any CPU.Build.0 = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|ARM.ActiveCfg = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|ARM.Build.0 = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Win32.ActiveCfg = Debug|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Win32.Build.0 = Debug|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|x64.ActiveCfg = Debug|x64
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|x64.Build.0 = Debug|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|Any CPU.ActiveCfg = Debug|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|Any CPU.Build.0 = Debug|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|ARM.ActiveCfg = Debug|Win32
@@ -939,6 +946,14 @@ Global
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|Win32.Build.0 = Debug|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|x64.ActiveCfg = Debug|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug in Program Files|x64.Build.0 = Debug|x64
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|Any CPU.ActiveCfg = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|Any CPU.Build.0 = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|ARM.ActiveCfg = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|ARM.Build.0 = Release|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|Win32.ActiveCfg = Debug|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|Win32.Build.0 = Debug|Win32
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|x64.ActiveCfg = Debug|x64
+		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug with Address Sanitizer|x64.Build.0 = Debug|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug|Any CPU.Build.0 = Debug|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug|ARM.ActiveCfg = Debug|x64
