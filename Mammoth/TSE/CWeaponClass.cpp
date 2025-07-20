@@ -121,7 +121,7 @@ const Metric MAX_TARGET_RANGE =			(24.0 * LIGHT_SECOND);
 const int MAX_COUNTER =					100;
 
 const Metric STD_FIRE_RATE_SECS =		16.0;				//	Standard fire rate (secs)
-const Metric STD_FIRE_DELAY_TICKS =     8.0;
+const Metric STD_FIRE_DELAY_TICKS =		STD_FIRE_RATE_SECS / STD_SECONDS_PER_UPDATE;
 
 const Metric STD_AMMO_BALANCE =         -90.0;				//  Balance adj from having ammo
 const Metric STD_AMMO_MASS =            10.0;               //  Std ammo mass (kg)
@@ -1265,7 +1265,12 @@ CShotArray CWeaponClass::CalcShotsFired (CInstalledDevice &Device, const CWeapon
 
 				Shots[i].pTarget = Target.pObj;
 				if (bCanRotate)
-					Shots[i].iDir = Target.iFireAngle;
+					{
+					int iDeviceSlotAvgAngle = iRotationType != CDeviceRotationDesc::rotOmnidirectional ? AngleMod(Device.GetMinFireArc() + abs(Device.GetMaxFireArc() - Device.GetMinFireArc()) / 2) : 0;
+					int iSourceDirection = Device.GetSource()->GetRotation();
+					int iConfigurationOffsetAngle = AngleMod(Shots[i].iDir - iSourceDirection - iDeviceSlotAvgAngle);
+					Shots[i].iDir = AngleMod(iConfigurationOffsetAngle + Target.iFireAngle);
+					}
 				}
 			}
 
@@ -2700,6 +2705,8 @@ void CWeaponClass::FireWeaponShot (CSpaceObject *pSource,
 		Ctx.iRepeatingCount = iRepeatingCount;
 		Ctx.pTarget = pTarget;
 		Ctx.dwFlags = dwFlags;
+		Ctx.vSourceVel = pSource->GetVel();
+		Ctx.vSourcePos = pSource->GetPos();
 		pSource->GetSystem()->CreateWeaponFire(Ctx, &pNewObj);
 
 		//	Remember the shot, if necessary

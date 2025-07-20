@@ -1478,6 +1478,9 @@ void CShip::CreateExplosion (SDestroyCtx &Ctx)
 	ShotCtx.vPos = GetPos();
 	ShotCtx.vVel = GetVel();
 	ShotCtx.iDirection = GetRotation();
+	ShotCtx.vSourcePos = ShotCtx.vPos;
+	ShotCtx.vSourceVel = ShotCtx.vVel;
+	ShotCtx.iSourceDirection = ShotCtx.iDirection;
 	ShotCtx.dwFlags = SShotCreateCtx::CWF_EXPLOSION;
 
 	GetSystem()->CreateWeaponFire(ShotCtx);
@@ -2315,6 +2318,8 @@ void CShip::FinishCreation (SShipGeneratorCtx *pCtx, SSystemCreateCtx *pSysCreat
 		}
 
 	FireOnCreate(OnCreate);
+	if (IsDestroyed())
+		return;
 
 	//	Set the orders from the generator
 
@@ -3883,6 +3888,10 @@ void CShip::ObjectDestroyedHook (const SDestroyCtx &Ctx)
 
 	m_pController->OnObjDestroyed(Ctx);
 
+	//  Have all of our devices handle it, ex, they may need to retarget
+
+	OnObjDestroyUpdateDevices(Ctx);
+
 	//	If what we're docked with got destroyed, clear it
 
 	if (GetDockedObj() == Ctx.Obj)
@@ -5144,7 +5153,7 @@ void CShip::OnMove (SUpdateCtx &Ctx, const CVector &vOldPos, Metric rSeconds)
 	if (WasPainted() && Ctx.IsShipEffectUpdateEnabled())
 		{
 		bool bRecalcBounds;
-		m_Effects.Move(this, vOldPos, &bRecalcBounds);
+		m_Effects.Move(this, vOldPos, rSeconds, &bRecalcBounds);
 
 #ifdef DEBUG_MOVE_PERFORMANCE
 		Ctx.bCalledShipEffectMove = true;

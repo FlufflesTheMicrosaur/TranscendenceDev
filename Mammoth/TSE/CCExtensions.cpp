@@ -257,6 +257,7 @@ ICCItem *fnObjActivateItem(CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 #define FN_OBJ_GET_REMOVE_CONDITION_PRICE	148
 #define FN_OBJ_SQUADRON_COMMS		149
 #define FN_OBJ_SQUADRON_COMMS_MESSAGES	150
+#define FN_OBJ_REMOVE				151
 
 #define NAMED_ITEM_SELECTED_WEAPON		CONSTLIT("selectedWeapon")
 #define NAMED_ITEM_SELECTED_LAUNCHER	CONSTLIT("selectedLauncher")
@@ -920,8 +921,10 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"   'linkedFireOptions\n"
 			"   'maxDamage           Maximum damage per shot\n"
 			"   'minDamage           Minimum damage per shot\n"
+			"   'missileSpeed\n"
 			"   'multiShot\n"
 			"   'omnidirectional\n"
+			"   'range\n"
 			"   'repeating\n"
 			"	'shipCounterPerShot\n"
 			"   'stdCost\n"
@@ -1751,8 +1754,13 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"i",		PPFLAG_SIDEEFFECTS,	},
 
 		{	"objDestroy",					fnObjSet,		FN_OBJ_DESTROY,
-			"(objDestroy obj [objSource]) -> True/Nil",
+			"(objDestroy obj [objSource]) -> True/Nil\n\n"
+			"objSource: required in API 54+. For old 1 argument behavior, see objRemove.\n",
 			"i*",	PPFLAG_SIDEEFFECTS,	},
+
+		{	"objRemove",					fnObjSet,		FN_OBJ_REMOVE,
+			"(objRemove obj) -> True/Nil",
+			"i",	PPFLAG_SIDEEFFECTS,	},
 
 		{	"objEnhanceItem",		fnObjSet,		FN_OBJ_ENHANCE_ITEM,
 			"(objEnhanceItem obj item enhancementType|item|enhancementDesc) -> result\n\n"
@@ -2805,7 +2813,7 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 			"(msnDecline missionObj)",
 			"i",	PPFLAG_SIDEEFFECTS,	},
 
-		{	"msnDestroy",					fnObjSet,			FN_OBJ_DESTROY,
+		{	"msnDestroy",					fnObjSet,			FN_OBJ_REMOVE,
 			"(msnDestroy missionObj) -> True/Nil",
 			"i*",	PPFLAG_SIDEEFFECTS,	},
 
@@ -7104,6 +7112,11 @@ ICCItem *fnObjGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 				FragCtx.Source = DamageCtx.Attacker;
 				FragCtx.pTarget = (!pObj->IsDestroyed() ? pObj : NULL);
 				FragCtx.vPos = vHitPos;
+				FragCtx.vVel = pObj->GetVel();
+				FragCtx.vSourcePos = vHitPos;
+				FragCtx.vSourceVel = FragCtx.vVel;
+				FragCtx.iDirection = VectorToPolar(vHitPos - pObj->GetPos());
+				FragCtx.iSourceDirection = FragCtx.iDirection;
 
 				pSystem->CreateWeaponFragments(FragCtx, DamageCtx.pCause);
 				}
@@ -8737,6 +8750,21 @@ ICCItem *fnObjSet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			CDamageSource DamageSource(NULL, removedFromSystem);
 			if (pArgs->GetCount() > 1)
 				DamageSource = GetDamageSourceArg(*pCC, pArgs->GetElement(1));
+			else
+				{
+				if (pCtx->GetAPIVersion() >= 54)
+					{
+					CString sError = CONSTLIT("Calling (objDestroy obj) has been deprecated in API 54+. Use (objRemove obj) instead.");
+					return pCC->CreateError(sError, pArgs->GetElement(1));
+					}
+				}
+			pObj->Destroy(DamageSource.GetCause(), DamageSource);
+			return pCC->CreateTrue();
+			}
+
+		case FN_OBJ_REMOVE:
+			{
+			CDamageSource DamageSource(NULL, removedFromSystem);
 
 			pObj->Destroy(DamageSource.GetCause(), DamageSource);
 			return pCC->CreateTrue();
@@ -11285,6 +11313,15 @@ ICCItem *fnShipSet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 				return pCC->CreateNil();
 				}
 
+			if (pTarget && pTarget->IsAscended())
+				{
+				if (pCtx->GetUniverse().InDebugMode())
+					return pCC->CreateError(CONSTLIT("shpOrder target is ascended"), pArgs->GetElement(1));
+
+				::kernelDebugLogPattern("ERROR: shpOrder %s target ascended.", pArgs->GetElement(1)->GetStringValue());
+				return pCC->CreateNil();
+				}
+
 			//	Get the data
 
 			COrderDesc OrderDesc = COrderDesc::ParseFromCCItem(*pCtx, iOrder, pTarget, *pArgs, iArg);
@@ -13011,7 +13048,10 @@ ICCItem *fnSystemCreate (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			Ctx.Source = Source;
 			Ctx.vPos = vPos;
 			Ctx.vVel = PolarToVector(iDir, rSpeed);
+			Ctx.vSourcePos = pSource ? pSource->GetPos() : vPos;
+			Ctx.vSourceVel = pSource ? pSource->GetVel() : NullVector;
 			Ctx.iDirection = iDir;
+			Ctx.iSourceDirection = pSource ? pSource->GetRotation() : iDir;
 			Ctx.pTarget = pTarget;
 			Ctx.dwFlags = (bDetonateNow ? SShotCreateCtx::CWF_EXPLOSION : SShotCreateCtx::CWF_WEAPON_FIRE);
 

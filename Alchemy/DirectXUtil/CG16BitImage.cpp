@@ -28,7 +28,6 @@ CG16bitImage::CG16bitImage (void) :
 		m_pRedAlphaTable(NULL),
 		m_pGreenAlphaTable(NULL),
 		m_pBlueAlphaTable(NULL),
-		m_pSurface(NULL),
 		m_pSprite(NULL),
 		m_pBMI(NULL)
 
@@ -81,43 +80,6 @@ int CG16bitImage::AdjustTextX (const CG16bitFont &Font, const CString &sText, Al
 		x -= cxText;
 
 	return Min(Max((int)m_rcClip.left, x), (int)m_rcClip.right - cxText);
-	}
-
-void CG16bitImage::AssociateSurface (LPDIRECTDRAW7 pDD)
-
-//	AssociateSurface
-//
-//	Creates a surface for this image
-
-	{
-	if (m_pSurface == NULL)
-		{
-		DDSURFACEDESC2 ddsd2;
-		::ZeroMemory(&ddsd2, sizeof(DDSURFACEDESC2));
-		::ZeroMemory(&ddsd2.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
-		ddsd2.dwSize = sizeof(ddsd2);
-		ddsd2.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_LPSURFACE |
-						DDSD_PITCH | DDSD_PIXELFORMAT | DDSD_CAPS;
-		ddsd2.dwWidth = m_cxWidth;
-		ddsd2.dwHeight= m_cyHeight;
-		ddsd2.lPitch  = AlignUp(m_cxWidth * 2, sizeof(DWORD));
-		ddsd2.lpSurface = m_pRGB;
-
-		// Set up the pixel format for 16-bit RGB (5-6-5).
-		ddsd2.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-		ddsd2.ddpfPixelFormat.dwFlags= DDPF_RGB;
-		ddsd2.ddpfPixelFormat.dwRGBBitCount = 16;
-		ddsd2.ddpfPixelFormat.dwRBitMask    = 0xf800;
-		ddsd2.ddpfPixelFormat.dwGBitMask    = 0x07e0;
-		ddsd2.ddpfPixelFormat.dwBBitMask    = 0x001f;
-
-		ddsd2.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-
-		// Create the surface
-		HRESULT hr = pDD->CreateSurface(&ddsd2, &m_pSurface, NULL);
-		if (FAILED(hr))
-			kernelDebugLogPattern("Unable to associate surface: %x", hr);
-		}
 	}
 
 WORD CG16bitImage::BlendPixel (WORD pxDest, WORD pxSource, DWORD byOpacity)
@@ -1700,8 +1662,6 @@ void CG16bitImage::CopyData (const CG16bitImage &Src)
 
 	//	LATER: Deal with surfaces
 
-	ASSERT(Src.m_pSurface == NULL);
-	m_pSurface = NULL;
 	m_pBMI = NULL;
 	}
 
@@ -2400,12 +2360,6 @@ void CG16bitImage::DeleteData (void)
 		m_pBlueAlphaTable = NULL;
 		}
 
-	if (m_pSurface)
-		{
-		m_pSurface->Release();
-		m_pSurface = NULL;
-		}
-
 	if (m_pSprite)
 		{
 		delete m_pSprite;
@@ -2420,20 +2374,6 @@ void CG16bitImage::DeleteData (void)
 
 	m_cxWidth = 0;
 	m_cyHeight = 0;
-	}
-
-void CG16bitImage::DiscardSurface (void)
-
-//	DiscardSurface
-//
-//	Discard surface
-
-	{
-	if (m_pSurface)
-		{
-		m_pSurface->Release();
-		m_pSurface = NULL;
-		}
 	}
 
 WORD CG16bitImage::FadeColor (WORD wStart, WORD wEnd, int iFade)
@@ -3177,27 +3117,6 @@ void CG16bitImage::FillTransRGB (int x, int y, int cxWidth, int cyHeight, COLORR
 		}
 	}
 
-SurfaceTypes CG16bitImage::GetSurfaceType (LPDIRECTDRAWSURFACE7 pSurface)
-
-//	GetSurfaceType
-//
-//	Returns the type of DirectX surface
-
-	{
-	DDSURFACEDESC2 desc;
-	ZeroMemory(&desc, sizeof(desc));
-	desc.dwSize = sizeof(desc);
-	HRESULT hr = pSurface->GetSurfaceDesc(&desc);
-	if (desc.ddpfPixelFormat.dwRBitMask == 0x7c00)
-		return r5g5b5;
-	else if (desc.ddpfPixelFormat.dwRBitMask == 0xf800)
-		return r5g6b5;
-	else if (desc.ddpfPixelFormat.dwRBitMask == 0x00ff0000)
-		return r8g8b8;
-	else
-		return stUnknown;
-	}
-
 WORD CG16bitImage::GetPixelAlpha (int x, int y)
 
 //	GetPixelAlpha
@@ -3648,7 +3567,6 @@ void CG16bitImage::SwapBuffers (CG16bitImage &Other)
 //	Swaps buffers
 
 	{
-	ASSERT(m_pSurface == NULL);
 	Swap(m_pRGB, Other.m_pRGB);
 	}
 
@@ -3693,7 +3611,6 @@ void CG16bitImage::WriteToStream (IWriteStream *pStream)
 
 	//	We don't support some classes of images yet
 	ASSERT(m_pSprite == NULL);
-	ASSERT(m_pSurface == NULL);
 	ASSERT(m_pRedAlphaTable == NULL);
 	ASSERT(m_pGreenAlphaTable == NULL);
 	ASSERT(m_pBlueAlphaTable == NULL);
