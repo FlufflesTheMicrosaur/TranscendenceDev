@@ -12,6 +12,7 @@
     <ProjectConfiguration Include="Debug in Program Files|x64">
       <Configuration>Debug in Program Files</Configuration>
       <Platform>x64</Platform>
+	</ProjectConfiguration>
     <ProjectConfiguration Include="Debug with Address Sanitizer|Win32">
       <Configuration>Debug with Address Sanitizer</Configuration>
       <Platform>Win32</Platform>
