@@ -2435,31 +2435,28 @@ ALERROR CWeaponFireDesc::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, c
 		//	Directional preference of fragmentation arc
 		//	Travel direction should default to true, instead of target direction
 
-		if (iExtensionAPI >= 54)
-			{
-			CString sFragAngleType = pFragDesc->GetAttribute(FRAGMENT_ANGLE_DIRECTION_ATTRIB);
-			if (sFragAngleType == FRAG_ANGLE_TYPE_DIRECTION || sFragAngleType == CONSTLIT(""))
-				pNewDesc->iFragAngleType = fragAngleDirection;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_VELOCITY)
-				pNewDesc->iFragAngleType = fragAngleVelocity;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_TARGET)
-				pNewDesc->iFragAngleType = fragAngleTarget;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_TRIGGER)
-				pNewDesc->iFragAngleType = fragAngleTrigger;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_ORIGIN)
-				pNewDesc->iFragAngleType = fragAngleOrigin;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_SYSTEM)
-				pNewDesc->iFragAngleType = fragAngleSystem;
-			else if (sFragAngleType == FRAG_ANGLE_TYPE_RANDOM)
-				pNewDesc->iFragAngleType = fragAngleRandom;
-			else
-				{
-				Ctx.sError = CONSTLIT("Invalid fragmentAngleDirection attribute");
-				return ERR_FAIL;
-				}
-			}
-		else //legacy behavior through API 53
+		CString sFragAngleType = pFragDesc->GetAttribute(FRAGMENT_ANGLE_DIRECTION_ATTRIB);
+		if (sFragAngleType.IsBlank())
 			pNewDesc->iFragAngleType = fragAngleTrigger;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_DIRECTION)
+			pNewDesc->iFragAngleType = fragAngleDirection;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_VELOCITY)
+			pNewDesc->iFragAngleType = fragAngleVelocity;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_TARGET)
+			pNewDesc->iFragAngleType = fragAngleTarget;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_TRIGGER)
+			pNewDesc->iFragAngleType = fragAngleTrigger;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_ORIGIN)
+			pNewDesc->iFragAngleType = fragAngleOrigin;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_SYSTEM)
+			pNewDesc->iFragAngleType = fragAngleSystem;
+		else if (sFragAngleType == FRAG_ANGLE_TYPE_RANDOM)
+			pNewDesc->iFragAngleType = fragAngleRandom;
+		else
+			{
+			Ctx.sError = CONSTLIT("Invalid fragmentAngleDirection attribute");
+			return ERR_FAIL;
+			}
 
 		//	Set MIRV flag
 
@@ -2518,29 +2515,32 @@ ALERROR CWeaponFireDesc::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, c
 		Metric rMin = pDesc->GetAttributeDoubleBounded(FRAGMENT_MIN_RADIUS_ATTRIB, 0.0, -1.0, -1.0);
 
 		//  Configure fragment distance
+
 		if (iExtensionAPI >= 54)
 			{
 			if (rMax == -1.0)
-				m_rFragDistanceArmed = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_ARMED_ATTRIB, 0.0, -1.0, CWeaponClass::DEFAULT_FRAG_THRESHOLD));
+				m_rFragDistanceArmed = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_ARMED_ATTRIB, 0.0, -1.0, CWeaponClass::FRAG_THRESHOLD_NONE));
+
 			if (rMin == -1.0)
-				m_rFragDistanceAutoTrigger = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_AUTO_TRIGGER_ATTRIB, 0.0, -1.0, CWeaponClass::DEFAULT_FRAG_MIN_THRESHOLD));
+				m_rFragDistanceAutoTrigger = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_AUTO_TRIGGER_ATTRIB, 0.0, -1.0, CWeaponClass::FRAG_THRESHOLD_NONE));
+
 			m_rFragDistanceArmed = Max(m_rFragDistanceArmed, m_rFragDistanceAutoTrigger);
 
-			m_rFragDistanceFail = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_FAIL_ATTRIB, 0.0, -1.0, -1.0));
+			m_rFragDistanceFail = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_FAIL_ATTRIB, 0.0, -1.0, CWeaponClass::FRAG_THRESHOLD_NONE));
 			if (m_rFragDistanceFail >= 0.0 && (m_rFragDistanceFail >= m_rFragDistanceAutoTrigger || m_rFragDistanceFail >= m_rFragDistanceArmed))
 				{
 				Ctx.sError = CONSTLIT("proximityDistanceFail cannot be equal to or greater than proximityDistanceArmed or proximityDistance");
 				return ERR_FAIL;
 				}
 
-			m_rFragDistanceImpactTarget = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_IMPACT_TRIGGER_ATTRIB, 0.0, -1.0, -1.0));
+			m_rFragDistanceImpactTarget = Min(-1.0, LIGHT_SECOND * pDesc->GetAttributeDoubleBounded(PROXIMITY_DISTANCE_IMPACT_TRIGGER_ATTRIB, 0.0, -1.0, CWeaponClass::FRAG_THRESHOLD_NONE));
 			}
 		else
 			{
-			m_rFragDistanceArmed = -1.0;
-			m_rFragDistanceAutoTrigger = -1.0;
-			m_rFragDistanceFail = -1.0;
-			m_rFragDistanceImpactTarget = -1.0;
+			m_rFragDistanceArmed = CWeaponClass::FRAG_THRESHOLD_NONE;
+			m_rFragDistanceAutoTrigger = CWeaponClass::FRAG_THRESHOLD_NONE;
+			m_rFragDistanceFail = CWeaponClass::FRAG_THRESHOLD_NONE;
+			m_rFragDistanceImpactTarget = CWeaponClass::FRAG_THRESHOLD_NONE;
 			}
 
 		//	Set legacy defaults, based on which values are defined.

@@ -250,6 +250,7 @@ class CGameSettings
 			maxResolution,					//	Maximum vertical resolution
 			noGPUAcceleration,				//	Do not use GPU textures for blts
 			noSpaceBackground,				//	Show old starfield background
+			use60fps,						//	Run at 60 fps (two frames per tick)
 
 			//	Sounds options
 			noSound,						//	No sound (either music or sound effects)

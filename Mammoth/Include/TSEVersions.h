@@ -6,12 +6,12 @@
 #pragma once
 
 constexpr DWORD API_VERSION =							54;
-constexpr DWORD UNIVERSE_SAVE_VERSION =					41;
+constexpr DWORD UNIVERSE_SAVE_VERSION =					40;
 constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 
 //	Uncomment out the following define when building a stable release
 
-#define TRANSCENDENCE_STABLE_RELEASE
+//#define TRANSCENDENCE_STABLE_RELEASE
 
 //	API VERSION HISTORY ---------------------------------------------------
 //
@@ -238,7 +238,6 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //	 53: 1.9
 //		https://ministry.kronosaur.com/record.hexm?id=97615
 //
-//
 //	 54: 1.9.3a0
 //		<CoreLibrary>:
 //			Added new CoreLibrary: Compatibility UNID Library (0x00710000)
@@ -283,7 +282,7 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //					fragmentation trigger. For the intended legacy behavior, use
 //					fragmentMinRadius - this value still had a small amount of smart
 //					adjustment however.
-//				Default: 0.5
+//				Default: 0.0 (disabled)
 //			proximityDistanceFail=[float] (units: ls)
 //				The projectile will not fragment if within this distance. Automatically
 //				sets disableImpactFragmentation to True. Raises an error if it greater
@@ -1087,10 +1086,14 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //	211: 1.9
 //		Change CShockwaveHitTest
 //
-//  212: 1.9.1
-//		(George you are missing the change made here)
+//	212: 1.9 ??
+//		????
+//
+//	213: 2.0 Alpha 2
+//		Change DiceRange to use -1 for not set
 // 
 //	213: 1.9.4 Preview
 //		Added new m_pGenome to player controller to use API 54/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
 //		Added new m_pGender to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
 //		Added new m_pPlayerClass to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.
+//

@@ -2606,6 +2606,7 @@
 	<Library unid="&unidCoreTypesLibrary;"/>
 	<Library unid="&unidRPGLibrary;"/>
 	<Library unid="&unidGalaxyLibrary;"/>
+	<Library unid="&unidSOTPSoundtrackUNIDLibrary;"/>
 
 	<!-- Ares Orthodoxy -->
 	

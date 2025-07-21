@@ -1468,37 +1468,40 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 			Targets.InsertEmpty(iFragmentCount);
 
 			//	If we have a shaped charge, then distribute
+			//	Or if we have 1 fragment and directional or global fragment angle
 
-			if (!pFragDesc->FragmentArc.IsEmpty())
+			if (!pFragDesc->FragmentArc.IsEmpty() || (
+					pFragDesc->FragmentArc.IsEmpty() && iFragmentCount == 1 && (
+						pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleDirection ||
+						pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleVelocity ||
+						pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleOrigin ||
+						pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleSystem
+						)
+					)
+				)
 				{
+				//	handle direction setting for different APIs and settings
 
-				//handle direction setting for different APIs and settings
 				int iCenterAngle;
-				if (iExtAPI >= 54)
-					{
-					if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleDirection)
-						iCenterAngle = Ctx.iSourceDirection;
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleVelocity)
-						iCenterAngle = VectorToPolar(Ctx.vSourceVel);
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleTarget)
-						iCenterAngle = VectorToPolar(Ctx.vPos - Ctx.pTarget->GetPos());
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleTrigger)
-						iCenterAngle = Ctx.iDirection;
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleOrigin)
-						iCenterAngle = AngleMod(VectorToPolar(Ctx.vPos) - 180);
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleSystem)
-						iCenterAngle = 0;
-					else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleRandom)
-						iCenterAngle = mathRandom(0, 359);
-					else
-						iCenterAngle = Ctx.iSourceDirection;
-					}
+				if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleDirection)
+					iCenterAngle = Ctx.iSourceDirection;
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleVelocity)
+					iCenterAngle = VectorToPolar(Ctx.vSourceVel);
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleTarget)
+					iCenterAngle = VectorToPolar(Ctx.vPos - Ctx.pTarget->GetPos());
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleTrigger)
+					iCenterAngle = Ctx.iDirection;
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleOrigin)
+					iCenterAngle = AngleMod(VectorToPolar(Ctx.vPos) - 180);
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleSystem)
+					iCenterAngle = 0;
+				else if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleRandom)
+					iCenterAngle = mathRandom(0, 359);
 				else
-					iCenterAngle = Ctx.iDirection; //	Legacy default
+					iCenterAngle = Ctx.iSourceDirection;
 
 				for (int i = 0; i < iFragmentCount; i++)
 					{
-
 					//	Handle the different arcAngle/fragmentAngle modes
 
 					if (pFragDesc->iFragArcOffsetAndMode & CWeaponFireDesc::FLAG_FRAG_ARC_ABSOLUTE)
@@ -1523,12 +1526,6 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 						int iArc = pFragDesc->FragmentArc.Roll();
 						int iHalfArc = iArc / 2;
 
-						//  If we hit inside of an object, we should only generate the
-						//	fraction of projectiles that would hit at the surface (180 arc)
-
-						if (bInternalHit && iExtAPI >= 54)
-							iFragmentFraction = iFraction * min(iArc, 180) / (100 * iArc);
-
 						int iMinAngle = iCenterAngle - iHalfArc + iDirOffset;
 						int iMaxAngle = iMinAngle + iArc + iDirOffset;
 
@@ -1536,12 +1533,14 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 						}
 
 					//  Handle exact 
+
 					int iAngleForwardnessOffset = AngleMod(Angles[i] - Ctx.iDirection);
 					if (bInternalHit && iAngleForwardnessOffset > 90 && iAngleForwardnessOffset < 270)
 						Angles[i] = -1;
 
 					Targets[i] = Ctx.pTarget;
 					}
+
 				iFragmentFraction = 100; //We already handle removing internal hit fragments in this code
 				}
 
@@ -1602,24 +1601,27 @@ ALERROR CSystem::CreateWeaponFragments (SShotCreateCtx &Ctx, CSpaceObject *pMiss
 						if (Angles[i] < 0)
 							continue;
 
+						//	Set the target for each fragment
+
 						auto &Target = TargetList[i % iFound];
 						Targets[i] = Target.pObj;
 						
-						//	If travel direction is prioritized and fragments can maneuver,
+						//	If travel direction is prioritized
 						//	then we just use the existing defined angle
+						//	We dont check if the fragments can maneuver, because this projectile
+						//	may create its own maneuvering fragment later.
 						
-						if (pFragDesc->pDesc->IsTracking() && (
-							pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleDirection
+						if (pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleDirection
 							|| pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleVelocity
 							|| pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleOrigin
 							|| pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleSystem
 							|| pFragDesc->iFragAngleType == CWeaponFireDesc::fragAngleRandom
-							))
+							)
 							continue;
 
-						//	If fragments can maneuver, then fire angle jitters a bit.
+						//	If fragments can maneuver and we have more than one, then fire angle jitters a bit.
 
-						else if (pFragDesc->pDesc->IsTracking())
+						else if (pFragDesc->pDesc->IsTracking() && iFragmentCount > 1)
 							Angles[i] = AngleMod(Target.iFireAngle + mathRandom(-45, 45));
 
 						//	If we've got multiple fragments to the same target, then
@@ -4342,25 +4344,6 @@ void CSystem::RemoveObject (SDestroyCtx &Ctx)
 			&& m_Universe.GetSFXOptions().IsStarshineEnabled())
 		RemoveVolumetricShadow(&Ctx.Obj);
 
-	//	Debug code to see if we ever delete a barrier in the middle of move
-
-#ifdef DEBUG_PROGRAMSTATE
-	if (g_iProgramState == psUpdatingMove)
-		{
-		if (Ctx.Obj.IsBarrier())
-			{
-			CString sObj = CONSTLIT("ERROR: Destroying barrier during move.\r\n");
-
-			ReportCrashObj(&sObj, &Ctx.Obj);
-			kernelDebugLogString(sObj);
-
-#ifdef DEBUG
-			DebugBreak();
-#endif
-			}
-		}
-#endif
-
 	DEBUG_CATCH
 	}
 
@@ -4957,15 +4940,27 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 //	Updates the system
 
 	{
+
+	UpdateBehaviors(SystemCtx, pAnnotations);
+	UpdatePhysics(SystemCtx, pAnnotations);
+
+	}
+
+void CSystem::UpdateBehaviors (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnotations)
+
+//	Update
+//
+//	Updates the system (behaviors)
+
+	{
 	DEBUG_TRY
 
 	int i;
 #ifdef DEBUG_PERFORMANCE
 	int iUpdateObj = 0;
-	int iMoveObj = 0;
 #endif
 
-	//	Make sure we're valid at this point.
+	//	Make sure we're valid at this point (needed before we flush deleted objects).
 
 	m_ForceResolver.BeginUpdate();
 
@@ -4989,7 +4984,7 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 		Ctx.SetPlayerShip(*pPlayerShip);
 
 	//	Add all objects to the grid so that we can do faster
-	//	hit tests
+	//	hit tests (this is also required for some AI functions)
 
 	m_ObjGrid.Init(this, Ctx);
 
@@ -5047,9 +5042,95 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 #endif
 		}
 
+	//  Following was at the end of CSystem::Update moving to UpdateBehaviors on
+	//  the assumption they should be run once per tick (not per frame), and can
+	//  be run separately to the Physics updates.
+
+	//	Update random encounters
+
+	SetProgramState(psUpdatingEncounters);
+	if (m_iTick >= m_iNextEncounter
+		&& !IsTimeStopped())
+		UpdateRandomEncounters();
+
+	//	Update time stopped
+
+	SetProgramState(psUpdating);
+	if (IsTimeStopped())
+		if (m_iTimeStopped > 0 && --m_iTimeStopped == 0)
+			RestartTime();
+
+	//	Update the player controller
+
+	IPlayerController PlayerController = m_Universe.GetPlayer();
+	PlayerController.Update(Ctx);
+
+	//	Give the player ship a chance to do something with data that we've
+	//	accumulated during update. For example, we use this to set the nearest
+	//	docking port.
+
+	CSpaceObject *pPlayer = GetPlayerShip();
+	if (pPlayer && !pPlayer->IsDestroyed())
+		pPlayer->UpdatePlayer(Ctx);
+
+
 	Ctx.OnEndUpdate();
 	DebugStopTimer("Updating objects");
 
+#ifdef DEBUG_PERFORMANCE
+	{
+	char szBuffer[1024];
+	wsprintf(szBuffer, "Objects: %d  Updating: %d\n",
+		GetObjectCount(),
+		iUpdateObj);
+	::OutputDebugString(szBuffer);
+	}
+#endif
+
+	//	Next
+
+	m_iTick++;
+
+	DEBUG_CATCH
+
+	}
+
+
+void CSystem::UpdatePhysics (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnotations, Metric timestep)
+
+//	Update
+//
+//	Updates the system (Physics)
+
+	{
+	DEBUG_TRY
+
+	int i;
+#ifdef DEBUG_PERFORMANCE
+	int iMoveObj = 0;
+#endif
+
+	//	Make sure we're valid at this point.
+
+	m_ForceResolver.BeginUpdate();
+
+	//	Set up context
+
+	SUpdateCtx Ctx;
+	Ctx.pSystem = this;
+	Ctx.pAnnotations = pAnnotations;
+	Ctx.SetNoShipEffectUpdate(SystemCtx.bNoShipEffectUpdate);
+
+	//	Initialize the player weapon context so that we can select the auto-
+	//	target.
+
+	if (CSpaceObject *pPlayerShip = GetPlayerShip())
+		Ctx.SetPlayerShip(*pPlayerShip);
+
+	//	Add all objects to the grid so that we can do faster
+	//	hit tests
+
+	m_ObjGrid.Init(this, Ctx);
 	//	Initialize a structure that holds context for motion
 
 	DebugStartTimer();
@@ -5082,7 +5163,7 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 
 	//	Update object velocity based on forces
 
-	m_ForceResolver.Update(*this, SystemCtx.rSecondsPerTick);
+	m_ForceResolver.Update(*this, timestep * SystemCtx.rSecondsPerTick);
 
 	//	Move all objects. Note: We always move last because we want to
 	//	paint right after a move. Otherwise, when a laser/missile hits
@@ -5102,7 +5183,7 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 			//	Move the objects
 
 			SetProgramState(psUpdatingMove, pObj);
-			pObj->Move(Ctx, SystemCtx.rSecondsPerTick);
+			pObj->Move(Ctx, timestep * SystemCtx.rSecondsPerTick);
 
 #ifdef DEBUG_PERFORMANCE
 			iMoveObj++;
@@ -5129,6 +5210,8 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 
 	//	Add contacts from joints
 
+	//  Note - this will need updating to use timestep * SystemCtx.rSecondsPerTick
+
 	m_Joints.AddContacts(m_ContactResolver);
 
 	//	Now resolve all contacts
@@ -5136,32 +5219,6 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 	m_ContactResolver.Update();
 	m_Joints.Update(Ctx);
 
-	//	Update random encounters
-
-	SetProgramState(psUpdatingEncounters);
-	if (m_iTick >= m_iNextEncounter
-			&& !IsTimeStopped())
-		UpdateRandomEncounters();
-
-	//	Update time stopped
-
-	SetProgramState(psUpdating);
-	if (IsTimeStopped())
-		if (m_iTimeStopped > 0 && --m_iTimeStopped == 0)
-			RestartTime();
-
-	//	Update the player controller
-
-	IPlayerController PlayerController = m_Universe.GetPlayer();
-	PlayerController.Update(Ctx);
-
-	//	Give the player ship a chance to do something with data that we've
-	//	accumulated during update. For example, we use this to set the nearest
-	//	docking port.
-
-	CSpaceObject *pPlayer = GetPlayerShip();
-	if (pPlayer && !pPlayer->IsDestroyed())
-		pPlayer->UpdatePlayer(Ctx);
 
 	//	Perf output
 
@@ -5175,10 +5232,6 @@ void CSystem::Update (SSystemUpdateCtx &SystemCtx, SViewportAnnotations *pAnnota
 	::OutputDebugString(szBuffer);
 	}
 #endif
-
-	//	Next
-
-	m_iTick++;
 
 	DEBUG_CATCH
 	}
