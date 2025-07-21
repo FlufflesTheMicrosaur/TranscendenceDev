@@ -64,7 +64,7 @@ class CGameRecord
 		void SetPlayerGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
 		void SetPlayerGenome (CCharacterAttributeType *pGenome) { m_pGenome = pGenome; }
 		void SetPlayerGender (CCharacterAttributeType *pGender) { m_pGender = pGender; }
-		void SetPlayerClass (CCharacterAttributeType *pPlayerClass) { m_pPlayerClass = pPlayerClass; }
+		void SetPlayerClass (CCharacterAttributeType *pPlayerClass) { m_pCharacterClass = pPlayerClass; }
 		void SetPlayerName (const CString &sName) { m_sName = sName; }
 		void SetPlayTime (const CTimeSpan &Time) { m_Duration = Time; }
 		void SetRegistered (bool bRegistered = true) { m_bRegisteredGame = bRegistered; }
@@ -85,6 +85,8 @@ class CGameRecord
 		CString m_sName;						//	Character name
 		GenomeTypes m_iGenome;					//	Legacy Character genome (Pre-API 54)
 		CCharacterAttributeType *m_pGenome;					//	Character genome
+		CCharacterAttributeType *m_pGender;					//	Character genome
+		CCharacterAttributeType *m_pCharacterClass;					//	Character genome
 
 		DWORD m_dwShipClass;					//	Ship class UNID
 		CString m_sShipClass;					//	Ship class

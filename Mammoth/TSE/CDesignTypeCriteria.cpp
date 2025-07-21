@@ -107,8 +107,8 @@ ALERROR CDesignTypeCriteria::ParseSubExpression (const char *pPos)
 				m_dwTypeSet |= (1 << designEconomyType);
 				break;
 
-			case charGenomeType:
-				m_dwTypeSet |= (1 << designGenomeType);
+			case charCharacterAttributeType:
+				m_dwTypeSet |= (1 << designCharacterAttributeType);
 				break;
 
 			case charOverlayType:
@@ -425,8 +425,8 @@ void CDesignTypeCriteria::WriteSubExpression (CMemoryWriteStream &Output) const
 						Output.WriteChar(charEconomyType);
 						break;
 
-					case designGenomeType:
-						Output.WriteChar(charGenomeType);
+					case designCharacterAttributeType:
+						Output.WriteChar(charCharacterAttributeType);
 						break;
 
 					case designTemplateType:

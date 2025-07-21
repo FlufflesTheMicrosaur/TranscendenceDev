@@ -439,7 +439,7 @@ ALERROR CDesignType::CreateFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, CDe
 		else if (strEquals(sTag, ECONOMY_TYPE_TAG))
 			pType = new CEconomyType;
 		else if (strEquals(sTag, GENOME_TYPE_TAG))
-			pType = new CGenomeType;
+			pType = new CCharacterAttributeType;
 		else if (strEquals(sTag, TEMPLATE_TYPE_TAG))
 			pType = new CTemplateType;
 		else if (strEquals(sTag, TYPE_TAG))

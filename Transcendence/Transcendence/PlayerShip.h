@@ -144,7 +144,7 @@ class CPlayerShipController : public IShipController
 		CString GetItemStat (const CString &sStat, ICCItem *pItemCriteria) const { return m_Stats.GetItemStat(sStat, pItemCriteria); }
 		CString GetKeyEventStat (const CString &sStat, const CString &sNodeID, const CDesignTypeCriteria &Crit) const { return m_Stats.GetKeyEventStat(sStat, sNodeID, Crit); }
 		GenomeTypes GetPlayerGenomeLegacy (void) const { return m_iGenome; }
-		CGenomeType *GetPlayerGenome (void) { return m_pGenome; }
+		CCharacterAttributeType *GetPlayerGenome (void) { return m_pGenome; }
 		CString GetPlayerName (void) const { return m_sName; }
 		const CString &GetRedirectMessage (void) const { return m_sRedirectMessage; }
 		int GetResurrectCount (void) const { return ::strToInt(m_Stats.GetStatString(CONSTLIT("resurrectCount")), 0); }
@@ -174,7 +174,7 @@ class CPlayerShipController : public IShipController
 		void SetCharacterClass (CGenericType *pClass) { m_pCharacterClass = pClass; }
 		void SetGameSession (CGameSession *pSession);
 		void SetGenomeLegacy (GenomeTypes iGenome) { m_iGenome = iGenome; }
-		void SetGenome (CGenomeType *pGenome) { m_pGenome = pGenome; m_dwGenome = pGenome->GetUNID(); }
+		void SetGenome (CCharacterAttributeType *pGenome) { m_pGenome = pGenome; m_dwGenome = pGenome->GetUNID(); }
 		void SetMapHUD (bool bActive) { m_bMapHUD = bActive; }
 		void SetMouseAimAngle (int iAngle) { m_ManeuverController.CmdMouseAim(iAngle); }
 		void SetName (const CString &sName) { m_sName = sName; }
@@ -329,7 +329,7 @@ class CPlayerShipController : public IShipController
 		CUIMessageController m_UIMsgs;				//	Status of various UI messages, such as hints
 
 		CString m_sName;							//	Player name
-		CGenomeType* m_pGenome = NULL;				//	Player genome
+		CCharacterAttributeType* m_pGenome = NULL;				//	Player genome
 		DWORD m_dwGenome = 0;						//  Player genome UNID
 		GenomeTypes m_iGenome = genomeUnknown;		//	Legacy player genome (Pre-API 54)
 		DWORD m_dwStartingShipClass = 0;			//	Starting ship class

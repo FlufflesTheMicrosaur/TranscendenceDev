@@ -1286,7 +1286,7 @@ ICCItem *fnPlySet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 		{
 		case FN_PLY_CHANGE_GENOME:
 			{
-			CGenomeType* pNewGenome = g_pUniverse->FindGenomeType(pArgs->GetElement(1)->GetIntegerValue());
+			CCharacterAttributeType* pNewGenome = g_pUniverse->FindCharacterAttributeType(pArgs->GetElement(1)->GetIntegerValue());
 			if (pNewGenome == NULL)
 				return pCC->CreateError(CONSTLIT("UNID must be for a GenomeType"), pArgs->GetElement(1));
 			pPlayer->SetGenome(pNewGenome);

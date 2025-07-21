@@ -91,6 +91,8 @@ CNewGameSession::CNewGameSession (CHumanInterface &HI, CCloudService &Service, C
 		m_Universe(Universe),
 		m_Settings(Defaults),
 		m_PlayerGenome(*this),
+		m_PlayerGender(*this),
+		m_PlayerClass(*this),
 		m_PlayerName(*this),
 		m_Difficulty(*this),
 		m_DifficultyDesc(*this)

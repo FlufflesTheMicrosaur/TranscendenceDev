@@ -176,9 +176,9 @@ CString CLanguage::Compose (const CString &sString, const ICCItem *pArgs)
 				//	do we need to use the player's genome or a provided genome
 				CString sVarCopy = sVar;
 				ICCItem* pGenomeUNID;
-				CGenomeType* pGenome;
+				CCharacterAttributeType* pGenome;
 				if (bHasData && (pGenomeUNID = pArgs->GetElement(CONSTLIT("genome"))) && !pGenomeUNID->IsNil())
-					pGenome = g_pUniverse->FindGenomeType(pGenomeUNID->GetIntegerValue());
+					pGenome = g_pUniverse->FindCharacterAttributeType(pGenomeUNID->GetIntegerValue());
 				else
 					pGenome = g_pUniverse->GetPlayerGenome();
 				if (pGenome != NULL)
@@ -297,7 +297,7 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 //	sField is the FIELD of the character that we want.
 //
 //	We support the following kinds of fields:
-//  *   If API 54 and FIELD is a word in the CGenomeType's CLanguageDataBlock,
+//  *   If API 54 and FIELD is a word in the CCharacterAttributeType's CLanguageDataBlock,
 //		then we lookup the corresponding text from the genome field of the
 //		character
 //
@@ -324,7 +324,7 @@ CString CLanguage::ComposeCharacterReference (CUniverse &Universe, const CString
 		return strPatternSubst(CONSTLIT("[character %s invalid: no ID]"), sCharacter);
 
 	//  Check if this is an API 54+ character and see if its in the LanguageData
-	CGenomeType* pCharGenome = Universe.FindGenomeType(pCharInfo->GetElement(CONSTLIT("genome"))->GetIntegerValue());
+	CCharacterAttributeType* pCharGenome = Universe.FindCharacterAttributeType(pCharInfo->GetElement(CONSTLIT("genome"))->GetIntegerValue());
 	if (pCharGenome != NULL && pCharGenome->HasLanguageEntry(sField))
 		{
 			CString sRet;

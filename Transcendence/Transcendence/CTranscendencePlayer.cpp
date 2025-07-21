@@ -23,7 +23,7 @@ GenomeTypes CTranscendencePlayer::GetGenomeLegacy (void) const
 	return m_pPlayer->GetPlayerGenomeLegacy();
 	}
 
-CGenomeType *CTranscendencePlayer::GetGenome(void) const
+CCharacterAttributeType *CTranscendencePlayer::GetGenome(void) const
 
 //	GetGenome
 //

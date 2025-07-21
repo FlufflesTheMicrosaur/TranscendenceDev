@@ -2410,7 +2410,7 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 	else
 		{
 		m_dwGenome = dwLoad;
-		m_pGenome = pUniv->FindGenomeType(m_dwGenome);
+		m_pGenome = pUniv->FindCharacterAttributeType(m_dwGenome);
 		}
 
 	Ctx.pStream->Read(m_dwStartingShipClass);
