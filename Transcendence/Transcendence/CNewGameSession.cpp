@@ -86,10 +86,15 @@ CNewGameSession::CNewGameSession (CHumanInterface &HI, CCloudService &Service, C
 		m_Service(Service),
 		m_Universe(Universe),
 		m_Settings(Defaults),
+		m_DifficultyDesc(*this),
+		m_ShipSelection(*this),
+		m_CharacterSetup(*this),
+		m_GameSetup(*this),
+
+		//	to be removed later
 		m_PlayerGenome(*this),
 		m_PlayerName(*this),
-		m_Difficulty(*this),
-		m_DifficultyDesc(*this)
+		m_Difficulty(*this)
 
 //	CNewGameSession constructor
 
@@ -358,6 +363,42 @@ void CNewGameSession::CreateShipClassButton (const CString &sID, int x, int y, c
 	m_pRoot->AddLine(pButton);
 	}
 
+void CNewGameSession::ClearSelectors(void)
+	{
+
+	//	Cleanup anything that may have been using the selector bars before
+
+	if (m_pFullSelectorBar)
+		delete m_pFullSelectorBar;
+	if (m_pFullSelectorOptions)
+		delete m_pFullSelectorOptions;
+
+	if (m_pNarrowSelectorBar)
+		delete m_pNarrowSelectorBar;
+	if (m_pNarrowSelectorOptions)
+		delete m_pNarrowSelectorOptions;
+
+	}
+
+void CNewGameSession::CmdSetPaneGameSetup (void)
+
+//	CmdSetPaneGameSetup
+//
+//	Populate the Game Setup Pane
+
+	{
+
+	ClearSelectors();
+
+	//	For Game Setup, we use the 2 full width scrollers
+	
+	m_pFullSelectorBar = new CAniVScroller;
+	m_pFullSelectorOptions = new CAniVScroller;
+
+	//	Remove the other scrollers
+
+	}
+
 void CNewGameSession::OnCleanUp (void)
 
 //	OnCleanUp
@@ -457,7 +498,7 @@ ALERROR CNewGameSession::OnInit (CString *retsError)
 
 	//	Create a scroller to hold all the settings
 
-	m_pRoot = new CAniVScroller;
+	m_pPane = new CAniVScroller;
 	m_pRoot->SetPropertyVector(PROP_POSITION, CVector(rcCenter.left, rcCenter.top));
 	m_pRoot->SetPropertyMetric(PROP_VIEWPORT_HEIGHT, (Metric)RectHeight(rcCenter));
 	m_pRoot->SetPropertyMetric(PROP_FADE_EDGE_HEIGHT, 0.0);

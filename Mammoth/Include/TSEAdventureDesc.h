@@ -45,6 +45,58 @@ class CEngineOptions
 		bool m_bShowDamageDone = false;
 	};
 
+//	CAdventureSettingOptionDesc ------------------------------------------------
+
+class CAdventureSettingOptionDesc
+	{
+	public:
+
+		CAdventureSettingOptionDesc (void);
+	private:
+		CString m_sID;
+		CString m_sValue;
+	};
+
+//	CAdventureSettingDesc -----------------------------------------------------
+
+class CAdventureSettingDesc
+	{
+	public:
+		enum EAdventureSettingType
+			{
+			//	Builtins
+			advSettingDifficultyBuiltin,
+			advSettingGenomeBuiltin,
+
+			//	Criteria-based setup
+			advSettingCharacterClass,
+			advSettingGenome,
+			advSettingGender,
+			advSettingCriteria,
+
+			//
+			advSettingData,
+			};
+
+		enum EAdventureSettingMenu
+			{
+			advGameSetup,
+			advCharacterSetup
+			};
+
+		CAdventureSettingDesc (void);
+
+		const int GetOptionCount(void) { return m_OptionIDs.GetCount(); }
+		const CString GetOptionID(int iOptionIdx) { return m_OptionIDs.GetAt(iOptionIdx); }
+		CAdventureSettingOptionDesc *GetOption(int iOptionIdx) { return m_Options.Find(GetOptionID(iOptionIdx)); }
+
+	private:
+		CString m_sID;
+
+		TArray<CString> m_OptionIDs;	//We use a TArray here to allow an author to define the order
+		TMap<CString, CAdventureSettingOptionDesc> m_Options;
+	};
+
 //	CAdventureDesc -------------------------------------------------------------
 
 class CAdventureDesc : public CDesignType

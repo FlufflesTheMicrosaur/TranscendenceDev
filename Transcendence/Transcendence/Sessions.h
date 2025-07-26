@@ -520,10 +520,22 @@ class CNewGameSession : public IHISession
 		virtual void OnUpdate (bool bTopMost) override;
 
 	private:
+		enum ENewGamePane {
+			paneGameSetup,
+			paneShipSelection,
+			paneCharacterSetup,
+			};
+
 		void AddClassInfo (const CShipClass &Class, const CDeviceDescList &Devices, const CItem &Item, int x, int y, int cxWidth, DWORD dwOptions, int *retcyHeight, IAnimatron **retpAni);
+		void ClearSelectors (void);
 		void CmdCancel (void);
-		void CmdChangeDifficulty (void);
-		void CmdChangeGenome (void);
+		void CmdSetPaneGameSetup (void);
+		void CmdSetPaneShipSelection (void);
+		void CmdSetPaneCharacterSetup (void);
+		void CmdSetSelectionOptions (CString sSelection);
+		void CmdPickSelectionOption (CString sOption);
+		void CmdSetDifficulty (CDifficultyOptions::ELevel iLevel);
+		void CmdSetGenome (GenomeTypes iGenome);
 		void CmdEditName (void);
 		void CmdEditNameCancel (void);
 		void CmdNextShipClass (void);
@@ -548,7 +560,24 @@ class CNewGameSession : public IHISession
 		TSortMap<CString, CShipClass *> m_ShipClasses;
 		int m_iCurShipClass = 0;
 
-		CAniVScroller *m_pRoot = NULL;
+		TArray<CString> m_Selections = ;
+		T
+		CAniVScroller *m_pPane = NULL;
+		CAniVScroller *m_pFullSelectorBar = NULL;
+		CAniVScroller *m_pFullSelectorOptions = NULL;
+		CAniVScroller *m_pNarrowSelectorBar = NULL;
+		CAniVScroller *m_pNarrowSelectorOptions = NULL;
+
+		CString m_sCurSelector = NULL_STR;
+		TSortMap<CString, CSmallOptionButtonAnimator *> m_GameSetupSelectors;
+		TSortMap<CString, CSmallOptionButtonAnimator *> m_CharacterSetupSelectors;
+		TSortMap<CString, CSmallOptionButtonAnimator *> m_GameSetupSelectionOptions;
+		TSortMap<CString, CSmallOptionButtonAnimator *> m_CharacterSetupSelectionOptions;
+		CSmallOptionButtonAnimator m_GameSetup;
+		CSmallOptionButtonAnimator m_CharacterSetup;
+		CSmallOptionButtonAnimator m_ShipSelection;
+
+		//	Legacy buttons, to be removed
 
 		CSmallOptionButtonAnimator m_PlayerName;
 		CSmallOptionButtonAnimator m_PlayerGenome;
