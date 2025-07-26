@@ -52,9 +52,16 @@ class CAdventureSettingOptionDesc
 	public:
 
 		CAdventureSettingOptionDesc (void);
+		bool InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
+		CString asString (void) { m_sRawValue; }
+		DWORD asUNID (void) { bool bRet;  strToInt(m_sRawValue, 0, &bRet); }
+		
+
 	private:
 		CString m_sID;
-		CString m_sValue;
+		CString m_sRawValue;
+		bool m_bSelected = false;
+
 	};
 
 //	CAdventureSettingDesc -----------------------------------------------------
@@ -68,13 +75,15 @@ class CAdventureSettingDesc
 			advSettingDifficultyBuiltin,
 			advSettingGenomeBuiltin,
 
-			//	Criteria-based setup
+			//	Engine-defined Criteria-based setup
 			advSettingCharacterClass,
 			advSettingGenome,
 			advSettingGender,
+
+			//	Stores selected designType as typeData
 			advSettingCriteria,
 
-			//
+			//	Stores selected string as typeData
 			advSettingData,
 			};
 
@@ -89,6 +98,7 @@ class CAdventureSettingDesc
 		const int GetOptionCount(void) { return m_OptionIDs.GetCount(); }
 		const CString GetOptionID(int iOptionIdx) { return m_OptionIDs.GetAt(iOptionIdx); }
 		CAdventureSettingOptionDesc *GetOption(int iOptionIdx) { return m_Options.Find(GetOptionID(iOptionIdx)); }
+		bool InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
 
 	private:
 		CString m_sID;
