@@ -54,7 +54,7 @@ class CAdventureSettingOptionDesc
 		CAdventureSettingOptionDesc (void);
 		bool InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
 		CString asString (void) { m_sRawValue; }
-		DWORD asUNID (void) { bool bRet;  strToInt(m_sRawValue, 0, &bRet); }
+		DWORD asUNID (void) { bool bRet;  return (DWORD)strToInt(m_sRawValue, 0, &bRet); }
 		
 
 	private:
