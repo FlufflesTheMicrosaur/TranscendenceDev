@@ -419,7 +419,7 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			INT64 i = GetCount() - 1;
 			while (i > 0)
 				{
-				INT64 x = (INT64)mathRandomPtr(0, i);
+				INT64 x = (INT64)mathRandomPtr(0, (size_t)i);
 
 				VALUE Temp = GetAt(x);
 				GetAt(x) = GetAt(i);

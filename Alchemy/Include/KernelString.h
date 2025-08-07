@@ -96,8 +96,8 @@ class CString
 		struct STORESTRUCT
 			{
 			int iRefCount;
-			int iAllocSize;				//	If negative, this is a read-only external allocation
-			int iLength;
+			INT64 iAllocSize;				//	If negative, this is a read-only external allocation
+			INT64 iLength;
 			char *pString;
 #ifdef DEBUG_STRING_LEAKS
 			int iMark;
@@ -108,7 +108,7 @@ class CString
 		CString (void *pStore, bool bDummy);
 
 		static void AddToFreeList (PSTORESTRUCT pStore, int iSize);
-		PSTORESTRUCT AllocStore (int iSize, BOOL bAllocString);
+		PSTORESTRUCT AllocStore (size_t iSize, BOOL bAllocString);
 #ifdef INLINE_DECREF
 		void DecRefCount (void)
 			{
@@ -125,7 +125,7 @@ class CString
 
 		static constexpr DWORD FLAG_PRESERVE_CONTENTS =		0x00000001;
 		static constexpr DWORD FLAG_GEOMETRIC_GROWTH =		0x00000002;
-		void Size (int iLength, DWORD dwFlags = 0);
+		void Size (size_t iLength, DWORD dwFlags = 0);
 
 		PSTORESTRUCT m_pStore;
 
@@ -250,8 +250,13 @@ inline int strParseInt (const char *pStart, int iNullResult, const char **retpEn
 int strParseIntOfBase (const char *pStart, int iBase, int iNullResult, const char **retpEnd = NULL, bool *retbNullValue = NULL);
 
 void strParseWhitespace (const char *pPos, const char **retpPos);
+#ifdef CSTRING_VARIADICS_IN_HEADER
 Kernel::CString strPatternLegacy (const Kernel::CString &sPattern, LPVOID *pArgs);
 Kernel::CString strPatternSubstLegacy(Kernel::CString sLine, ...);
+#else
+Kernel::CString strPattern (const Kernel::CString &sPattern, LPVOID *pArgs);
+Kernel::CString strPatternSubst(Kernel::CString sLine, ...);
+#endif
 void WritePadding(Kernel::CString& sOutput, char chChar, int iLen);
 Kernel::CString strTranslateStdEntity(Kernel::CString sEntity);
 
@@ -276,6 +281,8 @@ Kernel::CString strToXMLText (const Kernel::CString &sString, bool bInBody = fal
 Kernel::CString strTrimWhitespace (const Kernel::CString &sString, bool bLeading = true, bool bTrailing = true);
 Kernel::CString strWord (const Kernel::CString &sString, int iWordPos);
 
+#ifdef CSTRING_VARIADICS_IN_HEADER
+
 //  Variadic Template based string functions that have to be in this file otherwise linking fails
 
 //These are needed to handle various issues with winapi strings...
@@ -294,9 +301,6 @@ inline Kernel::CString formatVariadicArg(INT64 i, std::string sFmt) { return Ker
 
 //  Define templates for all the cases that we know we can handle just fine (incl auto-promotion for numerics):
 
-//handle unsigned shorts which dont get promoted for some reason
-//template <class... Args>
-//Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, UINT16 current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
 //handle other ints
 template <class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, INT64 current, Args ... args) { return strInnerVariadicArgFormat(i, sFmt, current, args...); }
@@ -319,16 +323,17 @@ template <class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, LPWSTR current, Args ... args)
 {
 	if (!i)
-		return CString(const_cast<char*>(std::format(sFmt, strFromLPWSTR(current)).c_str()));
+		return CString(const_cast<char*>(std::vformat(sFmt, std::make_format_args(strFromLPWSTR(current))).c_str()));
 	return formatVariadicArg(--i, sFmt, args...);
 }
 
+//handle unsigned shorts which dont get promoted for some reason
 template <class... Args>
 Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, UINT16 current, Args ... args)
 {
 	int iPromoted = (int)current;
 	if (!i)
-		return CString(const_cast<char*>(std::format(sFmt, iPromoted).c_str()));
+		return CString(const_cast<char*>(std::vformat(sFmt, std::make_format_args(iPromoted)).c_str()));
 	return formatVariadicArg(--i, sFmt, args...);
 }
 
@@ -348,7 +353,7 @@ template <class T, class... Args>
 Kernel::CString strInnerVariadicArgFormat(INT64 i, std::string sFmt, T current, Args ... args)
 {
 	if (!i)
-		return CString(const_cast<char*>(std::format(sFmt, current).c_str()));
+		return CString(const_cast<char*>(std::vformat(sFmt, std::make_format_args(current)).c_str()));
 	return formatVariadicArg(--i, sFmt, args...);
 }
 
@@ -476,3 +481,5 @@ Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
 		sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternEnd - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
 	return sOutput;
 }
+
+#endif

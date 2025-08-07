@@ -10,6 +10,8 @@
 #define STORE_SIZE_INCREMENT				256
 #define STORE_ALLOC_MAX						(64 * 1024 * 1024)
 
+using namespace Kernel; //this is just to make intellisence stop breaking on this file
+
 CString::PSTORESTRUCT CString::g_pStore;
 int CString::g_iStoreSize;
 CString::PSTORESTRUCT CString::g_pFreeStore;
@@ -52,7 +54,7 @@ static const char *TITLE_CAP_EXCEPTIONS_SHORT[] =
 
 static int TITLE_CAP_EXCEPTIONS_SHORT_COUNT = sizeof(TITLE_CAP_EXCEPTIONS_SHORT) / sizeof(TITLE_CAP_EXCEPTIONS_SHORT[0]);
 
-CString::CString (void) :
+Kernel::CString::CString (void) :
 		m_pStore(NULL)
 
 //	CString constructor
@@ -322,7 +324,7 @@ void CString::AddToFreeList (PSTORESTRUCT pStore, int iSize)
 		}
 	}
 
-CString::PSTORESTRUCT CString::AllocStore (int iSize, BOOL bAllocString)
+CString::PSTORESTRUCT CString::AllocStore (size_t iSize, BOOL bAllocString)
 
 //	AllocStore
 //
@@ -420,7 +422,7 @@ CString::PSTORESTRUCT CString::AllocStore (int iSize, BOOL bAllocString)
 	if (bAllocString)
 		{
 		pStore->iRefCount = 1;
-		pStore->iAllocSize = iSize;
+		pStore->iAllocSize = (INT64)iSize;
 		pStore->iLength = 0;
 		pStore->pString = (char *)HeapAlloc(GetProcessHeap(), 0, iSize);
 		}
@@ -574,7 +576,7 @@ int CString::GetLength (void) const
 
 	{
 	if (m_pStore)
-		return m_pStore->iLength;
+		return (int)m_pStore->iLength;
 	else
 		return 0;
 	}
@@ -589,7 +591,7 @@ int CString::GetMemoryUsage (void) const
 	if (m_pStore == NULL || m_pStore->iAllocSize <= 0)
 		return 0;
 
-	return (sizeof STORESTRUCT) + m_pStore->iAllocSize;
+	return (sizeof STORESTRUCT) + (int)m_pStore->iAllocSize;
 	}
 
 char *CString::GetPointer (void) const
@@ -795,7 +797,7 @@ ALERROR CString::SaveHandler (CArchiver *pArchiver)
 	return NOERROR;
 	}
 
-void CString::Size (int iLength, DWORD dwFlags)
+void CString::Size (size_t iLength, DWORD dwFlags)
 
 //	Size
 //
@@ -828,8 +830,8 @@ void CString::Size (int iLength, DWORD dwFlags)
 
 		if (dwFlags & FLAG_PRESERVE_CONTENTS)
 			{
-			int i;
-			int iCopyLen = Min(m_pStore->iLength+1, iLength);
+			size_t i;
+			size_t iCopyLen = (size_t)Min(m_pStore->iLength+1, (INT64)iLength);
 
 			for (i = 0; i < iCopyLen; i++)
 				pNewStore->pString[i] = m_pStore->pString[i];
@@ -845,11 +847,11 @@ void CString::Size (int iLength, DWORD dwFlags)
 	//	Note that when iAllocSize is negative (meaning that we have an
 	//	external storage) we always reallocate
 
-	if (IsExternalStorage() || m_pStore->iAllocSize < iLength)
+	if (IsExternalStorage() || (size_t)m_pStore->iAllocSize < iLength)
 		{
-		int iNewAlloc;
+		size_t iNewAlloc;
 		if (dwFlags & FLAG_GEOMETRIC_GROWTH)
-			iNewAlloc = Max(iLength, m_pStore->iAllocSize * 2);
+			iNewAlloc = (size_t)Max((INT64)iLength, m_pStore->iAllocSize * 2);
 		else
 			iNewAlloc = iLength;
 
@@ -860,7 +862,7 @@ void CString::Size (int iLength, DWORD dwFlags)
 		//	If we're supposed to preserve contents, copy the content over
 
 		if (dwFlags & FLAG_PRESERVE_CONTENTS)
-			utlMemCopy(m_pStore->pString, pNewString, Min(m_pStore->iLength, iLength));
+			utlMemCopy(m_pStore->pString, pNewString, (size_t)Min(m_pStore->iLength, (INT64)iLength));
 
 		//	Only free if this is our storage
 
@@ -875,7 +877,7 @@ void CString::Size (int iLength, DWORD dwFlags)
 
 	ASSERT(m_pStore);
 	ASSERT(m_pStore->iRefCount == 1);
-	ASSERT(m_pStore->iAllocSize >= iLength);
+	ASSERT((size_t)m_pStore->iAllocSize >= iLength);
 	}
 
 void CString::Transcribe (const char *pString, size_t iLen)
@@ -913,7 +915,7 @@ void CString::Transcribe (const char *pString, size_t iLen)
 
 	//	Allocate size
 
-	Size((size_t)iLen+1);
+	Size(iLen+1);
 
 	for (i = 0; i < iLen; i++)
 		m_pStore->pString[i] = pString[i];

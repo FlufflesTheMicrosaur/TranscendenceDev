@@ -30,7 +30,177 @@ CString Kernel::strTranslateStdEntity(Kernel::CString sEntity)
 	return CHTML::TranslateStdEntity(sEntity);
 }
 
+#ifdef CSTRING_FORMAT_VARIADICS_IN_CPP
+
+//Special cases for conversions that the standard inner loop cant handle:
+
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, LPWSTR current, Args ... args)
+	{
+	if (!i)
+		return CString(const_cast<char*>(std::format(sFmt, strFromLPWSTR(current)).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+	}
+
+template <class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, UINT16 current, Args ... args)
+	{
+	int iPromoted = (int)current;
+	if (!i)
+		return CString(const_cast<char*>(std::format(sFmt, iPromoted).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+	}
+
+//Generic case for unknown arg that we should return a placeholder for
+
+template <class T, class... Args>
+Kernel::CString formatVariadicArg(INT64 i, std::string sFmt, T current, Args ... args)
+	{
+	if (!i)
+		return CString(const_cast<char*>(std::format("<|UNKNOWN strPatternSubst Arg Type encountered!: {} - please add handling for this type in KernelString.h of Kernel|>", typeid(T).name()).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+	}
+
+//helper interior function for the standard conversion overloads
+template <class T, class... Args>
+Kernel::CString strInnerVariadicArgFormat(INT64 i, std::string sFmt, T current, Args ... args)
+	{
+	if (!i)
+		return CString(const_cast<char*>(std::format(sFmt, current).c_str()));
+	return formatVariadicArg(--i, sFmt, args...);
+	}
+
+template <typename ... Args>
+Kernel::CString strPatternSubst(Kernel::CString sLine, Args ... args)
+
+//  The original version of strPattern/strPatternSubst is now
+//  under the '*legacy' function names.
+//  This is an attempt to reimplement the logic using somewhat more
+//  debuggable and modern code than the pre-C89 implementation
+//  of variadic function that george was using previously.
+//  Its not working quite right yet, due to issues retrieving the
+//  args, but the legacy code was crashing too so...
+
+	{
+	CString sOutput;
+	sOutput.GrowToFit(4000);
+	char* pPatternPos = sLine.GetPointer();
+	char* pPatternRunStart = pPatternPos;
+	char* pPatternEnd = pPatternPos + sLine.GetLength();
+	bool b1000Separator = false, bPadWithZeros = false, b64bit = false;
+	CString sFormattedArg = CString("");
+	INT64 iFieldWidth = 0, iLastNumber = 0, iVariadicIndex = 0;
+	while (pPatternPos <= pPatternEnd)
+		{
+		if (*pPatternPos == '%')
+			{
+			pPatternPos++;
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			//handle if just an escaped % sign
+			if (*pPatternPos == '%')
+				{
+				pPatternPos++;
+				continue;
+				}
+			//store what we have accumulated
+			sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternPos - pPatternRunStart - 1), CString::FLAG_ALLOC_EXTRA);
+			//handle the format types
+			// [opt] , = add a 1000s seperator
+			// [opt] l = expects a 64bit number, support for legacy patterns
+			// [opt] 0-9 = field width
+			// Type:
+			//  s = string
+			//  d = digits
+			//  x/X = hexidecimal lower/upper case (see: wsprintfA)
+			//  p = plural ("s" if last numeric arg was != 1)
+			//  & = entity name
+			if (*pPatternPos == ',')
+				{
+				b1000Separator = true;
+				pPatternPos++;
+				}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			if (*pPatternPos == 'l')
+				{
+				b64bit = true;//might not need this
+				pPatternPos++;
+				}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			while (*pPatternPos >= '0' && *pPatternPos <= '9' && pPatternPos < pPatternEnd)
+				{
+				if (!iFieldWidth && *pPatternPos == '0')
+					bPadWithZeros = true;
+				iFieldWidth *= 10;
+				iFieldWidth += (*pPatternPos - '0');
+				pPatternPos++;
+				}
+			//if string ended prematurely, just finish
+			if (pPatternPos > pPatternEnd)
+				break;
+			//Handle the actual options now
+			if (*pPatternPos == 's')//expected arg is a string
+				{
+				sOutput.Append(formatVariadicArg(iVariadicIndex,"{}", args...), CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+				}
+			else if (*pPatternPos == 'd')//expected arg is a number and to print in decimals
+				{
+				sFormattedArg = formatVariadicArg(iVariadicIndex, "{}", args...);
+				iLastNumber = strtoll(sFormattedArg.GetPointer(), NULL, 10);
+				DWORD dwFlags = (b1000Separator ? FORMAT_THOUSAND_SEPARATOR : 0)
+					| (bPadWithZeros ? FORMAT_LEADING_ZERO : 0);
+				sOutput.Append(strFormatInteger(iLastNumber, (int)iFieldWidth, dwFlags), CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+				}
+			else if (*pPatternPos == 'p' && iLastNumber != 1)//no arg, just check for pluralization
+				sOutput.Append("s", 1, CString::FLAG_ALLOC_EXTRA);
+			else if (*pPatternPos == 'x' || *pPatternPos == 'X')//expected arg is a number and to print in hex
+				{
+				sFormattedArg = formatVariadicArg(iVariadicIndex, "{}", args...);
+				iLastNumber = strtoll(sFormattedArg.GetPointer(), NULL, 10);
+				char szBuffer[256];
+				int iLen = autowsprintf(szBuffer, (*pPatternPos == 'x' ? "%x" : "%X"), iLastNumber);
+				if (iFieldWidth > 0)
+					WritePadding(sOutput, (bPadWithZeros ? '0' : ' '), (int)(iFieldWidth - iLen));
+				sOutput.Append((LPCSTR)szBuffer, iLen, CString::FLAG_ALLOC_EXTRA);
+				iVariadicIndex++;
+				}
+			else if (*pPatternPos == '&')//expected arg is an entity and to print the entity name
+				{
+				CString sResult = strTranslateStdEntity(formatVariadicArg(iVariadicIndex, "{}", args...));
+				sOutput.Append(sResult);
+				iVariadicIndex++;
+				}
+			else
+				//invalid format, george's code seems to ignore this
+				sOutput.Append(pPatternPos - 1, 2, CString::FLAG_ALLOC_EXTRA);
+			pPatternPos++;
+			//reset the run and other variables that might have been used
+			pPatternRunStart = pPatternPos;
+			iFieldWidth = 0;
+			b1000Separator, b64bit = false;
+			}
+		else
+			pPatternPos++;
+		}
+	//store what we have accumulated
+	if (pPatternRunStart < pPatternEnd)
+		sOutput.Append(pPatternRunStart, (int)(INT64)(pPatternEnd - pPatternRunStart), CString::FLAG_ALLOC_EXTRA);
+	return sOutput;
+	}
+#endif
+
+#ifdef CSTRING_VARIADICS_IN_HEADER
 CString Kernel::strPatternLegacy (const CString &sPattern, LPVOID *pArgs)
+#else
+CString Kernel::strPattern (const CString &sPattern, LPVOID *pArgs)
+#endif
 
 //	strPattern
 //
@@ -262,7 +432,11 @@ CString Kernel::strPatternLegacy (const CString &sPattern, LPVOID *pArgs)
 	}
 
 
+#ifdef CSTRING_VARIADICS_IN_HEADER
 CString Kernel::strPatternSubstLegacy (CString sLine, ...)
+#else
+CString Kernel::strPatternSubst (CString sLine, ...)
+#endif
 
 //	strPatternSubst
 //
@@ -273,7 +447,11 @@ CString Kernel::strPatternSubstLegacy (CString sLine, ...)
 	CString sParsedLine;
 
 	pArgs = (char *) &sLine + sizeof(sLine);
+#ifdef CSTRING_VARIADICS_IN_HEADER
 	sParsedLine = strPatternLegacy(sLine, (void **)pArgs);
+#else
+	sParsedLine = strPattern(sLine, (void **)pArgs);
+#endif
 	return sParsedLine;
 	}
 
