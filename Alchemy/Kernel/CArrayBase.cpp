@@ -14,7 +14,7 @@ DWORD g_dwArraysResized = 0;
 
 ::placement_new_class placement_new;
 
-CArrayBase::CArrayBase (HANDLE hHeap, INT64 iGranularity) : m_pBlock(NULL)
+Kernel::CArrayBase::CArrayBase (HANDLE hHeap, INT64 iGranularity) : m_pBlock(NULL)
 
 //	CArrayBase constructor
 
@@ -224,9 +224,12 @@ ALERROR CArrayBase::Resize (INT64 iNewSize, bool bPreserve, INT64 iAllocQuantum)
 	if (m_pBlock == NULL || (m_pBlock->m_iAllocSize - (int)sizeof(SHeader) < iNewSize))
 		{
 		//	Allocate a new block
-
+#ifdef _M_AMD64
 		INT64 iNewAllocSize = sizeof(SHeader) + (INT64)Max((size_t)GetSize() * 2, AlignUp64(iNewSize, iAllocQuantum));
-		SHeader *pNewBlock = (SHeader *)::HeapAlloc(GetHeap(), 0, iNewAllocSize);
+#else	//legacy 32bit mode
+		INT64 iNewAllocSize = sizeof(SHeader) + (INT64)Max((size_t)GetSize() * 2, (size_t)AlignUp((int)iNewSize, (int)iAllocQuantum));
+#endif
+		SHeader *pNewBlock = (SHeader *)::HeapAlloc(GetHeap(), 0, (size_t)iNewAllocSize);
 		if (pNewBlock == NULL)
 			{
 			::kernelDebugLogPattern("Out of memory allocating array of %d bytes.", iNewAllocSize);

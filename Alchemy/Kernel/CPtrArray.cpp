@@ -49,9 +49,9 @@ CPtrArray& CPtrArray::operator= (const CPtrArray& Obj)
 	{
 		m_iAllocSize = Obj.m_iAllocSize;
 		m_iLength = Obj.m_iLength;
-		m_pData = (void**)::MemAlloc(sizeof(void*) * (Obj.m_iAllocSize));
+		m_pData = (void**)::MemAlloc(sizeof(void*) * ((size_t)Obj.m_iAllocSize));
 
-		utlMemCopy((char*)Obj.m_pData, (char*)m_pData, sizeof(int) * m_iLength);
+		utlMemCopy((char*)Obj.m_pData, (char*)m_pData, sizeof(void*) * (size_t)m_iLength);
 	}
 	else
 	{
@@ -93,12 +93,15 @@ ALERROR CPtrArray::ExpandArray(INT64 iPos, INT64 iCount)
 	{
 		void** pNewData;
 		INT64 iInc;
-
+#ifdef _M_AMD64
 		iInc = AlignUp64(iCount, ALLOC_INCREMENT);
+#else
+		iInc = AlignUp((int)iCount, ALLOC_INCREMENT);
+#endif
 
 		//	Allocate a bigger buffer
 
-		pNewData = (void**)MemAlloc(sizeof(void*) * (m_iAllocSize + iInc));
+		pNewData = (void**)MemAlloc(sizeof(void*) * (size_t)(m_iAllocSize + iInc));
 		if (pNewData == NULL)
 			return ERR_MEMORY;
 
@@ -287,7 +290,7 @@ ALERROR CPtrArray::Set(INT64 iCount, void** pData)
 	//	Allocate the data
 
 	m_iAllocSize = (1 + (iCount / ALLOC_INCREMENT)) * ALLOC_INCREMENT;
-	m_pData = (void**)MemAlloc(sizeof(void*) * m_iAllocSize);
+	m_pData = (void**)MemAlloc(sizeof(void*) * (size_t)m_iAllocSize);
 	if (m_pData == NULL)
 		return ERR_MEMORY;
 
@@ -366,7 +369,7 @@ void CPtrArray::Shuffle(void)
 	INT64 i = m_iLength - 1;
 	while (i > 0)
 	{
-		INT64 x = mathRandomPtr(0, i);
+		INT64 x = mathRandomPtr(0, (size_t)i);
 
 		void* pValue = m_pData[x];
 		m_pData[x] = m_pData[i];

@@ -58,7 +58,7 @@ size_t CAtomizer::GetMemoryUsage (void) const
 	size_t i;
 	size_t iTotal = m_AtomToString.GetCount() * sizeof(size_t);
 
-	for (i = 0; i < m_AtomToString.GetCount(); i++)
+	for (i = 0; i < (size_t)m_AtomToString.GetCount(); i++)
 		iTotal += m_AtomToString[i].GetMemoryUsage();
 
 	return iTotal;

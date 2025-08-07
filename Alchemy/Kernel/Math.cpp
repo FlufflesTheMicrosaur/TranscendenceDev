@@ -179,10 +179,11 @@ DWORD Kernel::mathRandom (void)
 size_t Kernel::mathRandomPtr(void)
 //Workaround for 64bit porting, in which some usecases require up to size_t of randomness
 	{
-	if (sizeof(size_t) == 8)
+#ifdef _M_AMD64
 		return mathRandomPtr(0, (size_t)0xffffffffffffffff);
-	else
+#else
 		return mathRandom();
+#endif
 	}
 
 int Kernel::mathRandom (int iFrom, int iTo)
@@ -215,8 +216,9 @@ size_t Kernel::mathRandomPtr(size_t iFrom, size_t iTo)
 //Not meant to be a good or proper prng, just a fast one that outputs size_t reasonably
 //distributed bits.
 	{
-	if (sizeof(size_t) == 4)
-		return  (mathRandom(0, 0x7fffffff) << 1) + mathRandom(0, 1);
+#ifndef _M_AMD64
+	return  (mathRandom(0, 0x7fffffff) << 1) + mathRandom(0, 1);
+#else
 	size_t a, b, c, d, e;
 	e = mathRandom(0, 0xf); //generate 4 bits to pad this out
 	a = ((size_t)mathRandom(0, 0x7fffffff) << 1) + e % 2;
@@ -226,6 +228,7 @@ size_t Kernel::mathRandomPtr(size_t iFrom, size_t iTo)
 	a *= b;
 	c *= d;
 	return ((a << 32) | (c << 32 >> 32)) % (iTo - iFrom) + iFrom;
+#endif
 	}
 
 double Kernel::mathRandomMinusOneToOne (void)

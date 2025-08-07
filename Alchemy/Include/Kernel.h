@@ -721,7 +721,7 @@ public:
 	ALERROR FindOrAdd(void* pKey, void* pValue, bool* retbFound, void** retpValue);
 	ALERROR FindOrAdd(int iKey, void* pValue, bool* retbFound, void** retpValue) { return FindOrAdd((void*)(size_t)iKey, pValue, retbFound, retpValue); }
 	int GetCountInt(void) const { return m_Array.GetCountInt(); }
-	size_t GetCount(void) const { return m_Array.GetCount(); }
+	size_t GetCount(void) const { return (size_t)m_Array.GetCount(); }
 	void GetEntry(size_t iEntry, void** retpKey, void** retpValue) const;
 	void GetEntry(int iEntry, void** retpKey, void** retpValue) const { return GetEntry((size_t)iEntry, retpKey, retpValue); }
 	ALERROR ReplaceEntry(void* pKey, void* pValue, bool bAdd, bool* retbAdded, void** retpOldValue);

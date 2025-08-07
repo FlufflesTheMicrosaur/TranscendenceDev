@@ -431,7 +431,7 @@ ALERROR CUnarchiver::EndUnarchive (void)
 	ALERROR error;
 	size_t i;
 
-	for (i = 0; i < m_FixupTable.GetCountInt(); i += 2)
+	for (i = 0; i < (size_t)m_FixupTable.GetCount(); i += 2)
 		{
 		void **pReferenceDest;
 		size_t iID, iRef;
@@ -450,7 +450,7 @@ ALERROR CUnarchiver::EndUnarchive (void)
 
 	//	Let each object know that we're done loading
 
-	for (i = 0; i < m_List.GetCount(); i++)
+	for (i = 0; i < (size_t)m_List.GetCount(); i++)
 		{
 		CObject *pObject = m_List[i];
 
@@ -637,7 +637,7 @@ ALERROR CUnarchiver::ResolveReference (size_t iID, void **pReferenceDest)
 
 	//	Look up the ID. If we found it, then we're done
 
-	if (iID < m_ReferenceList.GetCountInt())
+	if (iID < (size_t)m_ReferenceList.GetCount())
 		{
 		iRef = (size_t)m_ReferenceList.GetElement(iID);
 		if (iRef != -1)
@@ -677,7 +677,7 @@ ALERROR CUnarchiver::ResolveExternalReference (CString sTag, void *pReference)
 	//	Add the reference
 
 	iID = (size_t)pValue;
-	if (iID < 0 || iID >= m_ReferenceList.GetCountInt())
+	if (iID < 0 || iID >= (size_t)m_ReferenceList.GetCount())
 		return ERR_FAIL;
 
 	m_ReferenceList.ReplaceElement(iID, pReference);

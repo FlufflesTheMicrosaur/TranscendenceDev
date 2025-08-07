@@ -39,7 +39,7 @@ CIDTable::~CIDTable (void)
 		{
 		size_t i;
 
-		for (i = 0; i < CPtrDictionary::GetCountInt(); i++)
+		for (i = 0; i < (size_t)CPtrDictionary::GetCountInt(); i++)
 			{
 			void* pKey;
 			CObject *pValue;

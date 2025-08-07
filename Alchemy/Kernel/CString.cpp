@@ -886,7 +886,7 @@ void CString::Transcribe (const char *pString, size_t iLen)
 //	If iLen is -1, we assume ASCIIZ
 
 	{
-	int i;
+	size_t i;
 
 	//	Handle NULL
 
@@ -913,7 +913,7 @@ void CString::Transcribe (const char *pString, size_t iLen)
 
 	//	Allocate size
 
-	Size((int)iLen+1);
+	Size((size_t)iLen+1);
 
 	for (i = 0; i < iLen; i++)
 		m_pStore->pString[i] = pString[i];
@@ -933,7 +933,7 @@ void CString::Truncate (size_t iLength)
 //	than the current length of the string
 
 	{
-	ASSERT(iLength >= 0 && iLength <= GetLength());
+	ASSERT(iLength >= 0 && iLength <= (size_t)GetLength());
 
 	if (iLength == 0)
 		{

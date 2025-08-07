@@ -187,7 +187,7 @@ bool CPtrDictionary::FindSlot(void* pKey, size_t* retiPos) const
 
 		//	Pick a point in between our two extremes
 
-		iTry = iLeft + (iRight - iLeft) / 2;
+		iTry = (size_t)(iLeft + (iRight - iLeft) / 2);
 
 		//	Get the key at that point. Remember that
 		//	we store the key and the value in a single array, so
@@ -217,13 +217,13 @@ bool CPtrDictionary::FindSlot(void* pKey, size_t* retiPos) const
 	iCompare = Compare(pEntryKey, pKey);
 	if (iCompare == 0)
 	{
-		*retiPos = iLeft;
+		*retiPos = (size_t)iLeft;
 		return TRUE;
 	}
 	else if (iCompare == 1)
-		*retiPos = iLeft;
+		*retiPos = (size_t)iLeft;
 	else
-		*retiPos = (iLeft + 1);
+		*retiPos = (size_t)(iLeft + 1);
 
 	return FALSE;
 }

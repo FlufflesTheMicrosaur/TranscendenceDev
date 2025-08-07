@@ -223,7 +223,7 @@ template <class VALUE> class TArray : public Kernel::CArrayBase
 			if (m_pBlock)
 				{
 				VALUE *pElement = (VALUE *)GetBytes();
-				for (size_t i = 0; i < GetCount(); i++, pElement++)
+				for (size_t i = 0; i < (size_t)GetCount(); i++, pElement++)
 					pElement->VALUE::~VALUE();
 
 				CleanUpBlock();
