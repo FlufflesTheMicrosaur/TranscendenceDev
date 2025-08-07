@@ -242,6 +242,10 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='SteamRelease|Win32'">.\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug For Contributors|x64'">
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\</IntDir>
   </PropertyGroup>
@@ -342,7 +346,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -363,7 +367,7 @@
       <DisableSpecificWarnings>26495; 26812</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
-      <OutputFile>Debug\CodeChain.lib</OutputFile>
+      <OutputFile>.\Debug\CodeChain.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>

@@ -152,7 +152,8 @@ Global
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|ARM.ActiveCfg = Debug For Contributors|Win32
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|Win32.ActiveCfg = Debug For Contributors|Win32
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|Win32.Build.0 = Debug For Contributors|Win32
-		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|x64.ActiveCfg = Debug For Contributors|Win32
+		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|x64.ActiveCfg = Debug For Contributors|x64
+		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug For Contributors|x64.Build.0 = Debug For Contributors|x64
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug in Program Files|Any CPU.ActiveCfg = Debug in Program Files|Win32
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug in Program Files|ARM.ActiveCfg = Debug in Program Files|Win32
 		{39983CCD-095B-4B41-854F-4967A254A07C}.Debug in Program Files|Win32.ActiveCfg = Debug in Program Files|Win32
@@ -803,9 +804,8 @@ Global
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|Any CPU.ActiveCfg = Debug For Contributors|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|ARM.ActiveCfg = Debug For Contributors|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|Win32.ActiveCfg = Debug For Contributors|Win32
-		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|x64.ActiveCfg = Debug For Contributors|x64
-		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|x64.Build.0 = Debug For Contributors|x64
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|x64.ActiveCfg = Debug For Contributors|Win32
+		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug For Contributors|x64.Build.0 = Debug For Contributors|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug in Program Files|Any CPU.ActiveCfg = Release|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug in Program Files|Any CPU.Build.0 = Release|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug in Program Files|ARM.ActiveCfg = Debug|Win32
@@ -819,7 +819,6 @@ Global
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug|ARM.ActiveCfg = Debug|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug|x64.ActiveCfg = Debug|x64
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Debug|x64.ActiveCfg = Debug|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Release|Any CPU.ActiveCfg = Release|Win32
 		{910B3EA2-DB1B-4F5D-B3C5-9AB1B600936B}.Release|ARM.ActiveCfg = Release|Win32
@@ -885,8 +884,8 @@ Global
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|ARM.ActiveCfg = Debug with Address Sanitizer|Win32
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|Win32.ActiveCfg = Release|Win32
 		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|Win32.Build.0 = Release|Win32
-		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.ActiveCfg = Release|x64
-		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.Build.0 = Release|x64
+		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.ActiveCfg = Debug with Address Sanitizer|Win32
+		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.Build.0 = Debug with Address Sanitizer|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Any CPU.ActiveCfg = Release|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|Any CPU.Build.0 = Release|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.Debug For Contributors|ARM.ActiveCfg = Release|Win32
@@ -950,7 +949,6 @@ Global
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.SteamRelease|Win32.Build.0 = Release|Win32
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.SteamRelease|x64.ActiveCfg = Release|x64
 		{C68A844B-F08B-4913-BCFF-B607C7BC1F6D}.SteamRelease|x64.Build.0 = Release|x64
-		{674CF44A-E652-48D2-8D5A-52BC1F280534}.SteamRelease|x64.ActiveCfg = Debug with Address Sanitizer|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
