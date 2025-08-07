@@ -198,8 +198,8 @@ CString::CString (const char *pString, size_t iLength, BOOL bExternal) :
 					//	A negative value means that this is an external
 					//	read-only storage
 
-					m_pStore->iAllocSize = -(int)iLength;
-					m_pStore->iLength = (int)iLength;
+					m_pStore->iAllocSize = -(INT64)iLength;
+					m_pStore->iLength = (INT64)iLength;
 					m_pStore->pString = const_cast<char *>(pString);
 					}
 				}
@@ -463,8 +463,8 @@ void CString::Append (LPCSTR pString, int iLength, DWORD dwFlags)
 
 	//	Append
 
-	int iStart = GetLength();
-	for (int i = 0; i < iLength; i++)
+	size_t iStart = GetLength();
+	for (size_t i = 0; i < iLength; i++)
 		m_pStore->pString[iStart + i] = pString[i];
 
 	m_pStore->iLength += iLength;
@@ -831,7 +831,7 @@ void CString::Size (size_t iLength, DWORD dwFlags)
 		if (dwFlags & FLAG_PRESERVE_CONTENTS)
 			{
 			size_t i;
-			size_t iCopyLen = (size_t)Min(m_pStore->iLength+1, (INT64)iLength);
+			size_t iCopyLen = Min((size_t)m_pStore->iLength+1, iLength);
 
 			for (i = 0; i < iCopyLen; i++)
 				pNewStore->pString[i] = m_pStore->pString[i];
@@ -862,7 +862,7 @@ void CString::Size (size_t iLength, DWORD dwFlags)
 		//	If we're supposed to preserve contents, copy the content over
 
 		if (dwFlags & FLAG_PRESERVE_CONTENTS)
-			utlMemCopy(m_pStore->pString, pNewString, (size_t)Min(m_pStore->iLength, (INT64)iLength));
+			utlMemCopy(m_pStore->pString, pNewString, Min((size_t)m_pStore->iLength, iLength));
 
 		//	Only free if this is our storage
 
