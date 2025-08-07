@@ -183,12 +183,12 @@ template <class VALUE> VALUE min (VALUE a, VALUE b)
 
 inline int max (int a, LONG b) { return (a > b ? a : b); }
 inline int max (LONG a, int b) { return (a > b ? a : b); }
-//inline size_t max (size_t a, size_t b) { return (a > b ? a : b); }
-inline int max (int64_t a, int64_t b) { return (a > b ? (int)a : (int)b); }
+inline size_t max (int a, size_t b) { return ((size_t)max(0,a) > b ? (size_t)max(0,a) : b); }
+inline size_t max (size_t a, int b) { return (a > (size_t)max(0,b) ? a : (size_t)max(0,b)); }
 inline int min (int a, LONG b) { return (a < b ? a : b); }
 inline int min (LONG a, int b) { return (a < b ? a : b); }
-//inline size_t min (size_t a, size_t b) { return (a < b ? a : b); }
-inline int min (int64_t a, int64_t b) { return (a < b ? (int)a : (int)b); }
+inline size_t min (int a, size_t b) { return ((size_t)max(0,a) < b ? (size_t)max(0,a) : b); }
+inline size_t min (size_t a, int b) { return (a < (size_t)max(0,b) ? a : (size_t)max(0,b)); }
 #endif
 #else //legacy 32bit mode
 inline int Absolute (int iValue) { return (iValue < 0 ? -iValue : iValue); }
@@ -241,12 +241,12 @@ template <class VALUE> VALUE min(VALUE a, VALUE b)
 
 inline int max(int a, LONG b) { return (a > b ? a : b); }
 inline int max(LONG a, int b) { return (a > b ? a : b); }
-inline int max(int a, DWORD b) { return (a > b ? a : (int)b); }
-inline int max(DWORD a, int b) { return (a > b ? (int)a : b); }
-inline int min(int a, LONG b) { return (a < b ? a : b); }
-inline int min(LONG a, int b) { return (a < b ? a : b); }
-inline int min(int a, DWORD b) { return (a < b ? a : (int)b); }
-inline int max(DWORD a, int b) { return (a > b ? (int)a : b); }
+inline size_t max (int a, size_t b) { return ((size_t)max(0,a) > b ? (size_t)max(0,a) : b); }
+inline size_t max (size_t a, int b) { return (a > (size_t)max(0,b) ? a : (size_t)max(0,b)); }
+inline int min (int a, LONG b) { return (a < b ? a : b); }
+inline int min (LONG a, int b) { return (a < b ? a : b); }
+inline size_t min (int a, size_t b) { return ((size_t)max(0,a) < b ? (size_t)max(0,a) : b); }
+inline size_t min (size_t a, int b) { return (a < (size_t)max(0,b) ? a : (size_t)max(0,b)); }
 #endif
 #endif
 
