@@ -106,6 +106,7 @@
 #define FN_MATH_LOG						102
 #define FN_HEX							103
 #define FN_SYSINFO_SELF_TEST			104
+#define FN_MATH_GAMMA_SCALE_NUMERALS	105
 #define FN_DEBUG_APPLY_TIMED			106
 #define FN_DEBUG_EVAL_TIMED				107
 #define FN_STR_JOIN						108
