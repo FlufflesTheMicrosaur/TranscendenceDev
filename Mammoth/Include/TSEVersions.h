@@ -332,7 +332,7 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //			(objRemove obj)
 //				Added, removes the obj from system
 //
-//	 55: 2.0 Alpha 4
+//	 55: 2.0 API 55 Preview 1
 //		tlisp:
 //			(gammaScale val inStart inEnd outStart outEnd [gamma=1.0])
 //				Native tlisp version of mathScale/mathScaleReal.
