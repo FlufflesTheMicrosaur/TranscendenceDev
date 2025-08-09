@@ -354,6 +354,10 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //				it does not check that you are using API55 first. Ensure your API version
 //				is appropriately set to avoid multiverse from downloading your extension
 //				onto an incompatible version.
+//			(dbgApplyTimed fn argsList)
+//				Allows timing tlisp function execution
+//			(dbgEvalTimed expr)
+//				Allows timing tlisp function/block parsing & execution
 //		Any <Type>
 //			<AttributeDesc>
 //				<ItemAttribute> and <LocationAttribute>
