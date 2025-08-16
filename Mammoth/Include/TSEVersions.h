@@ -334,6 +334,10 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //
 //	 55: 2.0 Alpha 4
 //		tlisp:
+//			(lambda args [docstring] expr)
+//				Lambda now accepts an optional docstring that can be printed out with (help lambda)
+//			(help [lambda])
+//				Now accepts a lambda, and will print out the docstring if one exists
 //			(dbgApplyTimed fn argsList)
 //				Allows timing tlisp function execution
 //			(dbgEvalTimed expr)

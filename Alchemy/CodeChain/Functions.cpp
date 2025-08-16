@@ -1334,6 +1334,8 @@ ICCItem *fnHelp (CEvalContext *pCtx, ICCItem *pArgs, DWORD dwData)
 
 	{
 	CCodeChain *pCC = pCtx->pCC;
+	ICCItem *pFirst = pArgs->GetElement(0);
+	ICCItem *pSecond = pArgs->GetElement(1);
 	int i;
 
 	//	Prepare some output
@@ -1344,28 +1346,92 @@ ICCItem *fnHelp (CEvalContext *pCtx, ICCItem *pArgs, DWORD dwData)
 
 	//	If no parameters, then we show some help on help
 
-	if (pArgs->GetCount() == 0)
+	if (!pFirst)
 		{
-		CString sHelp = CONSTLIT("(help) -> this help\n(help '*) -> all functions\n(help 'partial-string) -> all functions starting with partial-string\n(help 'function-name) -> help on function-name\n");
+		CString sHelp = CONSTLIT(
+			"(help) -> this help\n"
+			"(help '* ['lambdas]) -> all functions\n"
+			"(help 'partial-string ['lambdas]) -> all functions starting with partial-string\n"
+			"(help 'function-name ['lambdas]) -> help on function-name\n"
+			"(help lambda) -> help on the lambda\n");
 		Output.Write(sHelp.GetASCIIZPointer(), sHelp.GetLength());
 		}
 
-	//	If parameter is * then show all functions
+	//	If first parameter is a lambda, we show the docstring of the lambda
 
-	else if (strEquals(pArgs->GetElement(0)->GetStringValue(), CONSTLIT("*")))
+	else if (pFirst->IsLambdaFunction())
 		{
+		CCLambda *pLambda = (CCLambda *)pFirst;
+		CString sHelp = pLambda->GetHelp();
+
+		//	if we found nothing we need to dynamically generate this from the args list
+
+		if (sHelp.IsBlank())
+			{
+			//	Need to get the real name of this lambda
+
+			CString sKey = CONSTLIT("");
+			ICCItem *pGlobals = pCC->GetGlobals();
+			for (i = 0; i < pGlobals->GetCount(); i++)
+				{
+				if (pGlobals->GetElement(i) == pLambda)
+					{
+					sKey = pGlobals->GetKey(i);
+					break;
+					}
+				}
+
+			ICCItem* pLambdaArgs = pLambda->GetArgList();
+			if (pLambdaArgs)
+				if (pLambdaArgs->IsNil())
+					sHelp = strPatternSubst(CONSTLIT("(%s)"), sKey);
+				else
+					sHelp = strPatternSubst(CONSTLIT("(%s %s)"), sKey, pLambdaArgs->Print(PRFLAG_NO_LIST_LAMBDA_ARGS));
+			else
+				sHelp = strPatternSubst(CONSTLIT("(%s ...)"), sKey);
+			}
+
+		Output.Write(sHelp.GetASCIIZPointer(), sHelp.GetLength());
+		}
+
+	//	If first parameter is * then show all functions
+
+	else if (pFirst->GetStringValue() == CONSTLIT("*"))
+		{
+		bool bShowLambdas = pSecond ? pSecond->GetStringValue() == CONSTLIT("lambdas") : false;
 		ICCItem *pGlobals = pCC->GetGlobals();
 		for (i = 0; i < pGlobals->GetCount(); i++)
 			{
 			ICCItem *pItem = pGlobals->GetElement(i);
-			if (pItem->IsFunction())
+			if ((pItem->IsPrimitive() && pItem->IsFunction()) || (bShowLambdas && pItem->IsLambdaFunction()))
 				{
 				CString sHelp = pItem->GetHelp();
 
-				//	If blank or deprecated, skip
+				//	If deprecated, skip
 
-				if (!sHelp.IsBlank() && !strStartsWith(sHelp, CONSTLIT("DEPRECATED")))
+				if (!strStartsWith(sHelp, CONSTLIT("DEPRECATED")))
 					{
+
+					//	If the help text is blank, then we generate our own
+
+					if (sHelp.IsBlank())
+						{
+						if (pItem->IsLambdaFunction())
+							{
+							CCLambda *pLambda = (CCLambda *)pItem;
+							ICCItem* pLambdaArgs = pLambda->GetArgList();
+							if (pLambdaArgs)
+								if (pLambdaArgs->IsNil())
+									sHelp = strPatternSubst(CONSTLIT("(%s)"), pGlobals->GetKey(i));
+								else
+									sHelp = strPatternSubst(CONSTLIT("(%s %s)"), pGlobals->GetKey(i), pLambdaArgs->Print(PRFLAG_NO_LIST_LAMBDA_ARGS));
+							else
+								sHelp = strPatternSubst(CONSTLIT("(%s ...)"), pGlobals->GetKey(i));
+;							}
+						else
+							sHelp = strPatternSubst(CONSTLIT("(%s ...)"), pGlobals->GetKey(i));
+						}
+
 					OutputFunctionName(Output, sHelp);
 					Output.Write("\n", 1);
 					}
@@ -1373,11 +1439,12 @@ ICCItem *fnHelp (CEvalContext *pCtx, ICCItem *pArgs, DWORD dwData)
 			}
 		}
 
-	//	Otherwise, look for the function
+	//	Otherwise, look for the function using the first parameter as a filter
 
 	else
 		{
-		CString sPartial = pArgs->GetElement(0)->GetStringValue();
+		CString sPartial = pFirst->GetStringValue();
+		bool bShowLambdas = pSecond ? pSecond->GetStringValue() == CONSTLIT("lambdas") : false;
 		TArray<CString> Help;
 
 		//	If we have a trailing '*' then we force a list, even on an exact
@@ -1399,7 +1466,7 @@ ICCItem *fnHelp (CEvalContext *pCtx, ICCItem *pArgs, DWORD dwData)
 			{
 			ICCItem *pItem = pGlobals->GetElement(i);
 
-			if (pItem->IsPrimitive() && strStartsWith(pGlobals->GetKey(i), sPartial))
+			if (((pItem->IsPrimitive() && pItem->IsFunction()) || (bShowLambdas && pItem->IsLambdaFunction())) && strStartsWith(pGlobals->GetKey(i), sPartial))
 				{
 				CString sHelp = pItem->GetHelp();
 
@@ -1407,10 +1474,22 @@ ICCItem *fnHelp (CEvalContext *pCtx, ICCItem *pArgs, DWORD dwData)
 
 				if (sHelp.IsBlank())
 					{
-					if (iExactMatch == -1 && strEquals(pGlobals->GetKey(i), sPartial))
-						iExactMatch = Help.GetCount();
+					if (pItem->IsLambdaFunction())
+						{
+						CCLambda *pLambda = (CCLambda *)pItem;
+						ICCItem* pLambdaArgs = pLambda->GetArgList();
+						if (pLambdaArgs)
+							if (pLambdaArgs->IsNil())
+								sHelp = strPatternSubst(CONSTLIT("(%s)"), pGlobals->GetKey(i));
+							else
+								sHelp = strPatternSubst(CONSTLIT("(%s %s)"), pGlobals->GetKey(i), pLambdaArgs->Print(PRFLAG_NO_LIST_LAMBDA_ARGS));
+						else
+							sHelp = strPatternSubst(CONSTLIT("(%s ...)"), pGlobals->GetKey(i));
+						;							}
+					else
+						sHelp = strPatternSubst(CONSTLIT("(%s ...)"), pGlobals->GetKey(i));
 
-					Help.Insert(strPatternSubst(CONSTLIT("(%s ...)"), pGlobals->GetKey(i)));
+					Help.Insert(sHelp);
 					}
 
 				//	If the help text starts with DEPRECATED, then we skip it.
