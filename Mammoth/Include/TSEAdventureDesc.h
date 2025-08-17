@@ -45,17 +45,28 @@ class CEngineOptions
 		bool m_bShowDamageDone = false;
 	};
 
-//	CAdventureSettingOptionDesc ------------------------------------------------
+//	CGameSettingOptionDesc ------------------------------------------------
 
-class CAdventureSettingOptionDesc
+class CGameSettingOptionDesc
 	{
 	public:
 
-		CAdventureSettingOptionDesc (void);
+		CGameSettingOptionDesc (void);
+		CGameSettingOptionDesc (CString sID, CString sRawValue);
 		bool InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
+
 		CString asString (void) { m_sRawValue; }
 		DWORD asUNID (void) { bool bRet;  return (DWORD)strToInt(m_sRawValue, 0, &bRet); }
-		
+		CString getID (void) { return m_sID; }
+		bool isSelected (void) { return m_bSelected; }
+		void setSelected (bool bSelected) { m_bSelected = bSelected; }
+	
+	protected:
+		friend CGameSettingDesc;
+
+		void setID (CString sID) { m_sID = sID; }
+		void setValue (CString sValue) { m_sRawValue = sValue; }
+		void setValue (DWORD sValue) { m_sRawValue = strFormatInteger((INT64)sValue); }
 
 	private:
 		CString m_sID;
@@ -64,9 +75,9 @@ class CAdventureSettingOptionDesc
 
 	};
 
-//	CAdventureSettingDesc -----------------------------------------------------
+//	CGameSettingDesc -----------------------------------------------------
 
-class CAdventureSettingDesc
+class CGameSettingDesc
 	{
 	public:
 		enum EAdventureSettingType
@@ -93,18 +104,21 @@ class CAdventureSettingDesc
 			advCharacterSetup
 			};
 
-		CAdventureSettingDesc (void);
+		CGameSettingDesc (void);
 
 		const int GetOptionCount(void) { return m_OptionIDs.GetCount(); }
 		const CString GetOptionID(int iOptionIdx) { return m_OptionIDs.GetAt(iOptionIdx); }
-		CAdventureSettingOptionDesc *GetOption(int iOptionIdx) { return m_Options.Find(GetOptionID(iOptionIdx)); }
+		CGameSettingOptionDesc *GetOption(int iOptionIdx) { return m_Options.Find(GetOptionID(iOptionIdx)); }
 		bool InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
+		bool InitAsDefaultDifficulty (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
+		bool InitAsDefaultGenome (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
 
 	private:
 		CString m_sID;
+		DWORD m_dwMaxSelect;
 
 		TArray<CString> m_OptionIDs;	//We use a TArray here to allow an author to define the order
-		TMap<CString, CAdventureSettingOptionDesc> m_Options;
+		TMap<CString, CGameSettingOptionDesc> m_Options;
 	};
 
 //	CAdventureDesc -------------------------------------------------------------

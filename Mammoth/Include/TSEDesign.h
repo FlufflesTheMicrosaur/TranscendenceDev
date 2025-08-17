@@ -16,6 +16,8 @@ class CDockingPorts;
 class CDynamicDesignTable;
 class CEconomyType;
 class CEffect;
+class CGameSettingDesc;
+class CGameSettingOptionsDesc;
 class CGameStats;
 class CGenericType;
 class CItem;
