@@ -58,6 +58,8 @@ class CGameSettingOptionDesc
 		CString asString (void) { m_sRawValue; }
 		DWORD asUNID (void) { bool bRet;  return (DWORD)strToInt(m_sRawValue, 0, &bRet); }
 		CString getID (void) { return m_sID; }
+		CString getDisplayName (void) { return m_sDisplayName; }
+		CString getDisplayDesc (void) { return m_sDisplayName; }
 		bool isSelected (void) { return m_bSelected; }
 		void setSelected (bool bSelected) { m_bSelected = bSelected; }
 	
@@ -70,6 +72,8 @@ class CGameSettingOptionDesc
 
 	private:
 		CString m_sID;
+		CString m_sDisplayName;
+		CString m_sDisplayDesc;
 		CString m_sRawValue;
 		bool m_bSelected = false;
 
