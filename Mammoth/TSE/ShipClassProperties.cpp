@@ -296,7 +296,7 @@ ICCItemPtr CShipClass::OnGetProperty (CCodeChainCtx &Ctx, const CString &sProper
 		const CString &sMassClass = m_Hull.GetArmorLimits().GetMaxArmorClass();
 		if (!sMassClass.IsBlank())
 			{
-			const CArmorMassDefinitions &MassDef = GetUniverse().GetDesignCollection().GetArmorMassDefinitions();
+			const CItemMassDefinitions &MassDef = GetUniverse().GetDesignCollection().GetArmorMassDefinitions();
 			return ICCItemPtr(MassDef.GetMassClassLabel(sMassClass));
 			}
 		else if (m_Hull.GetArmorLimits().GetMaxArmorMass() > 0) 
@@ -364,7 +364,7 @@ ICCItemPtr CShipClass::OnGetProperty (CCodeChainCtx &Ctx, const CString &sProper
 		const CString &sMassClass = m_Hull.GetArmorLimits().GetStdArmorClass();
 		if (!sMassClass.IsBlank())
 			{
-			const CArmorMassDefinitions &MassDef = GetUniverse().GetDesignCollection().GetArmorMassDefinitions();
+			const CItemMassDefinitions &MassDef = GetUniverse().GetDesignCollection().GetArmorMassDefinitions();
 			return ICCItemPtr(MassDef.GetMassClassLabel(sMassClass));
 			}
 		else if (m_Hull.GetArmorLimits().GetStdArmorMass() > 0) 

@@ -5,14 +5,25 @@
 
 #include "PreComp.h"
 
+#define MASS_DESC_ARMOR_TAG						CONSTLIT("ArmorMassDesc")
+#define MASS_DESC_AMMO_TAG						CONSTLIT("AmmoMassDesc")
+#define MASS_DESC_WEAPON_TAG					CONSTLIT("WeaponMassDesc")
+#define MASS_DESC_SHIELD_TAG					CONSTLIT("ShieldMassDesc")
+#define MASS_DESC_REACTOR_TAG					CONSTLIT("ReactorMassDesc")
+#define MASS_DESC_DEVICE_TAG					CONSTLIT("DeviceMassDesc")
+#define MASS_DESC_ITEM_TAG						CONSTLIT("ItemMassDesc")
+
+#define MASS_TAG								CONSTLIT("MassClass")
+#define MASS_TAG_LEGACY							CONSTLIT("ArmorMass")	//	Used for backwards compatibility
+
 #define CRITERIA_ATTRIB							CONSTLIT("criteria")
 #define ID_ATTRIB								CONSTLIT("id")
 #define LABEL_ATTRIB							CONSTLIT("label")
 #define MASS_ATTRIB								CONSTLIT("mass")
 
-const CArmorMassDefinitions CArmorMassDefinitions::Null;
+const CItemMassDefinitions CItemMassDefinitions::Null;
 
-void CArmorMassDefinitions::Append (const CArmorMassDefinitions &Src)
+void CItemMassDefinitions::Append (const CItemMassDefinitions &Src)
 
 //	Append
 //
@@ -25,7 +36,7 @@ void CArmorMassDefinitions::Append (const CArmorMassDefinitions &Src)
 	InvalidateIDIndex();
 	}
 
-CArmorMassDefinitions::SArmorMassEntry *CArmorMassDefinitions::FindMassEntryActual (const CItem &Item)
+CItemMassDefinitions::SItemMassEntry *CItemMassDefinitions::FindMassEntryActual (const CItem &Item)
 
 //	FindMassEntryActual
 //
@@ -41,7 +52,7 @@ CArmorMassDefinitions::SArmorMassEntry *CArmorMassDefinitions::FindMassEntryActu
 		if (m_Definitions.GetKey(i).IsBlank())
 			continue;
 
-		SArmorMassDefinition &Def = m_Definitions[i];
+		SItemMassDefinition &Def = m_Definitions[i];
 		if (!Item.MatchesCriteria(Def.Criteria))
 			continue;
 
@@ -52,7 +63,7 @@ CArmorMassDefinitions::SArmorMassEntry *CArmorMassDefinitions::FindMassEntryActu
 
 	//	If not found, look for the default definition
 
-	SArmorMassDefinition *pDef = m_Definitions.GetAt(NULL_STR);
+	SItemMassDefinition *pDef = m_Definitions.GetAt(NULL_STR);
 	if (pDef == NULL)
 		return NULL;
 
@@ -63,7 +74,7 @@ CArmorMassDefinitions::SArmorMassEntry *CArmorMassDefinitions::FindMassEntryActu
 	return NULL;
 	}
 
-bool CArmorMassDefinitions::FindPreviousMassClass (const CString &sID, CString *retsPrevID, int *retiPrevMass) const
+bool CItemMassDefinitions::FindPreviousMassClass (const CString &sID, CString *retsPrevID, int *retiPrevMass) const
 
 //	FindPreviousMassClass
 //
@@ -72,13 +83,13 @@ bool CArmorMassDefinitions::FindPreviousMassClass (const CString &sID, CString *
 	{
 	//	Find the armor class by ID
 
-	SArmorMassEntry *pMax;
+	SItemMassEntry *pMax;
 	if (!m_ByID.Find(sID, &pMax))
 		return false;
 
 	//	Now find the definition where this came from
 
-	const SArmorMassDefinition *pDef = m_Definitions.GetAt(pMax->sDefinition);
+	const SItemMassDefinition *pDef = m_Definitions.GetAt(pMax->sDefinition);
 	if (pDef == NULL)
 		return false;
 
@@ -88,7 +99,7 @@ bool CArmorMassDefinitions::FindPreviousMassClass (const CString &sID, CString *
 	int iBestMass = 0;
 	for (int i = 0; i < pDef->Classes.GetCount(); i++)
 		{
-		const SArmorMassEntry &Entry = pDef->Classes[i];
+		const SItemMassEntry &Entry = pDef->Classes[i];
 
 		if (Entry.iMaxMass < pMax->iMaxMass
 				&& (iBest == -1 || Entry.iMaxMass > iBestMass))
@@ -112,7 +123,7 @@ bool CArmorMassDefinitions::FindPreviousMassClass (const CString &sID, CString *
 	return true;
 	}
 
-Metric CArmorMassDefinitions::GetFrequencyMax (const CString &sID) const
+Metric CItemMassDefinitions::GetFrequencyMax (const CString &sID) const
 
 //	GetFrequencyMax
 //
@@ -129,7 +140,7 @@ Metric CArmorMassDefinitions::GetFrequencyMax (const CString &sID) const
 	{
 	//	Find the armor class by ID
 
-	SArmorMassEntry *pMax;
+	SItemMassEntry *pMax;
 	if (!m_ByID.Find(sID, &pMax))
 		return 0.0;
 
@@ -137,7 +148,7 @@ Metric CArmorMassDefinitions::GetFrequencyMax (const CString &sID) const
 
 	//	Now find the definition where this came from
 
-	const SArmorMassDefinition *pDef = m_Definitions.GetAt(pMax->sDefinition);
+	const SItemMassDefinition *pDef = m_Definitions.GetAt(pMax->sDefinition);
 	if (pDef == NULL)
 		return 0.0;
 
@@ -147,7 +158,7 @@ Metric CArmorMassDefinitions::GetFrequencyMax (const CString &sID) const
 	int iTotal = 0;
 	for (int i = 0; i < pDef->Classes.GetCount(); i++)
 		{
-		const SArmorMassEntry &Entry = pDef->Classes[i];
+		const SItemMassEntry &Entry = pDef->Classes[i];
 		iTotal += Entry.iCount;
 
 		if (Entry.iMaxMass <= iMaxMass)
@@ -162,62 +173,80 @@ Metric CArmorMassDefinitions::GetFrequencyMax (const CString &sID) const
 	return (Metric)iCount / (Metric)iTotal;
 	}
 
-const CString &CArmorMassDefinitions::GetMassClassID (const CItem &Item) const
+const CString &CItemMassDefinitions::GetMassClassID (const CItem &Item) const
 
 //	GetMassClassID
 //
 //	Finds the item and returns the mass class ID (or NULL_STR if not found).
 
 	{
-	const SArmorMassEntry *pEntry = FindMassEntry(Item);
+	const SItemMassEntry *pEntry = FindMassEntry(Item);
 	if (pEntry == NULL)
 		return NULL_STR;
 
 	return pEntry->sID;
 	}
 
-const CString &CArmorMassDefinitions::GetMassClassLabel (const CString &sID) const
+const CString &CItemMassDefinitions::GetMassClassLabel (const CString &sID) const
 
 //	GetMassClassLabel
 //
 //	Returns the text.
 
 	{
-	SArmorMassEntry *pEntry;
+	SItemMassEntry *pEntry;
 	if (!m_ByID.Find(sID, &pEntry))
 		return NULL_STR;
 
 	return pEntry->sText;
 	}
 
-int CArmorMassDefinitions::GetMassClassMass (const CString &sID) const
+int CItemMassDefinitions::GetMassClassMass (const CString &sID) const
 
 //	GetMassClassMass
 //
 //	Returns the mass for the given mass class.
 
 	{
-	SArmorMassEntry *pEntry;
+	SItemMassEntry *pEntry;
 	if (!m_ByID.Find(sID, &pEntry))
 		return 0;
 
 	return pEntry->iMaxMass;
 	}
 
-ALERROR CArmorMassDefinitions::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc)
+ALERROR CItemMassDefinitions::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc)
 
 //	InitFromXML
 //
 //	Initialize from XML
 
 	{
+	//	Read the tag
+
+	CString sTag = pDesc->GetTag();
+	if (sTag == MASS_DESC_ARMOR_TAG)
+		m_iCategoryMask = ItemCategories::itemcatArmor;
+	else if (sTag == MASS_DESC_AMMO_TAG)
+		m_iCategoryMask = ItemCategories::itemcatMissile;
+	else if (sTag == MASS_DESC_WEAPON_TAG)
+		m_iCategoryMask = ItemCategories::itemcatWeapon;
+	else if (sTag == MASS_DESC_SHIELD_TAG)
+		m_iCategoryMask = ItemCategories::itemcatShields;
+	else if (sTag == MASS_DESC_REACTOR_TAG)
+		m_iCategoryMask = ItemCategories::itemcatReactor;
+	else if (sTag == MASS_DESC_DEVICE_TAG)
+		m_iCategoryMask = ItemCategories::itemcatDeviceMask;
+	else if (sTag == MASS_DESC_ITEM_TAG)
+		m_iCategoryMask = ItemCategories::itemcatNone;
+
 	//	Read the criteria
 
 	CString sCriteria = pDesc->GetAttribute(CRITERIA_ATTRIB);
 
 	//	Add a new definitions, for this criteria
 
-	SArmorMassDefinition *pDef = m_Definitions.SetAt(sCriteria);
+	SItemMassDefinition *pDef = m_Definitions.SetAt(sCriteria);
 
 	//	Parse the criteria
 
@@ -228,22 +257,32 @@ ALERROR CArmorMassDefinitions::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pD
 	for (int i = 0; i < pDesc->GetContentElementCount(); i++)
 		{
 		CXMLElement *pEntry = pDesc->GetContentElement(i);
+		sTag = pEntry->GetTag();
 
-		int iMass = pEntry->GetAttributeIntegerBounded(MASS_ATTRIB, 1, -1, 0);
-		if (iMass == 0)
+		if (sTag == MASS_TAG || sTag == MASS_TAG_LEGACY)
 			{
-			Ctx.sError = CONSTLIT("Expected mass attributes.");
+			int iMass = pEntry->GetAttributeIntegerBounded(MASS_ATTRIB, 1, -1, 0);
+			if (iMass == 0)
+				{
+				Ctx.sError = CONSTLIT("Expected mass attributes.");
+				m_Definitions.DeleteAll();
+				return ERR_FAIL;
+				}
+
+			//	Insert
+
+			SItemMassEntry *pMass = pDef->Classes.SetAt(iMass);
+			pMass->sDefinition = sCriteria;
+			pMass->sID = pEntry->GetAttribute(ID_ATTRIB);
+			pMass->sText = pEntry->GetAttribute(LABEL_ATTRIB);
+			pMass->iMaxMass = iMass;
+			}
+		else
+			{
+			Ctx.sError = CONSTLIT("Expected <MassClass>.");
 			m_Definitions.DeleteAll();
 			return ERR_FAIL;
 			}
-
-		//	Insert
-
-		SArmorMassEntry *pMass = pDef->Classes.SetAt(iMass);
-		pMass->sDefinition = sCriteria;
-		pMass->sID = pEntry->GetAttribute(ID_ATTRIB);
-		pMass->sText = pEntry->GetAttribute(LABEL_ATTRIB);
-		pMass->iMaxMass = iMass;
 		}
 
 	InvalidateIDIndex();
@@ -251,15 +290,15 @@ ALERROR CArmorMassDefinitions::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pD
 	return NOERROR;
 	}
 
-void CArmorMassDefinitions::OnBindArmor (SDesignLoadCtx &Ctx, const CItem &Item, CString *retsMassClass)
+void CItemMassDefinitions::OnBindDesign (SDesignLoadCtx &Ctx, const CItem &Item, CString *retsMassClass)
 
-//	OnBindArmor
+//	OnBindDesign
 //
 //	This is called when we bind an armor type so that we can keep track of how
 //	many armor types for each class.
 
 	{
-	SArmorMassEntry *pEntry = FindMassEntryActual(Item);
+	SItemMassEntry *pEntry = FindMassEntryActual(Item);
 	if (pEntry == NULL)
 		{
 		if (retsMassClass) *retsMassClass = NULL_STR;
@@ -276,7 +315,7 @@ void CArmorMassDefinitions::OnBindArmor (SDesignLoadCtx &Ctx, const CItem &Item,
 		*retsMassClass = pEntry->sID;
 	}
 
-void CArmorMassDefinitions::OnInitDone (void)
+void CItemMassDefinitions::OnInitDone (void)
 
 //	OnInitDone
 //
@@ -289,13 +328,13 @@ void CArmorMassDefinitions::OnInitDone (void)
 
 	for (int i = 0; i < m_Definitions.GetCount(); i++)
 		{
-		SArmorMassDefinition &Def = m_Definitions[i];
+		SItemMassDefinition &Def = m_Definitions[i];
 		for (int j = 0; j < Def.Classes.GetCount(); j++)
 			{
-			SArmorMassEntry &Entry = Def.Classes[j];
+			SItemMassEntry &Entry = Def.Classes[j];
 
 			//	While we're here, we initialize the counts, since we will soon
-			//	get called at OnBindArmor.
+			//	get called at OnBindDesign.
 
 			Entry.iCount = 0;
 

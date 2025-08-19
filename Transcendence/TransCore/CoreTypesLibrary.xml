@@ -147,6 +147,10 @@
 	<!ENTITY snStationExplosion1		"0x0000F205">
 	<!ENTITY snShieldHit1				"0x0000F206">
 	<!ENTITY snMissileLauncher			"0x0000F207">
+
+	<!-- ENGINE TYPES REFACTORED INTO CORE TYPES -->
+
+	<!ENTITY unidArmorMass				"0x0010002E">
 	
 	<!-- 0003 0000-FFFF CORE TYPES LIBRARY -->
 	
@@ -217,6 +221,17 @@
 	<!-- 01D0-01FF SOUND EFFECTS -->
 
 	<!ENTITY snDefaultShipScreenAmbient	"0x000301D0">
+
+	<!-- 0200-021F MASS CLASSES -->
+
+	<!ENTITY unidItemMass				"0x00030200">
+	<!ENTITY unidDeviceMass				"0x00030201">
+	<!ENTITY unidReactorMass			"0x00030202">
+	<!ENTITY unidShieldMass				"0x00030203">
+	<!ENTITY unidWeaponMass				"0x00030204">
+	<!ENTITY unidAmmoMass				"0x00030205">
+	<!-- unidArmorMass 0x0010002E defined above -->
+	
 	]>
 	
 <CoreLibrary
@@ -234,6 +249,7 @@
 	<Module filename="CoreFireEffects.xml"/>
 	<Module filename="CoreHitEffects.xml"/>
 	<Module filename="CoreItems.xml"/>
+	<Module filename="CoreMassClasses.xml"/>
 	<Module filename="CorePlaceholders.xml"/>
 	<Module filename="CoreProjectileEffects.xml"/>
 

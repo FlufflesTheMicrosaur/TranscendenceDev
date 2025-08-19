@@ -7,7 +7,6 @@
 
 #define ACHIEVEMENTS_TAG						CONSTLIT("Achievements")
 #define ADVENTURE_DESC_TAG						CONSTLIT("AdventureDesc")
-#define ARMOR_MASS_DESC_TAG						CONSTLIT("ArmorMassDesc")
 #define ATTRIBUTE_DESC_TAG						CONSTLIT("AttributeDesc")
 #define DATA_TAG						    	CONSTLIT("Data")
 #define DISPLAY_ATTRIBUTES_TAG					CONSTLIT("DisplayAttributes")
@@ -28,6 +27,13 @@
 #define ITEM_TYPE_TAG							CONSTLIT("ItemType")
 #define LANGUAGE_TAG							CONSTLIT("Language")
 #define LOOKUP_TAG								CONSTLIT("Lookup")
+#define MASS_DESC_ARMOR_TAG						CONSTLIT("ArmorMassDesc")
+#define MASS_DESC_AMMO_TAG						CONSTLIT("AmmoMassDesc")
+#define MASS_DESC_WEAPON_TAG					CONSTLIT("WeaponMassDesc")
+#define MASS_DESC_SHIELD_TAG					CONSTLIT("ShieldMassDesc")
+#define MASS_DESC_REACTOR_TAG					CONSTLIT("ReactorMassDesc")
+#define MASS_DESC_DEVICE_TAG					CONSTLIT("DeviceMassDesc")
+#define MASS_DESC_ITEM_TAG						CONSTLIT("ItemMassDesc")
 #define MISSION_TYPE_TAG						CONSTLIT("MissionType")
 #define OVERLAY_TYPE_TAG						CONSTLIT("OverlayType")
 #define POWER_TAG								CONSTLIT("Power")
@@ -2918,9 +2924,57 @@ ALERROR CDesignType::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, bool 
 				return ComposeLoadError(Ctx, Ctx.sError);
 				}
 			}
-		else if (strEquals(pItem->GetTag(), ARMOR_MASS_DESC_TAG))
+		else if (strEquals(pItem->GetTag(), MASS_DESC_ARMOR_TAG))
 			{
-			if (error = SetExtra()->ArmorDefinitions.InitFromXML(Ctx, pItem))
+			if (error = SetExtra()->ArmorMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_AMMO_TAG))
+			{
+			if (error = SetExtra()->AmmoMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_WEAPON_TAG))
+			{
+			if (error = SetExtra()->WeaponMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_SHIELD_TAG))
+			{
+			if (error = SetExtra()->ShieldMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_REACTOR_TAG))
+			{
+			if (error = SetExtra()->ReactorMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_DEVICE_TAG))
+			{
+			if (error = SetExtra()->DeviceMassDefinitions.InitFromXML(Ctx, pItem))
+				{
+				Ctx.pType = NULL;
+				return ComposeLoadError(Ctx, Ctx.sError);
+				}
+			}
+		else if (strEquals(pItem->GetTag(), MASS_DESC_ITEM_TAG))
+			{
+			if (error = SetExtra()->ItemMassDefinitions.InitFromXML(Ctx, pItem))
 				{
 				Ctx.pType = NULL;
 				return ComposeLoadError(Ctx, Ctx.sError);

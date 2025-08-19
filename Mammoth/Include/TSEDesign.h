@@ -340,8 +340,14 @@ class CDesignType
 		void FireOnRandomEncounter (CSpaceObject *pObj = NULL);
 		size_t GetAllocMemoryUsage (void) const;
 		DWORD GetAPIVersion (void) const { return m_dwVersion; }
-		const CAchievementDataBlock &GetAchievementDefinitions () const { return (m_pExtra ? m_pExtra->Achievements : CAchievementDataBlock::Null()); }
-		const CArmorMassDefinitions &GetArmorMassDefinitions (void) const { return (m_pExtra ? m_pExtra->ArmorDefinitions : CArmorMassDefinitions::Null); }
+		const CAchievementDataBlock &GetAchievementDefinitions () const		{ return (m_pExtra ? m_pExtra->Achievements : CAchievementDataBlock::Null()); }
+		const CItemMassDefinitions &GetArmorMassDefinitions (void) const	{ return (m_pExtra ? m_pExtra->ArmorMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetAmmoMassDefinitions (void) const		{ return (m_pExtra ? m_pExtra->AmmoMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetWeaponMassDefinitions (void) const	{ return (m_pExtra ? m_pExtra->WeaponMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetShieldMassDefinitions (void) const	{ return (m_pExtra ? m_pExtra->ShieldMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetReactorMassDefinitions (void) const	{ return (m_pExtra ? m_pExtra->ReactorMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetDeviceMassDefinitions (void) const	{ return (m_pExtra ? m_pExtra->DeviceMassDefinitions : CItemMassDefinitions::Null); }
+		const CItemMassDefinitions &GetItemMassDefinitions (void) const		{ return (m_pExtra ? m_pExtra->ItemMassDefinitions : CItemMassDefinitions::Null); }
 		const CString &GetAttributes (void) const { return m_sAttributes; }
 		CString GetDataField (const CString &sField) const { CString sValue; FindDataField(sField, &sValue); return sValue; }
 		int GetDataFieldInteger (const CString &sField) { CString sValue; if (FindDataField(sField, &sValue)) return strToInt(sValue, 0, NULL); else return 0; }
@@ -473,7 +479,13 @@ class CDesignType
 			CAttributeDataBlock InitGlobalData;			//	Initial global data
 			CLanguageDataBlock Language;				//	Language data
 			CXMLElement *pLocalScreens = NULL;			//	Local dock screen
-			CArmorMassDefinitions ArmorDefinitions;		//	Armor mass definitions
+			CItemMassDefinitions ArmorMassDefinitions;		//	Armor mass definitions
+			CItemMassDefinitions AmmoMassDefinitions;		//	Ammo mass definitions
+			CItemMassDefinitions WeaponMassDefinitions;		//	Weapon mass definitions
+			CItemMassDefinitions ShieldMassDefinitions;		//	Shield mass definitions
+			CItemMassDefinitions ReactorMassDefinitions;	//	Reactor mass definitions
+			CItemMassDefinitions DeviceMassDefinitions;		//	Device mass definitions
+			CItemMassDefinitions ItemMassDefinitions;		//	Item mass definitions
 			CDisplayAttributeDefinitions DisplayAttribs;	//	Display attribute definitions
 			CItemEncounterDefinitions ItemEncounterDefinitions;	//	Item encounter definitions
 			CAchievementDataBlock Achievements;			//	Achievements defined by this type
@@ -1434,8 +1446,20 @@ class CDesignCollection
 		CAdventureDesc &GetAdventureDesc (void) { return (m_pAdventureDesc ? *m_pAdventureDesc : m_EmptyAdventure); }
 		DWORD GetAdventureUNID (void) const { return (m_pAdventureExtension ? m_pAdventureExtension->GetUNID() : 0); }
 		DWORD GetAPIVersion (void) const { return m_dwMinAPIVersion; }
-		CArmorMassDefinitions &GetArmorMassDefinitions (void) { return m_ArmorDefinitions; }
-		const CArmorMassDefinitions &GetArmorMassDefinitions (void) const { return m_ArmorDefinitions; }
+		CItemMassDefinitions &GetArmorMassDefinitions (void) { return m_ArmorDefinitions; }
+		CItemMassDefinitions &GetAmmoMassDefinitions (void) { return m_AmmoDefinitions; }
+		CItemMassDefinitions &GetWeaponMassDefinitions (void) { return m_WeaponDefinitions; }
+		CItemMassDefinitions &GetShieldMassDefinitions (void) { return m_ShieldDefinitions; }
+		CItemMassDefinitions &GetReactorMassDefinitions (void) { return m_ReactorDefinitions; }
+		CItemMassDefinitions &GetDeviceMassDefinitions (void) { return m_DeviceDefinitions; }
+		CItemMassDefinitions &GetItemMassDefinitions (void) { return m_ItemDefinitions; }
+		const CItemMassDefinitions &GetArmorMassDefinitions (void) const { return m_ArmorDefinitions; }
+		const CItemMassDefinitions &GetAmmoMassDefinitions (void) const { return m_AmmoDefinitions; }
+		const CItemMassDefinitions &GetWeaponMassDefinitions (void) const { return m_WeaponDefinitions; }
+		const CItemMassDefinitions &GetShieldMassDefinitions (void) const { return m_ShieldDefinitions; }
+		const CItemMassDefinitions &GetReactorMassDefinitions (void) const { return m_ReactorDefinitions; }
+		const CItemMassDefinitions &GetDeviceMassDefinitions (void) const { return m_DeviceDefinitions; }
+		const CItemMassDefinitions &GetItemMassDefinitions (void) const { return m_ItemDefinitions; }
 		int GetCount (void) const { return m_AllTypes.GetCount(); }
 		int GetCount (DesignTypes iType) const { return m_ByType[iType].GetCount(); }
 		const CDisplayAttributeDefinitions &GetDisplayAttributes (void) const { return m_DisplayAttribs; }
@@ -1500,7 +1524,13 @@ class CDesignCollection
 		CAdventureDesc *m_pAdventureDesc = NULL;
 		TSortMap<CString, const CEconomyType *> m_EconomyIndex;
 		CAchievementDefinitions m_AchievementDefinitions;
-		CArmorMassDefinitions m_ArmorDefinitions;
+		CItemMassDefinitions m_ArmorDefinitions;
+		CItemMassDefinitions m_AmmoDefinitions;
+		CItemMassDefinitions m_WeaponDefinitions;
+		CItemMassDefinitions m_ShieldDefinitions;
+		CItemMassDefinitions m_ReactorDefinitions;
+		CItemMassDefinitions m_DeviceDefinitions;
+		CItemMassDefinitions m_ItemDefinitions;
 		CDisplayAttributeDefinitions m_DisplayAttribs;
 		CItemEncounterDefinitions m_ItemEncounterDefinitions;
 		CGlobalEventCache *m_EventsCache[evtCount];

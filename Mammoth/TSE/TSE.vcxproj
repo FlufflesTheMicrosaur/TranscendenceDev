@@ -899,7 +899,7 @@
     <ClCompile Include="CApproachOrder.cpp" />
     <ClCompile Include="CArmorItem.cpp" />
     <ClCompile Include="CArmorLimits.cpp" />
-    <ClCompile Include="CArmorMassDefinitions.cpp" />
+    <ClCompile Include="CItemMassDefinitions.cpp" />
     <ClCompile Include="CArmorSystem.cpp" />
     <ClCompile Include="CArtifactAwakening.cpp" />
     <ClCompile Include="CArtifactProgram.cpp" />

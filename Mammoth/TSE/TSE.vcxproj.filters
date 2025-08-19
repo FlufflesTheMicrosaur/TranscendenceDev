@@ -1351,7 +1351,7 @@
     <ClCompile Include="CArmorLimits.cpp">
       <Filter>Source Files\Ships</Filter>
     </ClCompile>
-    <ClCompile Include="CArmorMassDefinitions.cpp">
+    <ClCompile Include="CItemMassDefinitions.cpp">
       <Filter>Source Files\DesignTypes</Filter>
     </ClCompile>
     <ClCompile Include="CShipStandard.cpp">

@@ -2669,7 +2669,7 @@ ALERROR CArmorClass::OnBindDesign (SDesignLoadCtx &Ctx)
 
 	//	Compute (and cache) the mass class
 
-	Ctx.pDesign->GetArmorMassDefinitions().OnBindArmor(Ctx, CItem(m_pItemType, 1), &m_sMassClass);
+	Ctx.pDesign->GetArmorMassDefinitions().OnBindDesign(Ctx, CItem(m_pItemType, 1), &m_sMassClass);
 
 	return NOERROR;
 	}

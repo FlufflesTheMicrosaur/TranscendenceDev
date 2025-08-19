@@ -85,7 +85,7 @@ class CArmorLimits
 		bool CalcArmorSpeedBonus (CItemCtx &ArmorItem, int iSegmentCount, int *retiBonus = NULL) const;
 		bool CalcArmorSpeedBonus (const CString &sArmorClassID, int iSegmentCount, int *retiBonus = NULL) const;
 		ICCItemPtr CalcMaxSpeedByArmorMass (CCodeChainCtx &Ctx, int iStdSpeed) const;
-		void CalcSummary (const CArmorMassDefinitions &Defs, SSummary &Summary) const;
+		void CalcSummary (const CItemMassDefinitions &Defs, SSummary &Summary) const;
 		EResults CanInstallArmor (const CItem &Item) const;
 		const CString &GetMaxArmorClass (void) const { return m_sMaxArmorClass; }
 		int GetMaxArmorMass (void) const { return m_iMaxArmorMass; }

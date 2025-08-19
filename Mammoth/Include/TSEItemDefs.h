@@ -316,10 +316,10 @@ class CDisplayAttributeDefinitions
 		TArray<SItemEntry> m_ItemAttribs;
 	};
 
-class CArmorMassDefinitions
+class CItemMassDefinitions
 	{
 	public:
-		void Append (const CArmorMassDefinitions &Src);
+		void Append (const CItemMassDefinitions &Src);
 		void DeleteAll (void) { m_Definitions.DeleteAll(); InvalidateIDIndex(); }
 		bool FindPreviousMassClass (const CString &sID, CString *retsPrevID = NULL, int *retiPrevMass = NULL) const;
 		Metric GetFrequencyMax (const CString &sID) const;
@@ -328,14 +328,14 @@ class CArmorMassDefinitions
 		int GetMassClassMass (const CString &sID) const;
 		ALERROR InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc);
 		bool IsEmpty (void) const { return (m_Definitions.GetCount() == 0); }
-		void OnBindArmor (SDesignLoadCtx &Ctx, const CItem &Item, CString *retsMassClass = NULL);
+		void OnBindDesign (SDesignLoadCtx &Ctx, const CItem &Item, CString *retsMassClass = NULL);
 		void OnInitDone (void);
 
-		static const CArmorMassDefinitions Null;
+		static const CItemMassDefinitions Null;
 
 	private:
 
-		struct SArmorMassEntry
+		struct SItemMassEntry
 			{
 			CString sDefinition;			//	Index to m_Definitions
 
@@ -343,21 +343,22 @@ class CArmorMassDefinitions
 			int iMaxMass = 0;				//	Maximum mass (kg)
 			CString sText;					//	Text to display on item
 
-			int iCount = 0;					//	Number of armor types for this mass
+			int iCount = 0;					//	Number of item types for this mass
 			};
 
-		struct SArmorMassDefinition
+		struct SItemMassDefinition
 			{
-			CItemCriteria Criteria;			//	Criteria for armor
-			TSortMap<int, SArmorMassEntry> Classes;
+			CItemCriteria Criteria;			//	Criteria for item
+			TSortMap<int, SItemMassEntry> Classes;
 			};
 
-		const SArmorMassEntry *FindMassEntry (const CItem &Item) const { return const_cast<CArmorMassDefinitions *>(this)->FindMassEntryActual(Item); }
-		SArmorMassEntry *FindMassEntryActual (const CItem &Item);
+		const SItemMassEntry *FindMassEntry (const CItem &Item) const { return const_cast<CItemMassDefinitions *>(this)->FindMassEntryActual(Item); }
+		SItemMassEntry *FindMassEntryActual (const CItem &Item);
 		void InvalidateIDIndex (void) { m_ByID.DeleteAll(); }
 
-		TSortMap<CString, SArmorMassDefinition> m_Definitions;
-		TSortMap<CString, SArmorMassEntry *> m_ByID;
+		ItemCategories m_iCategoryMask = ItemCategories::itemcatNone;
+		TSortMap<CString, SItemMassDefinition> m_Definitions;
+		TSortMap<CString, SItemMassEntry *> m_ByID;
 	};
 
 //	CItemEncounterDefinitions --------------------------------------------------

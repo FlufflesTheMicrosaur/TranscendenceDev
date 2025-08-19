@@ -259,7 +259,7 @@ bool CArmorLimits::CalcArmorSpeedBonus (const CString &sArmorClassID, int iSegme
 		case typeAutoSpeedAdj:
 		case typeCompatible:
 			{
-			const CArmorMassDefinitions &Def = g_pUniverse->GetDesignCollection().GetArmorMassDefinitions();
+			const CItemMassDefinitions &Def = g_pUniverse->GetDesignCollection().GetArmorMassDefinitions();
 			int iArmorMass = Def.GetMassClassMass(sArmorClassID);
 			if (iArmorMass == 0)
 				return false;
@@ -283,7 +283,7 @@ bool CArmorLimits::CalcArmorSpeedBonus (const CString &sArmorClassID, int iSegme
 
 		case typeTable:
 			{
-			const CArmorMassDefinitions &Def = g_pUniverse->GetDesignCollection().GetArmorMassDefinitions();
+			const CItemMassDefinitions &Def = g_pUniverse->GetDesignCollection().GetArmorMassDefinitions();
 			int iArmorMass = Def.GetMassClassMass(sArmorClassID);
 
 			//	Search
@@ -590,7 +590,7 @@ int CArmorLimits::CalcMinArmorMassForSpeed (int iSpeed, int iStdSpeed) const
 		}
 	}
 
-void CArmorLimits::CalcSummary (const CArmorMassDefinitions &Defs, SSummary &Summary) const
+void CArmorLimits::CalcSummary (const CItemMassDefinitions &Defs, SSummary &Summary) const
 
 //	CalcSummary
 //
