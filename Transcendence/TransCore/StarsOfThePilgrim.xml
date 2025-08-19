@@ -269,7 +269,6 @@
 	</AdventureDesc>
 		
 	<Module filename="Achievements.xml"/>
-	<Module filename="Elysium.xml"/>
 	<Module filename="Part1Compatibility.xml"/>
 	<Module filename="PlayerShips.xml"/>
 		
