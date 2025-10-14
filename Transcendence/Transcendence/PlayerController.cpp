@@ -2405,7 +2405,7 @@ void CPlayerShipController::ReadFromStream (SLoadCtx &Ctx, CShip *pShip)
 	Ctx.pStream->Read(dwLoad);
 
 	CUniverse *pUniv = &Ctx.GetUniverse();
-	if (pUniv->GetAdventureOrBaseAPIVersionSafe() < 54)
+	if (Ctx.dwVersion < 214)
 		m_iGenome = (GenomeTypes)dwLoad;
 	else
 		{

@@ -5,7 +5,7 @@
 
 #pragma once
 
-constexpr DWORD API_VERSION =							56;
+constexpr DWORD API_VERSION =							57;
 constexpr DWORD UNIVERSE_SAVE_VERSION =					41;
 constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 
@@ -454,19 +454,126 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //
 //	 56: 2.0 Alpha 6
 //		tlisp:
-//			(sysAddStargateTopologyColored [nodeID] gateID destNodeID destGateID argbLinkColor)
-//				Allows creating a gate frome nodeID (or current system) to destNodeID, and colors
-//				the topology link with the html color string specified in argbLinkColor
-//				If Alpha is not specified, argbLinkColor is assumed to have full alpha (0xFF)
+//			(sysAddStargateTopology [nodeID] gateID destNodeID destGateID [optionsStruct])
+//				optionsStruct: (struct)
+//					color: (string: html argb color)
+//						Specifies an argb color to use for the topology gate link on the galaxy map
+//						If Alpha is not specified, argbLinkColor is assumed to have full alpha (0xFF)
+//					attributes: (string)
+//						An attributes string. See trnCreateAllStargates for special known-fields.
+//					beaconType: (unid)
+//						The type of beacon to spawn
+//					gateType: (unid)
+//						The type of gate to spawn
+//					locationCriteria: (string)
+//						the in-system location criteria to use for placing the gate
+//					fromAttributes: (string)
+//						An attributes string for the from-side link.
+//						See trnCreateAllStargates for special known-fields.
+//					fromBeaconType: (unid)
+//						The type of beacon to spawn on the from side
+//					fromGateType: (unid)
+//						The type of gate to spawn on the from side
+//					fromLocationCriteria: (string)
+//						the in-system location criteria to use for placing the gate on the from side
+//					toAttributes: (string)
+//						An attributes string for the to-side link.
+//						See trnCreateAllStargates for special known-fields.
+//					toBeaconType: (unid)
+//						The type of beacon to spawn on the to side
+//					toGateType: (unid)
+//						The type of gate to spawn on the to side
+//					toLocationCriteria: (string)
+//						the in-system location criteria to use for placing the gate on the to side
 //			(sysGetStargateProperty [nodeID] gateID property)
+//				'attributes: new property to retrieve <Stargate> attributes
 //				'linkColor: new property to retrieve linkColor as HTML color string if present
+//				'locationCriteria: new property for location criteria to use for placing the gate
+//				'gateType: the unid of the stargate
+//				'beaconType: the unid of the stargate beacons
+//		<ShipClass>
+//			<Drive>
+//				powerUseRatio: (Double)
+//					ratio to apply to auto-computed power use, ex: 2.0 doubles power consumption.
+//					Ignored if explicit powerUse is set.
+//					default: 1.0
+//		<StationType>
+//			<Encounter>
+//				distanceFrequency: (str)
+//					Now supports distances beyond 5 at a single frequency
+//					Ex: "ccccc|curvv v"
+//					Default (if not specified) is NotRandom
 //		<SystemMap>
-//			<...><Stargate>
+//			<...><Random>
+//				(NOTE:) modded systemTypes that do not use trnCreateAllStargates may not respect the
+//					following fields except for linkColor.
+//				gateLocationCriteria: (string)
+//					the in-system location criteria to use for placing the gate
+//				beaconType: (unid)
+//					The type of beacons to spawn
+//				gateType: (unid)
+//					The type of gates to spawn
+//				linkAttributes: (string)
+//					An attributes string. See trnCreateAllStargates for special known-fields.
 //				linkColor: (string: html argb color)
 //					The color to display this stargate link in on the galaxy map.
 //					If Alpha is not specified, linkColor is assumed to have full alpha (0xFF)
+//			<...><Stargate>
+//				(NOTE:) modded systemTypes that do not use trnCreateAllStargates may not respect the
+//					following fields except for linkColor.
+//				attributes: (string)
+//					An attributes string. See trnCreateAllStargates for special known-fields.
+//				beaconType: (unid)
+//					The type of beacon to spawn
+//				gateType: (unid)
+//					The type of gate to spawn
+//				linkColor: (string: html argb color)
+//					The color to display this stargate link in on the galaxy map.
+//					If Alpha is not specified, linkColor is assumed to have full alpha (0xFF)
+//				locationCriteria: (string)
+//					the in-system location criteria to use for placing the gate
+//				<FromGate>/<ToGate>
+//					attributes: (string)
+//						An attributes string. See trnCreateAllStargates for special known-fields.
+//						Overrides the <Stargate> attribute string.
+//					beaconType: (unid)
+//						The type of beacon to spawn for this side of the gate
+//						Overrides the <Stargate> beaconType.
+//					gateType: (unid)
+//						The type of gate to spawn for this side of the gate
+//						Overrides the <Stargate> gateType.
+//					locationCriteria: (string)
+//						the in-system location criteria to use for placing the gate
+//						Overrides the <Stargate> locationCriteria string.
 //
-
+//	 57: 2.0 Alpha 7
+//		tlisp:
+//			(bAnd x1 [x2 ... xn])
+//				Returns the bitwise AND of all arguments.
+//				All arguments are coerced to 32-bit integers.
+//			(bOr x1 [x2 ... xn])
+//				Returns the bitwise OR of all arguments.
+//				All arguments are coerced to 32-bit integers.
+//			(bXor x1 [x2 ... xn])
+//				Returns the bitwise XOR of all arguments.
+//				All arguments are coerced to 32-bit integers.
+//			(bNot x)
+//				Returns the bitwise NOT of x.
+//				Argument is coerced to a 32-bit integer; result is also 32-bit signed.
+//			(bShL x count)
+//				Returns x shifted left by count bits (logical).
+//				Low bits are filled with zeros; high bits are discarded.
+//			(bShR x count)
+//				Returns x shifted right by count bits (logical).
+//				High bits are filled with zeros; low bits are discarded.
+//			(bRoL x count)
+//				Returns x rotated left by count bits in 32-bit space.
+//				Bits shifted out of the high end wrap around to the low end.
+//			(bRoR x count)
+//				Returns x rotated right by count bits in 32-bit space.
+//				Bits shifted out of the low end wrap around to the high end.
+//
+//
 
 //	UNIVERSE VERSION HISTORY ---------------------------------------------------
 //
@@ -576,8 +683,14 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //		Added design type in dwFlags or CDesignType.
 //
 //	41: 2.0 Alpha 6
-//		Add gate node RGB color
-//		Added CCharacterAttributeType, deprecated old GenomeTypes to API <56
+//		Add gate link RGB color
+//		Add gate type
+//		Add gate beacon type
+//		Add gate link attributes
+//		Add gate location criteria
+//
+//  42: 2.0 Alpha 7
+//		Added CCharacterAttributeType, deprecated old GenomeTypes
 //
 
 
@@ -1228,13 +1341,10 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					213;
 //
 //	213: 2.0 Alpha 2
 //		Change DiceRange to use -1 for not set
-<<<<<<< HEAD
 // 
-//	213: 1.9.4 Preview
-//		Added new m_pGenome to player controller to use API 54/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
-//		Added new m_pGender to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
-//		Added new m_pPlayerClass to player controller to use API 54/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.
+//	214: 2.0 Alpha 7
+//		Added new m_pGenome to player controller to use API 57/Univ 41 CCharacterAttributeType. GenomeTypes impl renamed to '*Legacy'
+//		Added new m_pGender to player controller to use API 57/Univ 41 CCharacterAttributeType. Legacy implementation uses legacy genome types implementation.
+//		Added new m_pPlayerClass to player controller to use API 57/Univ 41 CCharacterAttributeType. Legacy implementation uses DesignType defined by starting playership.
 //
-=======
 //
->>>>>>> integration/API56
