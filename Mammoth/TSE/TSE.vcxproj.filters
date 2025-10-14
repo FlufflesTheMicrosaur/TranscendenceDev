@@ -1657,5 +1657,8 @@
     <ClCompile Include="CCharacterAttributeType.cpp">
       <Filter>Source Files\DesignTypes</Filter>
     </ClCompile>
+    <ClCompile Include="CMiningDamageLevelDesc.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
