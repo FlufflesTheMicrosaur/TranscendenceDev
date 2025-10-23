@@ -589,6 +589,11 @@ template <class CLASS> class CDesignTypeRef
 
 		static ALERROR BindType (SDesignLoadCtx &Ctx, DWORD dwUNID, CLASS *&pType)
 			{
+			//	We get the extension dword in case we need to report an error
+			//	If there is no extension, we assume the TranscendenceUniverse
+			//	which has an UNID of 0x00000000
+			DWORD dwExtension = Ctx.pExtension ? Ctx.pExtension->GetUNID() : 0;
+
 			CDesignType *pBaseType = Ctx.GetUniverse().FindDesignTypeUnbound(dwUNID);
 			if (pBaseType)
 				{
@@ -600,14 +605,14 @@ template <class CLASS> class CDesignTypeRef
 				}
 			else
 				{
-				Ctx.sError = strPatternSubst(CONSTLIT("Extension: %x\nUnknown design type: %x"), Ctx.pExtension ? Ctx.pExtension->GetUNID() : 0, dwUNID);
+				Ctx.sError = strPatternSubst(CONSTLIT("Error binding extension: %x\nUnknown design type: %x"), dwExtension, dwUNID);
 				return ERR_FAIL;
 				}
 
 			pType = CLASS::AsType(pBaseType);
 			if (pType == NULL)
 				{
-				Ctx.sError = strPatternSubst(CONSTLIT("Extension: %x\nSpecified type is invalid: %x"), Ctx.pExtension ? Ctx.pExtension->GetUNID() : 0, dwUNID);
+				Ctx.sError = strPatternSubst(CONSTLIT("Error binding extension: %x\nSpecified type is invalid: %x"), dwExtension, dwUNID);
 				return ERR_FAIL;
 				}
 
