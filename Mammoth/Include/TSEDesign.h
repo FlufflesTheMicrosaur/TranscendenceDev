@@ -600,14 +600,14 @@ template <class CLASS> class CDesignTypeRef
 				}
 			else
 				{
-				Ctx.sError = strPatternSubst(CONSTLIT("Unknown design type: %x"), dwUNID);
+				Ctx.sError = strPatternSubst(CONSTLIT("Extension: %x\nUnknown design type: %x"), Ctx.pExtension ? Ctx.pExtension->GetUNID() : 0, dwUNID);
 				return ERR_FAIL;
 				}
 
 			pType = CLASS::AsType(pBaseType);
 			if (pType == NULL)
 				{
-				Ctx.sError = strPatternSubst(CONSTLIT("Specified type is invalid: %x"), dwUNID);
+				Ctx.sError = strPatternSubst(CONSTLIT("Extension: %x\nSpecified type is invalid: %x"), Ctx.pExtension ? Ctx.pExtension->GetUNID() : 0, dwUNID);
 				return ERR_FAIL;
 				}
 
