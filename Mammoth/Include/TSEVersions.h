@@ -599,7 +599,28 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					214;
 //						Default: 'primitives
 //			(lambda args [docstring] expr)
 //				Lambda now accepts an optional docstring that can be printed out with (help lambda)
-//				
+//			(msnGetDataKeys obj)
+//				Returns a list of typData keys for the given msn
+//			(msnGetDataKeys obj)
+//				Returns a list of typData keys for the given msn type
+//			(msnGetStaticDataKeys type)
+//				Returns a list of static datakeys for the given msn type
+//			(msnGetPropertyKeys type)
+//				Returns a list of all instance property and custom global property keys for the given msn
+//			(objGetDataKeys obj)
+//				Returns a list of typData keys for the given obj
+//			(objGetDataKeys obj)
+//				Returns a list of typData keys for the given obj type
+//			(objGetStaticDataKeys type)
+//				Returns a list of static datakeys for the given obj type
+//			(objGetPropertyKeys type)
+//				Returns a list of all instance property and custom global property keys for the given obj
+//			(typGetDataKeys type)
+//				Returns a list of typData keys for the given type
+//			(typGetStaticDataKeys type)
+//				Returns a list of static datakeys for the given type
+//			(typGetPropertyKeys type)
+//				Returns a list of custom global property keys for the given type
 //		<AdventureDesc>
 //			<Constants>
 //				<MiningMaxOreLevels>
