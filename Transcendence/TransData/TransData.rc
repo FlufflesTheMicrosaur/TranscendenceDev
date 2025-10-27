@@ -68,7 +68,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Kronosaur Productions, LLC"
             VALUE "FileDescription", "TransData"
-            VALUE "FileVersion", "3.5.57.0"
+            VALUE "FileVersion", "3.5.57.1"
             VALUE "InternalName", "TransData"
             VALUE "LegalCopyright", "Copyright (c) 2001-2025 Kronosaur Productions, LLC. All Rights Reserved."
             VALUE "OriginalFilename", "TransData"
