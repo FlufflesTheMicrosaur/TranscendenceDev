@@ -129,6 +129,7 @@ class CItemType : public CDesignType
 		bool IsMissile (void) const;
 		bool IsScalable (void) const { return (m_fScalable ? true : false); }
 		bool IsUsable (void) const { return GetUseDesc(NULL); }
+		bool MatchesItemCriteria(CItemCriteria &criteria) const;
 		void SetAllKnown (bool bKnown = true);
 		void SetKnown (int iIndex, bool bKnown = true) { m_UnknownTypes[iIndex].bKnown = bKnown; }
 		void SetShowReference (void) { m_fReference = true; }
@@ -256,6 +257,8 @@ class CItemType : public CDesignType
 		DWORD m_dwSpare:16;
 
 		CString m_sData;						//	Category-specific data
+
+		mutable CItem *m_pReferenceItem;
 
 		static SStdStats m_Stats[MAX_ITEM_LEVEL];
 	};

@@ -333,6 +333,7 @@ class CWeaponClass : public CDeviceClass
 		bool m_bMIRV;							//	Each shot seeks an independent target
 		bool m_bCanFireWhenBlind;				//	Allow firing this weapon if blinded
 		bool m_bReportAmmo;						//	Report count of ammo shot even if not a launcher
+		bool m_bUsesAmmoCriteria = false;		//	Uses ammo criteria (we may need to recalculate this at runtime if new ammo is dynamically generated)
 		int m_iMinFireArc;						//	Min angle of fire arc (degrees)
 		int m_iMaxFireArc;						//	Max angle of fire arc (degrees)
 		DWORD m_dwLinkedFireOptions;			//	Linked fire options

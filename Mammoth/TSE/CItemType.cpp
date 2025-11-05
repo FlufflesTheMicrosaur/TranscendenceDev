@@ -231,6 +231,8 @@ CItemType::~CItemType (void)
 	if (m_pUseCode)
 		m_pUseCode->Discard();
 
+	delete m_pReferenceItem;
+
 	delete m_pArmor;
 
 	delete m_pDevice;
@@ -2239,6 +2241,14 @@ bool CItemType::ParseItemCategory (const CString &sCategory, ItemCategories *ret
 		*retCategory = iCat;
 
 	return true;
+	}
+
+bool CItemType::MatchesItemCriteria(CItemCriteria& criteria) const
+	{
+	if (!m_pReferenceItem)
+		m_pReferenceItem = new CItem((CItemType*)this, 1);
+
+	return m_pReferenceItem->MatchesCriteria(criteria);
 	}
 
 void CItemType::SetAllKnown (bool bKnown)

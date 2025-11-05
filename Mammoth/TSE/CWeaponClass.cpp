@@ -11,6 +11,7 @@
 #define OVERHEAT_FAILURE_TAG					CONSTLIT("OverheatFailure")
 #define VARIANTS_TAG							CONSTLIT("Variants")
 
+#define AMMO_CRITERIA_ATTRIB					CONSTLIT("ammoCriteria")
 #define AMMO_ID_ATTRIB							CONSTLIT("ammoID")
 #define ANGLE_ATTRIB							CONSTLIT("angle")
 #define BURST_TRACKS_TARGETS_ATTRIB				CONSTLIT("burstTracksTargets")
@@ -4626,12 +4627,17 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 		{
 		//	Get the type of variants
 
+		CString sAmmoCriteria = pVariants->GetAttribute(AMMO_CRITERIA_ATTRIB);
+		if (!sAmmoCriteria.IsBlank())
+			m_bUsesAmmoCriteria = true;
+
 		CString sType = pVariants->GetAttribute(TYPE_ATTRIB);
-		if (sType.IsBlank())
+		if (sType.IsBlank() || m_bUsesAmmoCriteria)
 			{
 			if (pVariants->GetContentElementCount() > 1
 					|| GetDefinedSlotCategory() == itemcatLauncher
-					|| pDesc->GetAttributeBool(LAUNCHER_ATTRIB))
+					|| pDesc->GetAttributeBool(LAUNCHER_ATTRIB)
+					|| m_bUsesAmmoCriteria)
 				m_iVariantType = varLauncher;
 			else
 				m_iVariantType = varSingle;
@@ -4652,7 +4658,23 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 
 		//	Load each variant
 
-		m_ShotData.InsertEmpty(pVariants->GetContentElementCount());
+		int iNumVariants = pVariants->GetContentElementCount();
+		TArray<DWORD> aCriteriaVariants;
+		if (m_bUsesAmmoCriteria)
+			{
+			CItemCriteria AmmoCriteria(sAmmoCriteria);
+			for (int i = 0; i < GetUniverse().GetItemTypeCount(); i++)
+				{
+				CItemType *pPossibleAmmoType = GetUniverse().GetItemType(i);
+				if (pPossibleAmmoType->IsAmmunition() && pPossibleAmmoType->MatchesItemCriteria(AmmoCriteria))
+					{
+					aCriteriaVariants.Insert(pPossibleAmmoType->GetUNID());
+					iNumVariants++;
+					}
+				}
+			}
+
+		m_ShotData.InsertEmpty();
 		for (i = 0; i < m_ShotData.GetCount(); i++)
 			{
 			CXMLElement *pItem = pVariants->GetContentElement(i);
