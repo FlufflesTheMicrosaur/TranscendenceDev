@@ -4613,7 +4613,6 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 //	Loads the variant descriptions, whether from missiles, scaling, or charges.
 
 	{
-	int i;
 	ALERROR error;
 
 	//	If we have a Missiles tag then this weapon has ammunition; otherwise,
@@ -4629,7 +4628,15 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 
 		CString sAmmoCriteria = pVariants->GetAttribute(AMMO_CRITERIA_ATTRIB);
 		if (!sAmmoCriteria.IsBlank())
-			m_bUsesAmmoCriteria = true;
+			{
+			if (Ctx.GetAPIVersion() >= 58)
+				m_bUsesAmmoCriteria = true;
+			else
+				{
+				Ctx.sError = strPatternSubst(CONSTLIT("Error loading %x - ammoCriteria requires API58 or higher"), pType->GetUNID());
+				return ERR_FAIL;
+				}
+			}
 
 		CString sType = pVariants->GetAttribute(TYPE_ATTRIB);
 		if (sType.IsBlank() || m_bUsesAmmoCriteria)
@@ -4659,6 +4666,7 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 		//	Load each variant
 
 		int iNumVariants = pVariants->GetContentElementCount();
+		int iNumCriteriaVariants = 0;
 		TArray<DWORD> aCriteriaVariants;
 		if (m_bUsesAmmoCriteria)
 			{
@@ -4669,13 +4677,19 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 				if (pPossibleAmmoType->IsAmmunition() && pPossibleAmmoType->MatchesItemCriteria(AmmoCriteria))
 					{
 					aCriteriaVariants.Insert(pPossibleAmmoType->GetUNID());
-					iNumVariants++;
+					iNumCriteriaVariants++;
 					}
 				}
 			}
 
-		m_ShotData.InsertEmpty();
-		for (i = 0; i < m_ShotData.GetCount(); i++)
+		//	Insert the total number of non-criteria variants
+		//	We throw errors if variants do not load
+
+		m_ShotData.InsertEmpty(pVariants->GetContentElementCount());
+
+		TMap<DWORD,DWORD> mLoadedVariants;
+
+		for (int i = 0; i < pVariants->GetContentElementCount(); i++)
 			{
 			CXMLElement *pItem = pVariants->GetContentElement(i);
 
@@ -4696,6 +4710,7 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 
 				CWeaponFireDesc::SInitOptions Options;
 				Options.sUNID = strPatternSubst(CONSTLIT("%d/%d"), GetUNID(), i);
+				mLoadedVariants.Insert(GetUNID());
 				Options.iLevel = iLevel;
 
 				if (error = m_ShotData[i].pDesc->InitFromXML(Ctx, pItem, Options))
@@ -4721,9 +4736,29 @@ ALERROR CWeaponClass::InitVariantsFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDe
 					return ERR_FAIL;
 					}
 
+				mLoadedVariants.Insert(m_ShotData[i].pAmmoType.GetUNID());
+
 				m_ShotData[i].bOwned = false;
 				m_ShotData[i].pDesc = NULL;
 				}
+			}
+
+		for (int i = 0; i < aCriteriaVariants.GetCount(); i++)
+			{
+			//	First we ensure we have not already loaded this item
+
+			DWORD dwAmmoUNID = aCriteriaVariants[i];
+			if (mLoadedVariants.Find(dwAmmoUNID))
+				continue;
+
+			//	Since we already have the exact UNID, we use SetUNID instead of
+			//	LoadUNID which handles relative strings.
+			//	We load up the data at bind time.
+
+			int iShot = m_ShotData.GetCount();
+			m_ShotData.InsertEmpty(1);
+			m_ShotData[iShot].pAmmoType.SetUNID(dwAmmoUNID);
+
 			}
 		}
 	else
