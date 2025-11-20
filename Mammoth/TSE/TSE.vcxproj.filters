@@ -1657,7 +1657,7 @@
     <ClCompile Include="CCharacterAttributeType.cpp">
       <Filter>Source Files\DesignTypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\TSECharacterAttributeType.h">
+    <ClCompile Include="..\Include\TSECharacterAttributeType.h">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>

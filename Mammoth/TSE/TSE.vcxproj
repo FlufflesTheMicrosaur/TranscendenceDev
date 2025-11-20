@@ -788,6 +788,7 @@
     <ClInclude Include="..\Include\TSEAdventureDesc.h" />
     <ClInclude Include="..\Include\TSEArmor.h" />
     <ClInclude Include="..\Include\TSEArtifactAwakening.h" />
+    <ClCompile Include="..\Include\TSECharacterAttributeType.h" />
     <ClInclude Include="..\Include\TSEComms.h" />
     <ClInclude Include="..\Include\TSECurrency.h" />
     <ClInclude Include="..\Include\TSEDesignDefs.h" />
@@ -1396,7 +1397,6 @@
     </ClCompile>
     <ClCompile Include="IElementGenerator.cpp" />
     <ClCompile Include="IListData.cpp" />
-    <ClCompile Include="..\include\TSECharacterAttributeType.h" />
     <ClCompile Include="IPaintList.cpp" />
     <ClCompile Include="IPlayerController.cpp" />
     <ClCompile Include="IShipController.cpp" />
