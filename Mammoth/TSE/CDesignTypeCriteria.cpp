@@ -95,6 +95,10 @@ ALERROR CDesignTypeCriteria::ParseSubExpression (const char *pPos)
 				m_dwTypeSet |= (1 << designEffectType);
 				break;
 
+			case charCharacterAttributeType:
+				m_dwTypeSet |= (1 << designCharacterAttributeType);
+				break;
+
 			case charDockScreen:
 				m_dwTypeSet |= (1 << designDockScreen);
 				break;

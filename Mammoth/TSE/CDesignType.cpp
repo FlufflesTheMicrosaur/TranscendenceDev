@@ -10,6 +10,7 @@
 #define ADVENTURE_DESC_TAG						CONSTLIT("AdventureDesc")
 #define ARMOR_MASS_DESC_TAG						CONSTLIT("ArmorMassDesc")
 #define ATTRIBUTE_DESC_TAG						CONSTLIT("AttributeDesc")
+#define CHARACTER_ATTRIBUTE_DESC_TAG			CONSTLIT("CharacterAttributeType")
 #define DATA_TAG						    	CONSTLIT("Data")
 #define DISPLAY_ATTRIBUTES_TAG					CONSTLIT("DisplayAttributes")
 #define DOCK_SCREEN_TAG							CONSTLIT("DockScreen")
@@ -159,6 +160,8 @@ static const char DESIGN_CHAR[designCount] =
 		'_',
 		'x',
 		'o',
+		'j',
+		'k',
 	};
 
 static const char *DESIGN_CLASS_NAME[designCount] =
@@ -179,7 +182,7 @@ static const char *DESIGN_CLASS_NAME[designCount] =
 		"AdventureDesc",
 		"Globals",
 		"Image",
-		"Sound",
+		"Sound",					//designMusic
 		"MissionType",
 		"SystemTable",
 		"SystemMap",
@@ -189,6 +192,8 @@ static const char *DESIGN_CLASS_NAME[designCount] =
 		"TemplateType",
 		"Type",
 		"ImageComposite",
+		"SoundType",				//designSound
+		"CharacterAttributeType",
 	};
 
 static const char *CACHED_EVENTS[CDesignType::evtCount] =
@@ -408,7 +413,7 @@ ALERROR CDesignType::CreateFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, CDe
 		else if (strEquals(sTag, SYSTEM_TYPE_TAG))
 			pType = new CSystemType;
 		else if (strEquals(sTag, STATION_TYPE_TAG)
-				|| strEquals(sTag, ENCOUNTER_TYPE_TAG))
+			|| strEquals(sTag, ENCOUNTER_TYPE_TAG))
 			pType = new CStationType;
 		else if (strEquals(sTag, SOUNDTRACK_TAG))
 			pType = new CMusicResource;
@@ -440,6 +445,8 @@ ALERROR CDesignType::CreateFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, CDe
 			pType = new CGenericType;
 		else if (strEquals(sTag, IMAGE_COMPOSITE_TAG))
 			pType = new CCompositeImageType;
+		else if (strEquals(sTag, CHARACTER_ATTRIBUTE_DESC_TAG))
+			pType = new CCharacterAttributeType;
 		else if (strEquals(sTag, ADVENTURE_DESC_TAG))
 			{
 			//	Only valid if we are inside an Adventure

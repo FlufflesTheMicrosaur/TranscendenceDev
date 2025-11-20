@@ -34,6 +34,7 @@ class CSystemMap;
 class CTopology;
 class CTopologyDescTable;
 class CTradingDesc;
+class CCharacterAttributeType;
 class IDeviceGenerator;
 class IPlayerController;
 struct SDestroyCtx;
@@ -118,8 +119,9 @@ enum DesignTypes
 	designGenericType =					22,
 	designImageComposite =				23,
 	designSound =						24,
+	designCharacterAttributeType =		25,
 
-	designCount	=						25, 
+	designCount	=						26, 
 
 	designSetAll =						0xffffffff,
 	charEconomyType =					'$',
@@ -133,7 +135,7 @@ enum DesignTypes
 	charShipTable =						'h',
 	charItemType =						'i',
 	charSound =							'j',
-	//	k
+	charCharacterAttributeType =		'k',
 	//	l
 	charImage =							'm',
 	charMissionType =					'n',
@@ -764,6 +766,10 @@ class CSystemMapRef : public CDesignTypeRef<CSystemMap>
 	{
 	};
 
+class CCharacterAttributeTypeRef : public CDesignTypeRef<CCharacterAttributeType>
+	{
+	};
+
 //  Subsidiary Classes and Structures ------------------------------------------
 
 #include "TSEPaint.h"
@@ -848,6 +854,7 @@ class CGenericType : public CDesignType
 #include "TSEPower.h"
 #include "TSESpaceEnvironment.h"
 #include "TSEMissionType.h"
+#include "TSECharacterAttributeType.h"
 
 //	Adventures -----------------------------------------------------------------
 
