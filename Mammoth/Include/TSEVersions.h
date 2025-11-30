@@ -708,6 +708,34 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					217;
 //					blockNodes (list): do not path through these nodes
 //					respectOneWayGates (bool): if pathing must obey the directionality of one way gates (default: false)
 //					gateCriteria (string): criteria to match against stargate topology attributes (not the stations)
+//		<AdventureDesc>
+//			<Constants>
+//				<ExternalDeviceDamageMaxLevels>
+//					deviceDamageMaxDeviceLevel: (damageAdj-style list of ints)
+//						The maximum level device that this weapon shot can damage
+//						Specifying a "+" before a level means this is a positive
+//							offset relative to the level of the item
+//						Specifying a "-" before a level means this is a negative
+//							offset relative to the level of the item
+//					deviceDamageTypeAdj:
+//						% damageAdj of this damage type to devices
+//						generic damage always has 100%
+//						null damage has 100% if it also has device:# in its desc
+//					deviceHitChance:
+//						% chance for a shot of any damage type to hit a device
+//				<InternalDeviceDamageMaxLevels>
+//					deviceDamageMaxDeviceLevel: (damageAdj-style list of ints)
+//						The maximum level device that this weapon shot can damage
+//						Specifying a "+" before a level means this is a positive
+//							offset relative to the level of the item
+//						Specifying a "-" before a level means this is a negative
+//							offset relative to the level of the item
+//					deviceDamageTypeAdj:
+//						% damageAdj of this damage type to devices
+//						generic damage always has 100%
+//						null damage has 100% if it also has device:# in its desc
+//					deviceHitChance:
+//						% chance for a shot of any damage type to hit a device
 //		<ItemType>
 //			<Weapon>
 //				damage: (str: damage desc)
