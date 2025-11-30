@@ -163,6 +163,7 @@ class DamageDesc
 		bool HasMiningDamage (void) const { return (m_Extra.MiningAdj > 0); }
 		void InterpolateTo (const DamageDesc &End, Metric rSlider);
 		bool IsAutomatedWeapon (void) const { return (m_Extra.fAutomatedWeapon ? true : false); }
+		bool IsDamaging (int iDamage = -1) const;
 		bool IsEmpty (void) const { return (m_Damage.IsEmpty() && m_iType == damageNull); }
 		bool IsEnergyDamage (void) const;
 		bool IsHostile (void) const;
