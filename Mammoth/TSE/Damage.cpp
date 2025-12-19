@@ -104,6 +104,9 @@ SSpecialDamageData SPECIAL_DAMAGE_DATA[] =
 		{	"attract",			"damageAttract" },
 		{	"repel",			"damageRepel" },
 		{	"miningScan",		"damageMiningScan" },
+		{	"crush",			"damageMethodCrush" },
+		{	"pierce",			"damageMethodPierce" },
+		{	"shred",			"damageMethodShred" },
 
 		{	NULL,				NULL }
 	};
@@ -1084,15 +1087,18 @@ ALERROR DamageDesc::LoadFromXML (SDesignLoadCtx &Ctx, const CString &sAttrib)
 			return error;
 		}
 	
-	//	Handle backwards compatibility
+	//	Handle compatibility
 
 	DWORD dwAPIVersion = Ctx.GetAPIVersion();
+	EDamageMethodSystem iDmgSystem = g_pUniverse->GetEngineOptions().GetDamageMethodSystem();
 
 	//	For APIs 48-56, genericDamage mining weapons scanned instead of mined
 	//	Prior to API 48, the concept of mining scanning didnt exist
 
 	if (dwAPIVersion >= 48 && dwAPIVersion < 57 && m_Extra.MiningAdj && m_iType == damageGeneric)
 		m_Extra.fMiningScan = 1;
+
+	//	If the adventure says we are using physicalized damage methods, but we have defined only WMD
 
 	return NOERROR;
 	}
@@ -1189,6 +1195,26 @@ ALERROR DamageDesc::LoadTermFromXML (SDesignLoadCtx &Ctx, const CString &sType, 
 			if (!m_Extra.MiningAdj)
 				m_Extra.MiningAdj = (DWORD)Min(iCount, MAX_INTENSITY);
 			}
+
+		//	These special damage types translate to damage methods
+		// 
+		//	Crush Pierce and Shred are physicalized damage methods
+		//	representing a more nuanced system of damage methods and
+		//	resistances to the legacy WMD system
+		//
+		//	To enable compatibility between adventures and extensions
+		//	that are written for different systems (or both, in the
+		//	case of extensions that want to define specific behavior)
+		//	We process these after loading to set the correct values
+
+		else if (strEquals(sType, GetSpecialDamageName(specialCrush)))
+			m_Extra.DamageMethodCrushAdj = (DWORD)Min(iCount, MAX_INTENSITY);
+		else if (strEquals(sType, GetSpecialDamageName(specialPierce)))
+			m_Extra.DamageMethodPierceAdj = (DWORD)Min(iCount, MAX_INTENSITY);
+		else if (strEquals(sType, GetSpecialDamageName(specialShred)))
+			m_Extra.DamageMethodShredAdj = (DWORD)Min(iCount, MAX_INTENSITY);
+		else if (strEquals(sType, GetSpecialDamageName(specialWMD)))
+			m_Extra.MassDestructionAdj = (DWORD)Min(iCount, MAX_INTENSITY);
 
 		//	These special damage types translate to momentum
 
