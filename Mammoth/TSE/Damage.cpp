@@ -892,6 +892,29 @@ void DamageDesc::SetDamage (int iDamage)
 	m_Damage = DiceRange(0, 0, iDamage);
 	}
 
+void DamageDesc::SetDamageMethodLevel(EDamageMethod iMethod, int iLevel)
+	{
+	DWORD dwLevel = (DWORD)max(0, min(iLevel, MAX_INTENSITY));
+
+	switch (iMethod)
+		{
+		case EDamageMethod::methodWMD:
+			m_Extra.MassDestructionAdj = dwLevel;
+			break;
+		case EDamageMethod::methodCrush:
+			m_Extra.DamageMethodCrushAdj = dwLevel;
+			break;
+		case EDamageMethod::methodPierce:
+			m_Extra.DamageMethodPierceAdj = dwLevel;
+			break;
+		case EDamageMethod::methodShred:
+			m_Extra.DamageMethodShredAdj = dwLevel;
+			break;
+		default:
+			ASSERT(false);
+		}
+	}
+
 //	GetDesc
 //
 //	Returns a description of the damage:
@@ -1047,13 +1070,18 @@ int DamageDesc::GetTimeStopResistChance (int iTargetLevel) const
 		}
 	}
 
-ALERROR DamageDesc::LoadFromXML (SDesignLoadCtx &Ctx, const CString &sAttrib)
-
 //	LoadFromXML
 //
 //	Loads damage of the form:
 //
 //	damagetype:1d1+1; ion6; momentum5; radiation4; deviceDisrupt6
+// 
+//	Note that it is the caller's responsibility to validate that the
+//	Damage method is converted to the correct compatibility type, as
+//	this method does not have all of the context required to intelligently
+//	perform compatibility mapping
+//
+ALERROR DamageDesc::LoadFromXML (SDesignLoadCtx &Ctx, const CString &sAttrib)
 
 	{
 	ALERROR error;
@@ -1090,7 +1118,6 @@ ALERROR DamageDesc::LoadFromXML (SDesignLoadCtx &Ctx, const CString &sAttrib)
 	//	Handle compatibility
 
 	DWORD dwAPIVersion = Ctx.GetAPIVersion();
-	EDamageMethodSystem iDmgSystem = g_pUniverse->GetEngineOptions().GetDamageMethodSystem();
 
 	//	For APIs 48-56, genericDamage mining weapons scanned instead of mined
 	//	Prior to API 48, the concept of mining scanning didnt exist

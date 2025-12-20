@@ -167,6 +167,7 @@ class DamageDesc
 		int GetSpecialDamage (SpecialDamageTypes iSpecial, DWORD dwFlags = 0) const;
 		bool HasImpulseDamage (Metric *retrImpulse = NULL) const;
 		bool HasMiningDamage (void) const { return (m_Extra.MiningAdj > 0); }
+		bool HasPhysicalizedDamageMethod () const { return m_Extra.DamageMethodCrushAdj || m_Extra.DamageMethodPierceAdj || m_Extra.DamageMethodShredAdj; }
 		void InterpolateTo (const DamageDesc &End, Metric rSlider);
 		bool IsDamaging () const;
 		bool IsAutomatedWeapon (void) const { return (m_Extra.fAutomatedWeapon ? true : false); }
@@ -181,7 +182,9 @@ class DamageDesc
 		void SetAutomatedWeapon (void) { m_Extra.fAutomatedWeapon = true; }
 		void SetCause (DestructionTypes iCause) { m_iCause = iCause; }
 		void SetDamage (int iDamage);
+		void SetDamageMethodLevel (EDamageMethod iMethod, int iLevel);
 		void SetDamageType (DamageTypes iType) { m_iType = iType; }
+		void SetMiningAdj (int iLevel) { m_Extra.MiningAdj = (DWORD)max(0, min(7, iLevel)); }
 		void SetNoSRSFlash (void) { m_Extra.fNoSRSFlash = true; }
 		void SetSpecialDamage (SpecialDamageTypes iSpecial, int iLevel);
 		void WriteToStream (IWriteStream *pStream) const;
@@ -920,6 +923,7 @@ class CWeaponFireDesc
 		SOldEffects &GetOldEffects (void) const { return (m_pOldEffects ? *m_pOldEffects : m_NullOldEffects); }
 		CUniverse &GetUniverse (void) const { return *g_pUniverse; }
 		SOldEffects &SetOldEffects (void) { if (m_pOldEffects == NULL) m_pOldEffects = new SOldEffects; return *m_pOldEffects; }
+		void InitDamageMethodCompatibility (DamageDesc &Desc);
 		bool InitHitPoints (SDesignLoadCtx &Ctx, const CXMLElement &XMLDesc);
 		bool InitLifetime (SDesignLoadCtx &Ctx, const CXMLElement &XMLDesc);
 		bool InitMissileSpeed (SDesignLoadCtx &Ctx, const CXMLElement &XMLDesc);

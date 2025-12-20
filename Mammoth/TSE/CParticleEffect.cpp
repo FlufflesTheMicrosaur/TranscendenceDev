@@ -119,6 +119,90 @@ ALERROR CParticleEffect::Create (CSystem &System,
 		if (error = Damage.LoadFromXML(Ctx, sDamage))
 			return error;
 
+		//	Handle damage method compatibility
+
+		EDamageMethodSystem iDmgSystem = g_pUniverse->GetEngineOptions().GetDamageMethodSystem();
+
+		if (iDmgSystem == EDamageMethodSystem::dmgMethodSysPhysicalized)
+			{
+			//	If we explicitly define physicalized damage we skip all others
+			//	Zero out WMD to signal that we are configured properly
+
+			if (Damage.HasPhysicalizedDamageMethod())
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, 0);
+
+			//	If we are setup for WMD but need to convert, we assume we are
+			//	shred method
+
+			else if (Damage.GetDamageMethodLevel(EDamageMethod::methodWMD))
+				{
+				Damage.SetDamageMethodLevel(EDamageMethod::methodShred, Damage.GetDamageMethodLevel(EDamageMethod::methodWMD));
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, 0);
+
+				//	Because mining is used for damaging certain targets in the
+				//	legacy WMD system, we need to convert that to crush
+
+				if (Damage.GetMiningAdj())
+					Damage.SetDamageMethodLevel(EDamageMethod::methodCrush, Damage.GetMiningAdj());
+				}
+
+			//	Because mining is used for damaging certain targets in the
+			//	legacy WMD system, we need to convert that to crush
+
+			else if (Damage.GetMiningAdj())
+				Damage.SetDamageMethodLevel(EDamageMethod::methodCrush, Damage.GetMiningAdj());
+			}
+		else if (iDmgSystem == EDamageMethodSystem::dmgMethodSysWMD)
+			{
+			//	If we explicitly define WMD we clear out physicalized damage
+			//	method values since they aren't needed here
+			//	Note that if this is done, we assume that the extension is fully
+			//	aware of how the system works and leave mining adj alone
+
+			if (Damage.GetDamageMethodLevel(EDamageMethod::methodWMD))
+				{
+				for (int i = 0; i < PHYSICALIZED_DAMAGE_METHOD_COUNT; i++)
+					{
+					EDamageMethod iMethod = PHYSICALIZED_DAMAGE_METHODS[i];
+					Damage.SetDamageMethodLevel(iMethod, 0);
+					}
+				}
+
+			//	If we have Crush damage but not mining we switch it to mining
+
+			else if (!Damage.HasMiningDamage() && Damage.GetDamageMethodLevel(EDamageMethod::methodCrush))
+				{
+				Damage.SetMiningAdj(Damage.GetDamageMethodLevel(EDamageMethod::methodCrush));
+				Damage.SetDamageMethodLevel(EDamageMethod::methodCrush, 0);
+
+				//	Set WMD to the max of pierce or shred
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, max(
+					Damage.GetDamageMethodLevel(EDamageMethod::methodPierce),
+					Damage.GetDamageMethodLevel(EDamageMethod::methodShred)
+					));
+				}
+
+			//	If we have physicalized damage methods and mining or no crush
+			else if (Damage.HasPhysicalizedDamageMethod())
+				{
+				int iHighestLevel = 0;
+				for (int i = 0; i < PHYSICALIZED_DAMAGE_METHOD_COUNT; i++)
+					{
+					EDamageMethod iMethod = PHYSICALIZED_DAMAGE_METHODS[i];
+					int iLevel = Damage.GetDamageMethodLevel(iMethod);
+
+					if (iHighestLevel < iLevel)
+						iHighestLevel = iLevel;
+
+					Damage.SetDamageMethodLevel(iMethod, 0);
+					}
+
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, iHighestLevel);
+				}
+			}
+		else
+			ASSERT(false);
+
 		pType->pDamageDesc = new CWeaponFireDesc;
 		pType->pDamageDesc->InitFromDamage(Damage);
 		pType->m_fFreeDesc = true;

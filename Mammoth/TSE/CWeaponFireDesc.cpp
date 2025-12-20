@@ -2436,6 +2436,9 @@ ALERROR CWeaponFireDesc::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, c
 			return error;
 			}
 		}
+	
+	//	We need to complete fragment initialization first before
+	//	performing damage method compatibility initialization
 
 	//	Fragments
 
@@ -2626,6 +2629,11 @@ ALERROR CWeaponFireDesc::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, c
 		m_rMinFragThreshold = LIGHT_SECOND * rMin;
 		}
 
+	//	Perform damage method compatibility mapping
+
+	InitDamageMethodCompatibility(m_Damage);
+	InitDamageMethodCompatibility(m_DamageAtMaxRange);
+
 	//	Compute max effective range
 
 	m_rMaxEffectiveRange = CalcMaxEffectiveRange();
@@ -2720,7 +2728,132 @@ ALERROR CWeaponFireDesc::InitFromXML (SDesignLoadCtx &Ctx, CXMLElement *pDesc, c
 	return NOERROR;
 	}
 
-bool CWeaponFireDesc::InitHitPoints (SDesignLoadCtx &Ctx, const CXMLElement &XMLDesc)
+	//	InitDamageMethodCompatibility
+	// 
+	//	Handle converting between WMD and Physicalized Damage methods
+	//
+	void CWeaponFireDesc::InitDamageMethodCompatibility (DamageDesc &Damage)
+		{
+		//	Handle damage method compatibility
+
+		EDamageMethodSystem iDmgSystem = g_pUniverse->GetEngineOptions().GetDamageMethodSystem();
+
+		if (iDmgSystem == EDamageMethodSystem::dmgMethodSysPhysicalized)
+			{
+			//	If we explicitly define physicalized damage we skip all others
+			//	Zero out WMD to signal that we are configured properly
+
+			if (Damage.HasPhysicalizedDamageMethod())
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, 0);
+			else if (Damage.GetDamageMethodLevel(EDamageMethod::methodWMD) || Damage.HasMiningDamage())
+				{
+				EDamageMethod iMethod = EDamageMethod::methodError;
+
+				if (Damage.HasMiningDamage())
+					iMethod = EDamageMethod::methodCrush;
+				else
+					{
+					switch (m_iFireType)
+						{
+						case FireTypes::ftArea:
+						case FireTypes::ftRadius:
+						case FireTypes::ftParticles:
+							{
+							iMethod = EDamageMethod::methodShred;
+							break;
+							}
+						case FireTypes::ftContinuousBeam:
+							{
+							iMethod = EDamageMethod::methodPierce;
+							break;
+							}
+						case FireTypes::ftBeam:
+						case FireTypes::ftMissile:
+							{
+							if (m_pFirstFragment && !m_fMIRV)
+								iMethod = EDamageMethod::methodShred;
+							else if (m_rMissileSpeed >= 0.75 * LIGHT_SPEED)
+								iMethod = EDamageMethod::methodPierce;
+							else
+								iMethod = EDamageMethod::methodShred;
+							break;
+							}
+						default:
+							ASSERT(false);	//	Implement mapping for new fire types
+						}
+					}
+
+				int iWMDLevel = Damage.GetDamageMethodLevel(EDamageMethod::methodWMD);
+
+				//	Because mining is used for damaging certain targets in the
+				//	legacy WMD system, we need to convert that to crush
+
+				if (iMethod == EDamageMethod::methodCrush && Damage.HasMiningDamage())
+					Damage.SetDamageMethodLevel(EDamageMethod::methodCrush, max(Damage.GetMiningAdj(), iWMDLevel));
+
+				//	If we are setup for WMD but need to convert, we pick the type we found
+
+				else
+					Damage.SetDamageMethodLevel(iMethod, iWMDLevel);
+
+				//	Clear our WMD damage to flag that we have configured our compatibility correctly
+
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, 0);
+				}
+			}
+		else if (iDmgSystem == EDamageMethodSystem::dmgMethodSysWMD)
+			{
+			//	If we explicitly define WMD we clear out physicalized damage
+			//	method values since they aren't needed here
+			//	Note that if this is done, we assume that the extension is fully
+			//	aware of how the system works and leave mining adj alone
+
+			if (Damage.GetDamageMethodLevel(EDamageMethod::methodWMD))
+				{
+				for (int i = 0; i < PHYSICALIZED_DAMAGE_METHOD_COUNT; i++)
+					{
+					EDamageMethod iMethod = PHYSICALIZED_DAMAGE_METHODS[i];
+					Damage.SetDamageMethodLevel(iMethod, 0);
+					}
+				}
+
+			//	If we have Crush damage but not mining we switch it to mining
+
+			else if (!Damage.HasMiningDamage() && Damage.GetDamageMethodLevel(EDamageMethod::methodCrush))
+				{
+				Damage.SetMiningAdj(Damage.GetDamageMethodLevel(EDamageMethod::methodCrush));
+				Damage.SetDamageMethodLevel(EDamageMethod::methodCrush, 0);
+
+				//	Set WMD to the max of pierce or shred
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, max(
+					Damage.GetDamageMethodLevel(EDamageMethod::methodPierce),
+					Damage.GetDamageMethodLevel(EDamageMethod::methodShred)
+				));
+				}
+
+			//	If we have physicalized damage methods and mining or no crush
+			else if (Damage.HasPhysicalizedDamageMethod())
+				{
+				int iHighestLevel = 0;
+				for (int i = 0; i < PHYSICALIZED_DAMAGE_METHOD_COUNT; i++)
+					{
+					EDamageMethod iMethod = PHYSICALIZED_DAMAGE_METHODS[i];
+					int iLevel = Damage.GetDamageMethodLevel(iMethod);
+
+					if (iHighestLevel < iLevel)
+						iHighestLevel = iLevel;
+
+					Damage.SetDamageMethodLevel(iMethod, 0);
+					}
+
+				Damage.SetDamageMethodLevel(EDamageMethod::methodWMD, iHighestLevel);
+				}
+			}
+		else
+			ASSERT(false);
+		}
+
+	bool CWeaponFireDesc::InitHitPoints (SDesignLoadCtx &Ctx, const CXMLElement &XMLDesc)
 
 //	InitHitPoints
 //

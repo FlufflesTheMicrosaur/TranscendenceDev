@@ -58,7 +58,7 @@ static constexpr int g_RotationAngle = (360 / g_RotationRange);
 //	Velocity: kilometers/second
 
 static constexpr Metric g_Epsilon =						0.0000001;			//	Small value close to 0
-static constexpr Metric LIGHT_SPEED =					299792.5;			//	c in Kilometers per second
+static constexpr Metric LIGHT_SPEED =					299792.5;			//	c in Kilometers per simulation second
 static constexpr Metric LIGHT_SECOND =					LIGHT_SPEED;		//	1 light-second
 static constexpr Metric LIGHT_MINUTE =					LIGHT_SECOND * 60;	//	1 light-minute
 static constexpr Metric MAX_SYSTEM_SPEED =				10.0 * LIGHT_SPEED;	//	By default we clip above this
