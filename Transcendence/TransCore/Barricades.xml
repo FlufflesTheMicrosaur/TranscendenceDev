@@ -215,8 +215,8 @@
 						(intactPercent (/ hpLeft hpMax))
 
 						(sourceItem (objGetData gSource 'SourceItem))
-						(mass (itmGetMass sourceItem))
-						(fitsInCargo (gr (objGetCargoSpaceLeft gPlayerShip) mass))
+						(size (itmGetVolume sourceItem))
+						(fitsInCargo (gr (obj@ gPlayerShip 'cargoSpaceFree) size))
 
 						(condition (switch
 							(gr intactPercent 1)

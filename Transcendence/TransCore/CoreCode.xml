@@ -118,7 +118,7 @@
 					; Uninstall item
 					(block Nil
 						(switch
-							(gr (itmGetMass theItem) (objGetCargoSpaceLeft theSource))
+							(gr (itmGetVolume theItem) (obj@ theSource 'cargoSpaceFree))
 								(objSendMessage theSource Nil "No room in cargo hold to uninstall")
 
 							(block Nil

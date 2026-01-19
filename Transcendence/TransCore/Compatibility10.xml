@@ -436,7 +436,7 @@
 											(setq thisItem Nil)
 											)
 
-									(gr (itmGetMass thisItem) (objGetCargoSpaceLeft gPlayerShip))
+									(gr (itmGetVolume thisItem) (obj@ gPlayerShip 'cargoSpaceFree))
 										(block Nil
 											(scrSetDesc gScreen "This device cannot be removed because there is no room in your cargo hold to store it.")
 											(setq thisItem Nil)
@@ -615,7 +615,7 @@
 							(block (cargoNeeded)
 								(setq gResult (shpCanInstallArmor gPlayerShip thisItem gArmorSegment))
 								(setq gCost (divide (multiply gMargin (itmGetInstallCost thisItem)) 500))
-								(setq cargoNeeded (subtract (itmGetMass (shpGetArmor gPlayerShip gArmorSegment)) (itmGetMass thisItem)))
+								(setq cargoNeeded (subtract (itmGetVolume (shpGetArmor gPlayerShip gArmorSegment)) (itmGetVolume thisItem)))
 
 								(switch
 									(eq gResult 1)
@@ -636,7 +636,7 @@
 											(setq canInstall Nil)
 											)
 
-									(gr cargoNeeded (objGetCargoSpaceLeft gPlayerShip))
+									(gr cargoNeeded (obj@ gPlayerShip 'cargoSpaceFree))
 										(block Nil
 											(setq desc "There is no room in your cargo hold to store the old armor segment.")
 											(setq canInstall Nil)
@@ -1007,9 +1007,9 @@
 
 										; See how much cargo space we need to store the old item
 
-										(setq cargoNeeded (itmGetMass itemToRemove))
+										(setq cargoNeeded (itmGetVolume itemToRemove))
 										(if isItemInCargo
-											(setq cargoNeeded (subtract cargoNeeded (itmGetMass thisItem)))
+											(setq cargoNeeded (subtract cargoNeeded (itmGetVolume thisItem)))
 											)
 										)
 									)
