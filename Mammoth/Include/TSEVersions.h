@@ -1073,6 +1073,18 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					219;
 //					If <API59, always uses the adventure compatibility mappings
 //				stdArmorMass:
 //
+//		<ItemType>
+//			installedItemUsesObjectImage: (bool)
+//				If True:
+//					Display the obj image if installed on an object
+//					Display the item image if not installed
+//				(default: false)
+//			<Weapon>
+//				repeatingDelay:
+//					Deprecated due to using non-intuitive legacy math
+//				repeatingShotDelay:
+//					Sets an exact repeating shot delay in simulation seconds
+//					Default: 2.0
 //		<Type>
 //			<Events>
 //				<onGlobalTypesBound>
@@ -1089,13 +1101,6 @@ constexpr DWORD SYSTEM_SAVE_VERSION =					219;
 //						are available
 //					Fires only on new games, or when loading into the  main menu
 //					Fires BEFORE <onGlobalTypesBound>
-//		<ItemType>
-//			<Weapon>
-//				repeatingDelay:
-//					Deprecated due to using non-intuitive legacy math
-//				repeatingShotDelay:
-//					Sets an exact repeating shot delay in simulation seconds
-//					Default: 2.0
 //		<ShipClass>
 //			<Language>
 //				<... id="core.descLore">
