@@ -106,6 +106,13 @@ ALERROR CObjectImage::Exists (SDesignLoadCtx &Ctx)
 	if (m_pBitmap)
 		return NOERROR;
 
+	if (!Ctx.pResDb)
+		{
+		ASSERT(false);
+		Ctx.sError = strPatternSubst(CONSTLIT("Fatal error: Resource DB was null when trying to load image '%s'"), m_sBitmap);
+		return ERR_FAIL;
+		}
+
 	if (!m_sBitmap.IsBlank() && !Ctx.pResDb->ImageExists(NULL_STR, m_sBitmap))
 		{
 		Ctx.sError = strPatternSubst(CONSTLIT("Unable to find image: '%s'"), m_sBitmap);
