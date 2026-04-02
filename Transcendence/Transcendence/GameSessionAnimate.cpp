@@ -483,6 +483,7 @@ void CGameSession::PaintSRS (CG32bitImage &Screen)
 		}
 
 	//	If we're showing damage flash, fill the screen
+	//	Todo: convert this to a vignette
 
 	if (m_iDamageFlash > 0 && (m_iDamageFlash % 2) == 0)
 		{
@@ -502,6 +503,7 @@ void CGameSession::PaintSRS (CG32bitImage &Screen)
         m_SystemMap.Paint(Screen);
 
 	//	Otherwise, if we're blind, paint scramble
+	//	Todo: convert this to a vignette
 
 	else if (bBlind 
 			&& (g_pUniverse->GetFrameTicks() % (20 + (((g_pUniverse->GetFrameTicks() / 100) * pShip->GetDestiny()) % 100))) > 15)
