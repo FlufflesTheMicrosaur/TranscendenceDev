@@ -31,6 +31,14 @@ class IPrimitiveImpl
 		virtual bool RegisterCCPrimitives (CCodeChain &CC) { return true; }
 	};
 
+class ICCObjectRef
+	{
+	public:
+		virtual CString GetPointerTypeName () const { return CONSTLIT("undefined"); }
+		virtual DWORD GetInstanceID () const { return 0; }
+		virtual ICCItemPtr AsCCPointer () const { }
+	};
+
 #define PPFLAG_SIDEEFFECTS						0x00000001	//	Function has side-effects
 #define PPFLAG_NOERRORS							0x00000002	//	Function never returns errors
 #define PPFLAG_SYNONYM							0x00000004	//	Function is a synonym (pszDescription is name of function)
@@ -159,19 +167,20 @@ class ICCItem : public CObject
 		virtual CString GetStringValue (void) const { return LITERAL(""); }
 		virtual ValueTypes GetValueType (void) const = 0;
 		virtual CString GetTypeOf (void);
-		virtual bool IsAtom (void) const = 0;
-		virtual bool IsAtomTable (void) const { return false; }
-		virtual bool IsConstant (void) const { return false; }
-		virtual bool IsExpression (void) const { return false; }
-		virtual bool IsFunction (void) const = 0;
-		virtual bool IsIdentifier (void) const = 0;
-		virtual bool IsInteger (void) const = 0;
-		virtual bool IsDouble (void) const = 0;
-		virtual bool IsLambdaFunction (void) const { return false; }
-		virtual bool IsNil (void) const = 0;
-		virtual bool IsPrimitive (void) const { return false; }
-		virtual bool IsSymbolTable (void) const { return false; }
-		virtual bool IsTrue (void) const { return false; }
+		virtual bool IsAtom () const = 0;
+		virtual bool IsAtomTable () const { return false; }
+		virtual bool IsConstant () const { return false; }
+		virtual bool IsExpression () const { return false; }
+		virtual bool IsFunction () const = 0;
+		virtual bool IsIdentifier () const = 0;
+		virtual bool IsInteger () const = 0;
+		virtual bool IsDouble () const = 0;
+		virtual bool IsLambdaFunction () const { return false; }
+		virtual bool IsNil () const = 0;
+		virtual bool IsObjectRef () const = 0;
+		virtual bool IsPrimitive () const { return false; }
+		virtual bool IsSymbolTable () const { return false; }
+		virtual bool IsTrue () const { return false; }
 		virtual CString Print (DWORD dwFlags = 0) const = 0;
 		virtual void SetBinding (int iFrame, int iOffset) { }
 		virtual void SetFunctionBinding (CCodeChain *pCC, ICCItem *pBinding) { }
@@ -196,6 +205,7 @@ class ICCItem : public CObject
 		void SetDoubleAt (const CString &sKey, double rValue);
 		void SetIntegerAt (const CString &sKey, int iValue);
 		void SetStringAt (const CString &sKey, const CString &sValue);
+		void SetObjectRefAt (const String& sKey, const ICCObjectRef* pValue);
 
 		virtual bool AddEntry (ICCItem *pKey, ICCItem *pEntry, bool bForceLocalAdd = false, bool bMustBeNew = false) { return true; }
 		virtual void AddByOffset (CCodeChain *pCC, int iOffset, ICCItem *pEntry) { ASSERT(false); }
@@ -253,6 +263,7 @@ class ICCItemPtr
 		explicit ICCItemPtr (DWORD dwValue);
 		explicit ICCItemPtr (double rValue);
 		explicit ICCItemPtr (bool bValue);
+		explicit ICCItemPtr (ICCObjectRef* pObj);
 
 		ICCItemPtr (const ICCItemPtr &Src);
 
@@ -313,6 +324,31 @@ class ICCAtom : public ICCItem
 		virtual bool IsDouble(void) const override { return false; }
 		virtual bool IsNil (void) const override { return false; }
 		virtual ICCItem *Tail (CCodeChain *pCC) override;
+	};
+
+//	An object reference is an atom that represents a reference to a CObject
+//	(eg, a ship, a dockscreen, a player controller, etc)
+
+class CCObjectRef : public ICCAtom
+	{
+	public:
+		CCObjectRef();
+
+		//	ICCItem virtuals
+		virtual bool IsConstant () const override { return true; }
+		virtual bool IsIdentifier () const override { return false; }
+		virtual bool IsFunction () const override { return false; }
+		virtual bool IsInteger () const override { return false;  }
+		virtual bool IsDouble () const override { return false;  }
+		virtual bool IsObjectRef () const override { return true; }
+		virtual bool GetIntegerValue () const override { return m_pValue->GetInstanceID(); }
+		virtual bool GetStringValue () const override { return strPatternSubst(CONSTLIT("[%s:%d]"), m_pValue->GetPointerTypeName(), m_pValue->GetInstanceID()); }
+
+	protected:
+		virtual void DestroyItem () override;
+
+	private:
+		ICCObjectRef* m_pValue;					//	Pointer to the object we reference
 	};
 
 //  A numeral is an atom that represents a double or an integer
