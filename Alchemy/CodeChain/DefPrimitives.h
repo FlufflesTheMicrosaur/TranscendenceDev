@@ -470,8 +470,8 @@ static PRIMITIVEPROCDEF g_DefPrimitives[] =
 			NULL,	PPFLAG_SIDEEFFECTS,	},
 
 		{	"slice",			fnSubset,		FN_SUBSET_SLICE,
-			"(subset list start [end]) -> list\n"
-			"(subset string start [end]) -> string\n\n"
+			"(slice list start [end]) -> list\n"
+			"(slice string start [end]) -> string\n\n"
 
 			"Creates a list or string of the elements or characters starting at index pos up until index end.\n"
 			"Negative indexes are allowed and wrap around (-1 is the last element, -2 is the next last element, etc).\n"
