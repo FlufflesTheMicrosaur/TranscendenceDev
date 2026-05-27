@@ -926,21 +926,21 @@
 					<Action id="actionSalvage">
 						(block (
 							(autonItem (obj@ gSource 'autonItem))
-							(autonMass (itmGetMass autonItem))
+							(autonSize (itmGetVolume autonItem))
 							(cargoItems (objGetItems gSource "*U"))
-							(cargoMass (map cargoItems 'reduceSum theItem (itmGetMass theItem)))
-							(totalMass (+ autonMass cargoMass))
+							(cargoSize (map cargoItems 'reduceSum theItem (itmGetVolume theItem)))
+							(totalSize (+ autonSize cargoSize))
 
-							(spaceAvail (objGetCargoSpaceLeft gPlayerShip))
-							(spaceNeeded (- totalMass spaceAvail))
+							(spaceAvail obj@ gPlayerShip 'cargoSpaceFree)
+							(spaceNeeded (- totalSize spaceAvail))
 							)
 							(switch
 								;	Not enough space for auton and cargo
 
-								(and (gr spaceNeeded 0) (gr cargoMass 0))
+								(and (gr spaceNeeded 0) (gr cargoSize 0))
 									(scrShowScreen gScreen &dsRPGMessage; {
 										text:(scrTranslate gScreen 'descNoSpaceWithCargo {
-											totalMass: (fmtNumber 'massKg totalMass)
+											totalSpace: (fmtNumber 'CBM totalSize)
 											}) 
 										})
 
@@ -949,7 +949,7 @@
 								(gr spaceNeeded 0)
 									(scrShowScreen gScreen &dsRPGMessage; {
 										text:(scrTranslate gScreen 'descNoSpace {
-											totalMass: (fmtNumber 'massKg totalMass)
+											totalSpace: (fmtNumber 'CBM totalSize)
 											}) 
 										})
 
@@ -994,7 +994,7 @@
 				There is not enough space in your cargo hold to salvage the 
 				auton.
 				
-				You need at least %totalMass% of free space.
+				You need at least %totalSpace% of free space.
 
 			</Text>
 			<Text id="descNoSpaceWithCargo">
@@ -1002,7 +1002,7 @@
 				There is not enough space in your cargo hold to salvage the 
 				auton and all of its cargo.
 				
-				You need at least %totalMass% of free space.
+				You need at least %totalSpace% of free space.
 
 			</Text>
 		</Language>
